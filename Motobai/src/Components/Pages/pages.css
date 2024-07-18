@@ -1,0 +1,13 @@
+input:valid {
+  border-color: #2f9e44;
+}
+
+input:focus + .label-line,
+input:valid + .label-line {
+  color: #2f9e44;
+  font-weight: 500;
+  transform: translate(0px, -30px);
+  z-index: 10;
+  font-size: 14px;
+  padding: 6px;
+}
