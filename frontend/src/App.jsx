@@ -6,6 +6,7 @@ import Inventory from "./Components/Pages/Inventory";
 import Orders from "./Components/Pages/Orders";
 import OrderList from "./Components/Pages/OrderList";
 import Login from "./Components/Pages/Login.jsx";
+import Register from "./Components/Pages/Register.jsx";
 
 import { Route, Routes } from "react-router-dom";
 import Container from "./Components/Pages/Container";
@@ -17,6 +18,7 @@ function App() {
         <Header />
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/companies" element={<Companies />} />
           <Route path="/products" element={<Products />} />
           <Route path="/inventory" element={<Inventory />} />
