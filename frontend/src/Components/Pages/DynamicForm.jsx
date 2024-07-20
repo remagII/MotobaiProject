@@ -31,9 +31,6 @@ export default function Form({
     onSubmit(form, () => setForm(initialForm));
   };
 
-
-
-
   return (
     <section>
       <div>
@@ -52,7 +49,7 @@ export default function Form({
             <form onSubmit={onSubmit}>
               <div className={`bg-gray-100 p-8 rounded-b-lg`}>
                 <h1 className="font-bold text-2xl mb-10">{title}</h1>
-                <div className={`gap-x-6 gap-y-8 grid grid-cols-3`}>
+                <div className={`   gap-x-6 gap-y-8 grid grid-cols-3 `}>
                   {formArr.map(({ label, name, type, readOnly }, index) => (
                     <div
                       className={`flex flex-col justify-between`}

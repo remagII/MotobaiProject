@@ -15,6 +15,7 @@ export default function Companies() {
 
   // MODAL TOGGLE
   const toggleModal = () => {
+    setBtnTitle("Create Company");
     setModal((m) => (m = !m));
   };
 
@@ -25,7 +26,9 @@ export default function Companies() {
     setErrorWindow((e) => (e = !e));
   };
 
+  // ERROR TEXT
   const [errors, setErrors] = useState("");
+  var errorFields = [];
 
   // fetch companies
   const [company, setCompany] = useState([]);
@@ -36,16 +39,17 @@ export default function Companies() {
 
   const fetchCompany = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/company/list?format=json');
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/company/list?format=json"
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to fetch companies');
+        throw new Error("Failed to fetch companies");
       }
       const data = await response.json();
-      console.log(data);
       setCompany(data); // ito ung data ng list of companies (company)
     } catch (error) {
-      console.error('Error fetching companies:', error);
+      console.error("Error fetching companies:", error);
     }
   };
 
@@ -53,15 +57,15 @@ export default function Companies() {
   const formArr = [
     {
       label: "Company Name",
-      name: "name",
+      name: "company_name",
     },
     {
       label: "Representative Name",
-      name: "rep_name",
+      name: "representative_name",
     },
     {
       label: "Representative Position",
-      name: "rep_position",
+      name: "representative_position",
     },
     {
       label: "Phone Number",
@@ -86,7 +90,9 @@ export default function Companies() {
   ];
 
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
-  const TableColumns = [
+
+  // CHANGE NAMES TO CORRECT CAMEL_CASE
+  const tableColumns = [
     {
       header: "Company ID",
       row: "index",
@@ -97,8 +103,12 @@ export default function Companies() {
       row: "name",
     },
     {
-      header: "Representative Name",
+      header: "Name",
       row: "rep_name",
+    },
+    {
+      header: "Position",
+      row: "rep_position",
     },
     {
       header: "City",
@@ -115,30 +125,46 @@ export default function Companies() {
   ];
 
   // backend
-  
+
   const [loading, setLoading] = useState(false);
 
-  const onSubmitHandler = async (form) => {
+  const onSubmitHandler = async (form, callback) => {
     setLoading(true);
 
-    try {
-      const res = await api.post("/api/company/create", {
-        name: form.companyName,
-        rep_name: form.representativeName,
-        rep_position: form.representativePosition,
-        city: form.city,
-        barangay: form.barangay,
-        street: form.street,
-        phone_number: form.number,
-        email: form.email
-      });
-      console.log("Company added:", res.data);
-      window.location.reload()
-    } catch (error) {
-      console.error("Error adding company:", error);
-      alert("Failed to add company. Please try again later.");
-    } finally {
-      setLoading(false);
+    if (rowToEdit === null) {
+      try {
+        const res = await api.post("http://127.0.0.1:8000/api/company/create", {
+          company_name: form.company_name,
+          representative_name: form.representative_name,
+          representative_position: form.representative_position,
+          city: form.city,
+          barangay: form.barangay,
+          street: form.street,
+          phone_number: form.phone_number,
+          email: form.email,
+        });
+        console.log("Company added:", res.data);
+        window.location.reload();
+        {
+          errorWindow ? toggleErrorWindow() : "";
+        }
+        callback();
+      } catch (error) {
+        errorFields = [];
+        toggleModal();
+        for (const [key, value] of Object.entries(form)) {
+          if (!value) {
+            errorFields.push(key);
+          }
+        }
+        setErrors((e) => errorFields.join(", "));
+        {
+          !errorWindow ? toggleErrorWindow() : "";
+        }
+        callback();
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -195,26 +221,25 @@ export default function Companies() {
   //     }
   //   }
 
-    //RESETS FIELDS
+  //RESETS FIELDS
   //   callback();
   // };
 
   const [rowToEdit, setRowToEdit] = useState(null);
+  const [btnTitle, setBtnTitle] = useState("Create Company");
   const handleEditRow = (index) => {
-    setRowToEdit(index);
-
     toggleModal();
+    setRowToEdit(index);
+    setBtnTitle("Edit Company");
   };
 
   return (
     <section className={`font-main flex-1`}>
       <div className={`bg-normalGray box-border flex  h-full`}>
-        {/* <Overview
+        <Overview
           title={`Companies`}
-          quantity={
-            companyArr.length < 10 ? "0" + companyArr.length : companyArr.length
-          }
-        /> */}
+          quantity={company.length < 10 ? "0" + company.length : company.length}
+        />
         <div className={`flex flex-col flex-1 m-4`}>
           <div className={`m-4`}>
             <div className={`flex justify-between`}>
@@ -235,10 +260,9 @@ export default function Companies() {
             </div>
             <Modal modal={modal} toggleModal={toggleModal}>
               <Form
-                // error={errorFields}
-                btnTitle={"Create Company"}
+                error={errorFields}
+                btnTitle={btnTitle}
                 title={"Company"}
-                submitBtn={"Create Company"}
                 formArr={formArr}
                 onSubmit={onSubmitHandler}
                 defaultValue={rowToEdit !== null && company[rowToEdit]}
@@ -265,8 +289,8 @@ export default function Companies() {
             </div>
           </div>
           <Table
-            columnArr={TableColumns}
-            dataArr={company} // changed from companyArr 
+            columnArr={tableColumns}
+            dataArr={company} // changed from companyArr
             editRow={handleEditRow}
           />
         </div>
