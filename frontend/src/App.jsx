@@ -15,7 +15,12 @@ function App() {
   return (
     <>
       <Container>
-        {/* idk how to do this */}
+        {/* 
+        idk how to do this...
+
+        you should probably instead put header inside the page itself
+        
+        */}
         <Header />
         <Routes>
           <Route path="/login" element={<Login />} />

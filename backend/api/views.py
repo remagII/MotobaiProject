@@ -21,13 +21,16 @@ class ProductListView(generics.ListAPIView):
     serializer_class = ProductSerializer
     permission_classes = [AllowAny] 
 
-class ProductDelete(generics.DestroyAPIView):
+class ProductUpdateView(generics.UpdateAPIView):
+    queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
-    def get_queryset(self):
-        user = self.request.user
-        return Product.objects.filter(author=user)
+class ProductDeleteView(generics.DestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    permission_classes = [AllowAny]
+
 
 # COMPANY
 class CompanyAdd(generics.CreateAPIView):
@@ -35,6 +38,16 @@ class CompanyAdd(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
 class CompanyListView(generics.ListAPIView):
+    queryset = Company.objects.all()
+    serializer_class = CompanySerializer
+    permission_classes = [AllowAny]
+
+class CompanyUpdateView(generics.UpdateAPIView):
+    queryset = Company.objects.all()
+    serializer_class = CompanySerializer
+    permission_classes = [AllowAny]
+
+class CompanyDeleteView(generics.DestroyAPIView):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
     permission_classes = [AllowAny]
