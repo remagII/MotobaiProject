@@ -171,14 +171,12 @@ export default function Companies() {
       //   }
       // }
     }
+    // i need to get the id of the company (not index)
     else if (method === "edit") {
-      console.log("edit method");
+      console.log("edit method: " + " (id here)");
       // code for editing data
     }
 
-
-
-    
   };
 
   // // THING THAT GETS SAVED ON TABLE

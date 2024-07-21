@@ -15,6 +15,7 @@ function App() {
   return (
     <>
       <Container>
+        {/* idk how to do this */}
         <Header />
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -24,6 +25,17 @@ function App() {
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/orderList" element={<OrderList />} />
+
+          {/* 
+          LACKING PAGES:
+          - LOGIN 
+          - REGISTER
+          - NOT FOUND
+          - HOME PAGE
+          - ABOUT PAGE(optional)
+          */}
+          <Route path="/" element={<Companies />} />
+
         </Routes>
       </Container>
     </>
