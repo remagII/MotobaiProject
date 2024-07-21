@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Product(models.Model):
-    name = models.CharField(max_length=100)
+    product_name = models.CharField(max_length=100)
     price = models.DecimalField(decimal_places=2, max_digits=10)
     type = models.CharField(max_length=100, default='DefaultType')
     description = models.TextField(max_length=32, default='DefaultDescription')
@@ -28,9 +28,9 @@ class Inventory(models.Model):
         return '{}: {}'.format(self.product, self.stock)
 
 class Company(models.Model):
-    name = models.CharField(max_length=100)
-    rep_name = models.CharField(max_length=100)
-    rep_position = models.CharField(max_length=100)
+    company_name = models.CharField(max_length=100)
+    representative_name = models.CharField(max_length=100)
+    representative_position = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
     barangay = models.CharField(max_length=100)
     street = models.CharField(max_length=100)
@@ -39,7 +39,7 @@ class Company(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return '{}: {}'.format(self.name, self.rep_name)
+        return '{}: {}'.format(self.company_name, self.representative_name)
 
 # DISCOUNT NOT YET ADDED
 # CHOICES NOT COMPLETE

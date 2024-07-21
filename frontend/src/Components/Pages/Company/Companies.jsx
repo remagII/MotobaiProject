@@ -15,6 +15,7 @@ export default function Companies() {
 
   // MODAL TOGGLE
   const toggleModal = () => {
+    setMethod("edit");
     setBtnTitle("Create Company");
     setModal((m) => (m = !m));
   };
@@ -95,20 +96,20 @@ export default function Companies() {
   const tableColumns = [
     {
       header: "Company ID",
-      row: "index",
+      row: "id",
     },
 
     {
       header: "Company Name",
-      row: "name",
+      row: "company_name",
     },
     {
       header: "Name",
-      row: "rep_name",
+      row: "representative_name",
     },
     {
       header: "Position",
-      row: "rep_position",
+      row: "representative_position",
     },
     {
       header: "City",
@@ -127,45 +128,57 @@ export default function Companies() {
   // backend
 
   const [loading, setLoading] = useState(false);
+  const [method, setMethod] = useState("");
 
-  const onSubmitHandler = async (form, callback) => {
+  const onSubmitHandler = async (form, callback, method) => {
     setLoading(true);
-
-    if (rowToEdit === null) {
-      try {
-        const res = await api.post("http://127.0.0.1:8000/api/company/create", {
-          company_name: form.company_name,
-          representative_name: form.representative_name,
-          representative_position: form.representative_position,
-          city: form.city,
-          barangay: form.barangay,
-          street: form.street,
-          phone_number: form.phone_number,
-          email: form.email,
-        });
-        console.log("Company added:", res.data);
-        window.location.reload();
-        {
-          errorWindow ? toggleErrorWindow() : "";
-        }
-        callback();
-      } catch (error) {
-        errorFields = [];
-        toggleModal();
-        for (const [key, value] of Object.entries(form)) {
-          if (!value) {
-            errorFields.push(key);
-          }
-        }
-        setErrors((e) => errorFields.join(", "));
-        {
-          !errorWindow ? toggleErrorWindow() : "";
-        }
-        callback();
-      } finally {
-        setLoading(false);
-      }
+    if (method === "create") {
+      console.log("create method");
+      // code for saving new data
+      // if (rowToEdit === null) {
+      //   try {
+      //     const res = await api.post("http://127.0.0.1:8000/api/company/create", {
+      //       company_name: form.company_name,
+      //       representative_name: form.representative_name,
+      //       representative_position: form.representative_position,
+      //       city: form.city,
+      //       barangay: form.barangay,
+      //       street: form.street,
+      //       phone_number: form.phone_number,
+      //       email: form.email,
+      //     });
+      //     console.log("Company added:", res.data);
+      //     window.location.reload();
+      //     {
+      //       errorWindow ? toggleErrorWindow() : "";
+      //     }
+      //     callback();
+      //   } catch (error) {
+      //     errorFields = [];
+      //     toggleModal();
+      //     for (const [key, value] of Object.entries(form)) {
+      //       if (!value) {
+      //         errorFields.push(key);
+      //       }
+      //     }
+      //     setErrors((e) => errorFields.join(", "));
+      //     {
+      //       !errorWindow ? toggleErrorWindow() : "";
+      //     }
+      //     callback();
+      //   } finally {
+      //     setLoading(false);
+      //   }
+      // }
     }
+    else if (method === "edit") {
+      console.log("edit method");
+      // code for editing data
+    }
+
+
+
+    
   };
 
   // // THING THAT GETS SAVED ON TABLE
@@ -228,6 +241,7 @@ export default function Companies() {
   const [rowToEdit, setRowToEdit] = useState(null);
   const [btnTitle, setBtnTitle] = useState("Create Company");
   const handleEditRow = (index) => {
+    setMethod("edit");
     toggleModal();
     setRowToEdit(index);
     setBtnTitle("Edit Company");
