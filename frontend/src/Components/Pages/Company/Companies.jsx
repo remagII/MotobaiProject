@@ -177,7 +177,7 @@ export default function Companies() {
     }
     // i need to get the id of the company (not index)
     else if (method === "edit") {
-      console.log(`edit method`);
+      console.log(`edit method, id: ` + rowIdEdit);
       callback();
       toggleModal();
       // code for editing data
@@ -242,9 +242,13 @@ export default function Companies() {
   // };
 
   const [rowToEdit, setRowToEdit] = useState(null);
+  const [rowIdEdit, setRowIdEdit] = useState(null);
   const [btnTitle, setBtnTitle] = useState("Create Company");
   const handleEditRow = (index) => {
+    console.log('Editing row:', index); // just for troubleshoot
+    console.log('Company ID:', company[index]?.id); // just for troubleshoot
     toggleModal();
+    setRowIdEdit(company[index]?.id); // need to make null after this is done
     setRowToEdit(index);
     setMethod("edit");
     setBtnTitle("Edit Company");
