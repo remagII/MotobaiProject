@@ -4,7 +4,7 @@ import "./pages.css";
 export default function Table({ editRow, columnArr, dataArr }) {
   return (
     <section className={`max-h-full`}>
-      <div className={`overflow-y-auto h-5/6 mt-4`}>
+      <div className={`overflow-y-auto h-4/6 mt-4`}>
         <div className={`mr-10`}>
           <table
             className={`border-collapse min-w-full rounded-lg  shadow-shadowTable`}

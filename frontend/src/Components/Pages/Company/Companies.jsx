@@ -251,14 +251,14 @@ export default function Companies() {
   };
 
   return (
-    <section className={`font-main overflow-y-hidden`}>
-      <div className={`bg-normalGray box-border flex max-h-full  `}>
+    <section className={`font-main h-full overflow-hidden`}>
+      <div className={`bg-normalGray box-border flex h-full `}>
         <Overview
           title={`Companies`}
           quantity={company.length < 10 ? "0" + company.length : company.length}
         />
 
-        <div className={`flex flex-col flex-1 m-4`}>
+        <div className={`flex flex-col flex-1 m-4 `}>
           <div className={`m-4`}>
             <div className={`flex justify-between`}>
               <h1 className={`text-3xl font-bold`}>Companies</h1>
