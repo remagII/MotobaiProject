@@ -57,8 +57,7 @@ export default function Companies() {
 
   //PROPS FOR <INPUT>
   const formArr = [
-    {
-      label: "Company Name",
+    { label: "Company Name",
       name: "company_name",
     },
     {
@@ -175,12 +174,34 @@ export default function Companies() {
         }
       }
     }
-    // i need to get the id of the company (not index)
+    
     else if (method === "edit") {
       console.log(`edit method, id: ` + rowIdEdit);
+      ////////////////////////////////////////// CODE FOR EDITING DATA
+      try {
+        const res = await api.put(
+          `http://127.0.0.1:8000/api/company/update/${rowIdEdit}`,
+          {
+            company_name: form.company_name,
+            representative_name: form.representative_name,
+            representative_position: form.representative_position,
+            city: form.city,
+            barangay: form.barangay,
+            street: form.street,
+            phone_number: form.phone_number,
+            email: form.email,
+          }
+        );
+        console.log("Company edited:", res.data);
+      } catch (error) {
+        console.log("Failed to edit: " + error);
+      } finally {
+        setLoading(false);
+        setRowIdEdit(null); // ito ung company id
+      }
+      
       callback();
       toggleModal();
-      // code for editing data
     }
   };
 
