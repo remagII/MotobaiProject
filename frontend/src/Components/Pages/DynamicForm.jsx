@@ -6,7 +6,7 @@ import {
 import Logo from "./Logo.png";
 import "./pages.css";
 
-export default function Form({
+export default function DynamicForm({
   btnTitle,
   title,
   formArr,

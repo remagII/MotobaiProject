@@ -1,18 +1,21 @@
 import React from "react";
+import "./pages.css";
 
 export default function Table({ editRow, columnArr, dataArr }) {
   return (
-    <section>
-      <div>
+    <section className={`max-h-full`}>
+      <div className={`overflow-y-auto h-5/6 mt-4`}>
         <div className={`mr-10`}>
           <table
-            className={`border-collapse m-4 p-4 min-w-full rounded-lg overflow-hidden shadow-shadowTable `}
+            className={`border-collapse min-w-full rounded-lg  shadow-shadowTable`}
           >
-            <thead className={`bg-red-600 p-4 m-10 text-left text-white `}>
+            <thead
+              className={`bg-red-600 p-4 m-10 text-left text-white sticky top-0 z-0 `}
+            >
               <tr>
                 {columnArr.map((item, index) => {
                   return (
-                    <th key={index} className={`p-3`}>
+                    <th key={index} className={`p-3 `}>
                       {item.header}
                     </th>
                   );
@@ -32,7 +35,7 @@ export default function Table({ editRow, columnArr, dataArr }) {
                         <>
                           <td key={i} className="p-4">
                             {header.row === "index"
-                              ? index + 1
+                              ? dataArr.id
                               : item[header.row]}
                           </td>
                         </>

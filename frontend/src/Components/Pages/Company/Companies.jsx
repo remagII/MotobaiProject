@@ -5,17 +5,18 @@ import {
 } from "@heroicons/react/24/outline";
 import Table from "../DynamicTable.jsx";
 import Overview from "../Overview.jsx";
-import Form from "../DynamicForm.jsx";
-import Modal from "../DynamicModal.jsx";
+import DynamicForm from "../DynamicForm.jsx";
+import DynamicModal from "../DynamicModal.jsx";
 import api from "../../../api";
 
 // WHOLE PAGE
 export default function Companies() {
+  const [method, setMethod] = useState("");
   const [modal, setModal] = useState(false);
 
   // MODAL TOGGLE
   const toggleModal = () => {
-    setMethod("edit");
+    setMethod("create");
     setBtnTitle("Create Company");
     setModal((m) => (m = !m));
   };
@@ -92,7 +93,6 @@ export default function Companies() {
 
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
 
-  // CHANGE NAMES TO CORRECT CAMEL_CASE
   const tableColumns = [
     {
       header: "Company ID",
@@ -125,58 +125,63 @@ export default function Companies() {
     },
   ];
 
-  // backend
+  /////////////////////////////////////////////////////////// BACKEND
 
   const [loading, setLoading] = useState(false);
-  const [method, setMethod] = useState("");
 
-  const onSubmitHandler = async (form, callback, method) => {
+  const onSubmitHandler = async (form, callback) => {
     setLoading(true);
     if (method === "create") {
       console.log("create method");
-      // code for saving new data
-      // if (rowToEdit === null) {
-      //   try {
-      //     const res = await api.post("http://127.0.0.1:8000/api/company/create", {
-      //       company_name: form.company_name,
-      //       representative_name: form.representative_name,
-      //       representative_position: form.representative_position,
-      //       city: form.city,
-      //       barangay: form.barangay,
-      //       street: form.street,
-      //       phone_number: form.phone_number,
-      //       email: form.email,
-      //     });
-      //     console.log("Company added:", res.data);
-      //     window.location.reload();
-      //     {
-      //       errorWindow ? toggleErrorWindow() : "";
-      //     }
-      //     callback();
-      //   } catch (error) {
-      //     errorFields = [];
-      //     toggleModal();
-      //     for (const [key, value] of Object.entries(form)) {
-      //       if (!value) {
-      //         errorFields.push(key);
-      //       }
-      //     }
-      //     setErrors((e) => errorFields.join(", "));
-      //     {
-      //       !errorWindow ? toggleErrorWindow() : "";
-      //     }
-      //     callback();
-      //   } finally {
-      //     setLoading(false);
-      //   }
-      // }
+      callback();
+      ////////////////////////////////////////// CODE FOR SAVING DATA
+      if (rowToEdit === null) {
+        try {
+          const res = await api.post(
+            "http://127.0.0.1:8000/api/company/create",
+            {
+              company_name: form.company_name,
+              representative_name: form.representative_name,
+              representative_position: form.representative_position,
+              city: form.city,
+              barangay: form.barangay,
+              street: form.street,
+              phone_number: form.phone_number,
+              email: form.email,
+            }
+          );
+          console.log("Company added:", res.data);
+          window.location.reload();
+          {
+            errorWindow ? toggleErrorWindow() : "";
+          }
+          callback();
+        } catch (error) {
+          setRowToEdit(null);
+          errorFields = [];
+          toggleModal();
+          for (const [key, value] of Object.entries(form)) {
+            if (!value) {
+              errorFields.push(key);
+            }
+          }
+          setErrors((e) => errorFields.join(", "));
+          {
+            !errorWindow ? toggleErrorWindow() : "";
+          }
+          callback();
+        } finally {
+          setLoading(false);
+        }
+      }
     }
     // i need to get the id of the company (not index)
     else if (method === "edit") {
-      console.log("edit method: " + " (id here)");
+      console.log(`edit method`);
+      callback();
+      toggleModal();
       // code for editing data
     }
-
   };
 
   // // THING THAT GETS SAVED ON TABLE
@@ -239,19 +244,20 @@ export default function Companies() {
   const [rowToEdit, setRowToEdit] = useState(null);
   const [btnTitle, setBtnTitle] = useState("Create Company");
   const handleEditRow = (index) => {
-    setMethod("edit");
     toggleModal();
     setRowToEdit(index);
+    setMethod("edit");
     setBtnTitle("Edit Company");
   };
 
   return (
-    <section className={`font-main flex-1`}>
-      <div className={`bg-normalGray box-border flex  h-full`}>
+    <section className={`font-main overflow-y-hidden`}>
+      <div className={`bg-normalGray box-border flex max-h-full  `}>
         <Overview
           title={`Companies`}
           quantity={company.length < 10 ? "0" + company.length : company.length}
         />
+
         <div className={`flex flex-col flex-1 m-4`}>
           <div className={`m-4`}>
             <div className={`flex justify-between`}>
@@ -270,8 +276,9 @@ export default function Companies() {
                 </button>
               </div>
             </div>
-            <Modal modal={modal} toggleModal={toggleModal}>
-              <Form
+
+            <DynamicModal modal={modal} toggleModal={toggleModal}>
+              <DynamicForm
                 error={errorFields}
                 btnTitle={btnTitle}
                 title={"Company"}
@@ -280,7 +287,8 @@ export default function Companies() {
                 defaultValue={rowToEdit !== null && company[rowToEdit]}
                 icon={<UserPlusIcon className="size-5" />}
               />
-            </Modal>
+            </DynamicModal>
+
             <div>
               {errorWindow && (
                 <div
