@@ -4,18 +4,18 @@ import "./pages.css";
 export default function Table({ editRow, columnArr, dataArr }) {
   return (
     <section className={`h-full`}>
-      <div className={`overflow-y-auto h-4/5 mt-4`}>
-        <div className={`mr-10`}>
-          <table
-            className={`border-collapse min-w-full rounded-lg  shadow-shadowTable`}
-          >
+      <div
+        className={`overflow-y-auto shadow-shadowTable h-[61vh] mt-4 mr-6 rounded-lg `}
+      >
+        <div>
+          <table className={`border-collapse min-w-full`}>
             <thead
               className={`bg-red-600 p-4 m-10 text-left text-white sticky top-0 z-0 `}
             >
               <tr>
                 {columnArr.map((item, index) => {
                   return (
-                    <th key={index} className={`p-3 `}>
+                    <th key={index} className={`p-3`}>
                       {item.header}
                     </th>
                   );
@@ -32,13 +32,9 @@ export default function Table({ editRow, columnArr, dataArr }) {
                   >
                     {columnArr.map((header, i) => {
                       return (
-                        <>
-                          <td key={i} className="p-4">
-                            {header.row === "index"
-                              ? item.id
-                              : item[header.row]}
-                          </td>
-                        </>
+                        <td key={i} className="p-4">
+                          {header.row === "index" ? item.id : item[header.row]}
+                        </td>
                       );
                     })}
                   </tr>

@@ -19,6 +19,10 @@ export default function Companies() {
     setMethod("create");
     setBtnTitle("Create Company");
     setModal((m) => (m = !m));
+
+    if (method === "edit") {
+      setRowToEdit(null);
+    }
   };
 
   const [errorWindow, setErrorWindow] = useState(false);
@@ -57,9 +61,7 @@ export default function Companies() {
 
   //PROPS FOR <INPUT>
   const formArr = [
-    { label: "Company Name",
-      name: "company_name",
-    },
+    { label: "Company Name", name: "company_name" },
     {
       label: "Representative Name",
       name: "representative_name",
@@ -132,7 +134,6 @@ export default function Companies() {
     setLoading(true);
     if (method === "create") {
       console.log("create method");
-      callback();
       ////////////////////////////////////////// CODE FOR SAVING DATA
       if (rowToEdit === null) {
         try {
@@ -155,6 +156,7 @@ export default function Companies() {
             errorWindow ? toggleErrorWindow() : "";
           }
           callback();
+          toggleModal();
         } catch (error) {
           setRowToEdit(null);
           errorFields = [];
@@ -173,9 +175,7 @@ export default function Companies() {
           setLoading(false);
         }
       }
-    }
-    
-    else if (method === "edit") {
+    } else if (method === "edit") {
       console.log(`edit method, id: ` + rowIdEdit);
       ////////////////////////////////////////// CODE FOR EDITING DATA
       try {
@@ -192,6 +192,8 @@ export default function Companies() {
             email: form.email,
           }
         );
+        window.location.reload();
+
         console.log("Company edited:", res.data);
       } catch (error) {
         console.log("Failed to edit: " + error);
@@ -199,7 +201,7 @@ export default function Companies() {
         setLoading(false);
         setRowIdEdit(null); // ito ung company id
       }
-      
+
       callback();
       toggleModal();
     }
@@ -266,8 +268,8 @@ export default function Companies() {
   const [rowIdEdit, setRowIdEdit] = useState(null);
   const [btnTitle, setBtnTitle] = useState("Create Company");
   const handleEditRow = (index) => {
-    console.log('Editing row:', index); // just for troubleshoot
-    console.log('Company ID:', company[index]?.id); // just for troubleshoot
+    console.log("Editing row:", index); // just for troubleshoot
+    console.log("Company ID:", company[index]?.id); // just for troubleshoot
     toggleModal();
     setRowIdEdit(company[index]?.id); // need to make null after this is done
     setRowToEdit(index);
@@ -309,7 +311,7 @@ export default function Companies() {
                 title={"Company"}
                 formArr={formArr}
                 onSubmit={onSubmitHandler}
-                defaultValue={rowToEdit !== null && company[rowToEdit]}
+                defaultValue={rowToEdit !== null ? company[rowToEdit] : ""}
                 icon={<UserPlusIcon className="size-5" />}
               />
             </DynamicModal>

@@ -19,3 +19,17 @@ tr:first-child th:first-child {
 tr:first-child th:last-child {
   border-top-right-radius: 8px;
 }
+
+::-webkit-scrollbar {
+  background: transparent;
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(255, 195, 195);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 4px;
+}
