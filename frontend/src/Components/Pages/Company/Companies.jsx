@@ -193,76 +193,31 @@ export default function Companies() {
           }
         );
         window.location.reload();
-
-        console.log("Company edited:", res.data);
+        {
+          errorWindow ? toggleErrorWindow() : "";
+        }
       } catch (error) {
-        console.log("Failed to edit: " + error);
+        setRowToEdit(null);
+        errorFields = [];
+        toggleModal();
+        for (const [key, value] of Object.entries(form)) {
+          if (!value) {
+            errorFields.push(key);
+          }
+        }
+        setErrors((e) => errorFields.join(", "));
+        {
+          !errorWindow ? toggleErrorWindow() : "";
+        }
+        callback();
       } finally {
         setLoading(false);
         setRowIdEdit(null); // ito ung company id
       }
 
       callback();
-      toggleModal();
     }
   };
-
-  // // THING THAT GETS SAVED ON TABLE
-  // const [companyArr, setCompanyArr] = useState([]);
-
-  // var errorFields = [];
-  // //ADDS FORM OBJ ON COMPANY-ARRAY
-  // const onSubmitHandler = (form, callback) => {
-  //   if (
-  //     form.companyName &&
-  //     form.representativeName &&
-  //     form.representativePosition &&
-  //     form.number &&
-  //     form.email &&
-  //     form.city &&
-  //     form.barangay &&
-  //     form.street
-  //   ) {
-  //     toggleModal();
-  //     {
-  //       rowToEdit === null
-  //         ? setCompanyArr((c) => [...c, form])
-  //         : setCompanyArr((c) =>
-  //             c.map((currentRow, index) => {
-  //               if (index !== rowToEdit) {
-  //                 return currentRow;
-  //               } else {
-  //                 return form;
-  //               }
-  //             })
-  //           );
-  //     }
-  //     {
-  //       errorWindow ? toggleErrorWindow() : "";
-  //     }
-  //     setRowToEdit(null);
-
-  //     console.log(form)
-  //   } else {
-  //     toggleModal();
-
-  //     errorFields = [];
-  //     for (const [key, value] of Object.entries(form)) {
-  //       if (!value) {
-  //         errorFields.push(key);
-  //       }
-  //     }
-
-  //     setErrors((e) => errorFields.join(", "));
-
-  //     {
-  //       !errorWindow ? toggleErrorWindow() : "";
-  //     }
-  //   }
-
-  //RESETS FIELDS
-  //   callback();
-  // };
 
   const [rowToEdit, setRowToEdit] = useState(null);
   const [rowIdEdit, setRowIdEdit] = useState(null);
