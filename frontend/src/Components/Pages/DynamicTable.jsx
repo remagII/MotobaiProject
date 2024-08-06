@@ -33,7 +33,7 @@ export default function Table({ editRow, columnArr, dataArr }) {
                     {columnArr.map((header, i) => {
                       return (
                         <td key={i} className="p-4">
-                          {header.row === "index" ? item.id : item[header.row]}
+                          {header.row === "id" ? item.id : item[header.row]}
                         </td>
                       );
                     })}

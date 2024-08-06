@@ -126,6 +126,9 @@ export default function Companies() {
     },
   ];
 
+  // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
+  const overviewArr = [{ title: "Companies", quantity: `${company.length}` }];
+
   /////////////////////////////////////////////////////////// BACKEND
 
   const [loading, setLoading] = useState(false);
@@ -235,10 +238,7 @@ export default function Companies() {
   return (
     <section className={`font-main h-full overflow-hidden`}>
       <div className={`bg-normalGray box-border flex h-full `}>
-        <Overview
-          title={`Companies`}
-          quantity={company.length < 10 ? "0" + company.length : company.length}
-        />
+        <Overview title={`Companies`} overviewArr={overviewArr} />
 
         <div className={`flex flex-col flex-1 m-4 `}>
           <div className={`m-4`}>
