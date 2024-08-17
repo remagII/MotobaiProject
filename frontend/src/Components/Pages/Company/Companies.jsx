@@ -219,6 +219,20 @@ export default function Companies() {
       }
 
       callback();
+    } else if (method === "delete") {
+      // rename rowIdEdit to rowIdSelected or smth similar
+      try {
+        const res = await api.delete(`http://127.0.0.1:8000/api/company/delete/${rowIdEdit}`);
+        console.log("product deleted.");
+      } catch (error) {
+
+        // feel free to change here
+        console.log(error);
+
+      } finally {
+        setLoading(false);
+        setRowIdEdit(null); // ito ung company id
+      }
     }
   };
 
