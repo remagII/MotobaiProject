@@ -5,7 +5,7 @@ export default function Table({ editRow, columnArr, dataArr }) {
   return (
     <section className={`h-full`}>
       <div
-        className={`overflow-y-auto shadow-shadowTable h-[61vh] mt-4 mr-6 rounded-lg `}
+        className={`overflow-y-auto shadow-shadowTable max-h-[61vh] mt-4 mr-6 rounded-lg `}
       >
         <div>
           <table className={`border-collapse min-w-full`}>

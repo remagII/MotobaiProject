@@ -1,8 +1,8 @@
 import "./App.css";
 import Header from "./Components/Header/Header.jsx";
 import Companies from "./Components/Pages/Company/Companies";
-import Products from "./Components/Pages/Products";
-import Inventory from "./Components/Pages/Inventory";
+import Products from "./Components/Pages/Product/Products";
+import Inventory from "./Components/Pages/Inventory/Inventory";
 import Orders from "./Components/Pages/Orders";
 import OrderList from "./Components/Pages/OrderList";
 import Login from "./Components/Pages/Login.jsx";
@@ -15,12 +15,6 @@ function App() {
   return (
     <>
       <Container>
-        {/* 
-        idk how to do this...
-
-        you should probably instead put header inside the page itself
-        
-        */}
         <Header />
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -40,7 +34,6 @@ function App() {
           - ABOUT PAGE(optional)
           */}
           <Route path="/" element={<Companies />} />
-
         </Routes>
       </Container>
     </>

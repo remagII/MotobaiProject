@@ -33,3 +33,7 @@ tr:first-child th:last-child {
 ::-webkit-scrollbar-track {
   border-radius: 4px;
 }
+
+.inactive {
+  display: none !important;
+}

@@ -4,17 +4,13 @@ from django.contrib.auth.models import User
 class Product(models.Model):
     product_name = models.CharField(max_length=100)
     price = models.DecimalField(decimal_places=2, max_digits=10)
-    type = models.CharField(max_length=100, default='DefaultType')
+    product_type = models.CharField(max_length=100, default='DefaultType')
     description = models.TextField(max_length=32, default='DefaultDescription')
     brand = models.CharField(max_length=32, default='DefaultBrand')
-    status = models.CharField(max_length=32,
-                              choices=[
-                                  ('inactive', 'Inactive'),
-                                  ('active', 'Active'),
-                              ], default='inactive')
+    vehicle_type = models.CharField(max_length=32, default='DefaultVehicleType')
     
     def __str__(self):
-        return '{}: {}'.format(self.name, self.type)
+        return '{}: {}'.format(self.product_name, self.product_type)
 
 # INBOUND STOCK NOT YET ADDED
 class Inventory(models.Model):

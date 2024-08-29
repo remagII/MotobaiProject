@@ -13,6 +13,10 @@ export default function DynamicForm({
   onSubmit,
   icon,
   defaultValue,
+  deleteBtn,
+  deleteHandler,
+  deleteBtnTitle,
+  trashIcon,
 }) {
   //Makes array to OBJECT
   const prepareForm = () => {
@@ -46,8 +50,8 @@ export default function DynamicForm({
                 alt="Motobai-Logo"
               />
             </div>
-            <form onSubmit={onSubmit}>
-              <div className={`bg-gray-100 p-8 rounded-b-lg`}>
+            <form onSubmit={onSubmit} className={`min-w-[55vw]`}>
+              <div className={`bg-gray-100 py-10 px-8 rounded-b-lg`}>
                 <h1 className="font-bold text-2xl mb-10">{title}</h1>
                 <div className={`   gap-x-6 gap-y-8 grid grid-cols-3 `}>
                   {formArr.map(({ label, name, type, readOnly }, index) => (
@@ -56,7 +60,7 @@ export default function DynamicForm({
                       key={index}
                     >
                       <input
-                        className={`text-base border-2 rounded p-2 focus:border-green-600 focus:ring-0 focus:outline-none`}
+                        className={`text-base border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none`}
                         readOnly={readOnly}
                         label={label}
                         id={name}
@@ -75,7 +79,18 @@ export default function DynamicForm({
                     </div>
                   ))}
                 </div>
-                <div className={`flex justify-end mt-6`}>
+                <div className={`flex justify-end gap-4 mt-12`}>
+                  <button
+                    onClick={(e) => {
+                      {
+                        deleteHandler(e);
+                      }
+                    }}
+                    className={`${deleteBtn} bg-white border-2 border-red-600 rounded px-4 py-2 hover:bg-red-600 hover:text-white transition-all duration-100 flex gap-4 items-center`}
+                  >
+                    {deleteBtnTitle}
+                    {trashIcon}
+                  </button>
                   <button
                     onClick={(e) => {
                       e.preventDefault();
