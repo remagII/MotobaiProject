@@ -25,11 +25,11 @@ class CompanySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class InventorySerializer(serializers.ModelSerializer):
-    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
 
     class Meta:
         model = Inventory
         fields = '__all__'
+        depth = 1
 
 class OrderSerializer(serializers.ModelSerializer):
     company = serializers.PrimaryKeyRelatedField(queryset=Company.objects.all())

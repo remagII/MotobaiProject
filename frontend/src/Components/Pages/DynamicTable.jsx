@@ -2,6 +2,11 @@ import React from "react";
 import "./pages.css";
 
 export default function Table({ editRow, columnArr, dataArr }) {
+
+  const getNestedValue = (obj, path) => {
+    return path.split('.').reduce((acc, part) => acc && acc[part], obj) || 'N/A';
+  };
+
   return (
     <section className={`h-full`}>
       <div
@@ -10,7 +15,7 @@ export default function Table({ editRow, columnArr, dataArr }) {
         <div>
           <table className={`border-collapse min-w-full`}>
             <thead
-              className={`bg-red-600 p-4 m-10 text-left text-white sticky top-0 z-0 `}
+              className={`bg-red-600 p-4 m-10 text-left text-white / top-0 z-0 `}
             >
               <tr>
                 {columnArr.map((item, index) => {
@@ -33,7 +38,8 @@ export default function Table({ editRow, columnArr, dataArr }) {
                     {columnArr.map((header, i) => {
                       return (
                         <td key={i} className="p-4">
-                          {header.row === "id" ? item.id : item[header.row]}
+                          {header.row ? header.row.includes(".") ? getNestedValue(item, header.row) : item[header.row] ?? "N/A" : "N/A"} 
+                          {/* handle product.product_name etc. */}
                         </td>
                       );
                     })}

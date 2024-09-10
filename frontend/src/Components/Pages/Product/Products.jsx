@@ -64,7 +64,9 @@ export default function Products() {
   //PROPS FOR <INPUT>
 
   const formArr = [
-    { label: "Product Name", name: "product_name" },
+    { 
+      label: "Product Name", 
+      name: "product_name" },
     {
       label: "Price",
       name: "price",
@@ -101,7 +103,7 @@ export default function Products() {
       row: "product_name",
     },
     {
-      label: "Price",
+      header: "Price",
       name: "price",
     },
     {
