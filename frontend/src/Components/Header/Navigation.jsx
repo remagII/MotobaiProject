@@ -4,60 +4,42 @@ import { ArchiveBoxArrowDownIcon } from "@heroicons/react/24/outline";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline";
 import { Link, useMatch, useResolvedPath } from "react-router-dom";
-
-function CustomLink({ to, children, ...props }) {
-  const resolvedPath = useResolvedPath(to);
-  const isActive = useMatch({ path: resolvedPath.pathname, end: true });
-
-  return (
-    <button
-      as={Link}
-      to={to}
-      className={` transition-all duration-150  text-black rounded-md border-2 border-red-600  hover:bg-red-600  min-w-max  hover:text-white ${
-        isActive ? "bg-red-600 text-white" : "bg-white"
-      } `}
-    >
-      <Link className={`flex gap-3 px-4 py-2`} to={to} {...props}>
-        {children}
-      </Link>
-    </button>
-  );
-}
+import DynamicCustomLink from "../DynamicCustomLink";
 
 function Navigation() {
   return (
     <nav className=" flex justify-between max-h-12 gap-4 text-base">
-      <CustomLink to="/companies">
+      <DynamicCustomLink to="/companies">
         <div>
           <UserGroupIcon className="size-6 " />
         </div>
-        <p>Companies</p>
-      </CustomLink>
-      <CustomLink to="/products">
+        <p>Customers</p>
+      </DynamicCustomLink>
+      <DynamicCustomLink to="/products">
         <div>
           <ArchiveBoxIcon className="size-6 " />
         </div>
         <p>Products</p>
-      </CustomLink>
+      </DynamicCustomLink>
 
-      <CustomLink to="/inventory">
+      <DynamicCustomLink to="/inventory">
         <div>
           <ArchiveBoxArrowDownIcon className="size-6 " />
         </div>
         <p>Inventory</p>
-      </CustomLink>
-      <CustomLink to="/orders">
+      </DynamicCustomLink>
+      <DynamicCustomLink to="/orders">
         <div>
           <ShoppingCartIcon className="size-6 " />
         </div>
         <p>Orders</p>
-      </CustomLink>
-      <CustomLink to="/orderList">
+      </DynamicCustomLink>
+      <DynamicCustomLink to="/orderList">
         <div>
           <ClipboardDocumentListIcon className="size-6 " />
         </div>
         <p>Order List</p>
-      </CustomLink>
+      </DynamicCustomLink>
     </nav>
   );
 }

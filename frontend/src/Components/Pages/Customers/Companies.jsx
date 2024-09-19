@@ -1,23 +1,21 @@
 import React, { useState, useEffect } from "react";
-import {
-  UserPlusIcon,
-  ArrowsPointingOutIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
+import { UserPlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Table from "../DynamicTable.jsx";
 import Overview from "../Overview.jsx";
 import DynamicForm from "../DynamicForm.jsx";
 import DynamicModal from "../DynamicModal.jsx";
 import api from "../../../api";
+import DynamicCustomLink from "../../DynamicCustomLink.jsx";
 
-export default function Products() {
+// WHOLE PAGE
+export default function Companies() {
   const [method, setMethod] = useState("");
   const [modal, setModal] = useState(false);
 
   // MODAL TOGGLE
   const toggleModal = () => {
     setMethod("create");
-    setBtnTitle("Create Product");
+    setBtnTitle("Create Company");
     setModal((m) => (m = !m));
     setDeleteBtn("inactive");
 
@@ -39,55 +37,58 @@ export default function Products() {
 
   /////////////////////////// BACKEND
   // fetch companies
-  const [product, setProduct] = useState([]);
+  const [company, setCompany] = useState([]);
 
   useEffect(() => {
-    fetchProduct();
+    fetchCompany();
   }, []);
 
-  const fetchProduct = async () => {
+  const fetchCompany = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/product/list?format=json"
+        "http://127.0.0.1:8000/api/company/list?format=json"
       );
 
       if (!response.ok) {
         throw new Error("Failed to fetch companies");
       }
       const data = await response.json();
-      setProduct(data); // ito ung data ng list of companies (product)
+      setCompany(data); // ito ung data ng list of companies (company)
     } catch (error) {
-      console.error("Error fetching products:", error);
+      console.error("Error fetching companies:", error);
     }
   };
 
   //PROPS FOR <INPUT>
-
   const formArr = [
+    { label: "Company Name", name: "company_name" },
     {
-      label: "Product Name",
-      name: "product_name",
+      label: "Representative Name",
+      name: "representative_name",
     },
     {
-      label: "Price",
-      name: "price",
+      label: "Representative Position",
+      name: "representative_position",
     },
     {
-      label: "Product Type",
-      name: "product_type",
+      label: "Phone Number",
+      name: "phone_number",
     },
     {
-      label: "Description",
-      name: "description",
+      label: "Email",
+      name: "email",
     },
     {
-      label: "Vehicle Type",
-      name: "vehicle_type",
+      label: "City",
+      name: "city",
     },
-
     {
-      label: "Brand",
-      name: "brand",
+      label: "Barangay",
+      name: "barangay",
+    },
+    {
+      label: "Street",
+      name: "street",
     },
   ];
 
@@ -95,38 +96,38 @@ export default function Products() {
 
   const tableColumns = [
     {
-      header: "Product ID",
+      header: "Company ID",
       row: "id",
     },
 
     {
-      header: "Product Name",
-      row: "product_name",
+      header: "Company Name",
+      row: "company_name",
     },
     {
-      header: "Price",
-      row: "price",
+      header: "Name",
+      row: "representative_name",
     },
     {
-      header: "Product Type",
-      row: "product_type",
+      header: "Position",
+      row: "representative_position",
     },
     {
-      header: "Description",
-      row: "description",
+      header: "City",
+      row: "city",
     },
     {
-      header: "Vehicle type",
-      row: "vehicle_type",
+      header: "Phone number",
+      row: "phone_number",
     },
     {
-      header: "Brand",
-      row: "brand",
+      header: "Email",
+      row: "email",
     },
   ];
 
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
-  const overviewArr = [{ title: "Products", quantity: `${product.length}` }];
+  const overviewArr = [{ title: "Companies", quantity: `${company.length}` }];
 
   /////////////////////////////////////////////////////////// BACKEND
 
@@ -140,14 +141,16 @@ export default function Products() {
       if (rowToEdit === null) {
         try {
           const res = await api.post(
-            "http://127.0.0.1:8000/api/product/create",
+            "http://127.0.0.1:8000/api/company/create",
             {
-              product_name: form.product_name,
-              product_type: form.product_type,
-              price: form.price,
-              description: form.description,
-              vehicle_type: form.vehicle_type,
-              brand: form.brand,
+              company_name: form.company_name,
+              representative_name: form.representative_name,
+              representative_position: form.representative_position,
+              city: form.city,
+              barangay: form.barangay,
+              street: form.street,
+              phone_number: form.phone_number,
+              email: form.email,
             }
           );
 
@@ -180,14 +183,16 @@ export default function Products() {
       ////////////////////////////////////////// CODE FOR EDITING DATA
       try {
         const res = await api.put(
-          `http://127.0.0.1:8000/api/product/update/${rowIdEdit}`,
+          `http://127.0.0.1:8000/api/company/update/${rowIdEdit}`,
           {
-            product_name: form.product_name,
-            product_type: form.product_type,
-            price: form.price,
-            description: form.description,
-            vehicle_type: form.vehicle_type,
-            brand: form.brand,
+            company_name: form.company_name,
+            representative_name: form.representative_name,
+            representative_position: form.representative_position,
+            city: form.city,
+            barangay: form.barangay,
+            street: form.street,
+            phone_number: form.phone_number,
+            email: form.email,
           }
         );
         window.location.reload();
@@ -210,7 +215,7 @@ export default function Products() {
         callback();
       } finally {
         setLoading(false);
-        setRowIdEdit(null);
+        setRowIdEdit(null); // ito ung company id
       }
 
       callback();
@@ -218,7 +223,7 @@ export default function Products() {
       // rename rowIdEdit to rowIdSelected or smth similar
       try {
         const res = await api.delete(
-          `http://127.0.0.1:8000/api/product/delete/${rowIdEdit}`
+          `http://127.0.0.1:8000/api/company/delete/${rowIdEdit}`
         );
         console.log("product deleted.");
       } catch (error) {
@@ -226,23 +231,22 @@ export default function Products() {
         console.log(error);
       } finally {
         setLoading(false);
-        setRowIdEdit(null); // ito ung delete id
+        setRowIdEdit(null); // ito ung company id
       }
     }
   };
-
   const [deleteBtn, setDeleteBtn] = useState(""); // HANDLES DELETE BUTTON STATE
   const [rowToEdit, setRowToEdit] = useState(null);
   const [rowIdEdit, setRowIdEdit] = useState(null);
-  const [btnTitle, setBtnTitle] = useState("Create Product");
+  const [btnTitle, setBtnTitle] = useState("Create Company");
   const handleEditRow = (index) => {
     console.log("Editing row:", index); // just for troubleshoot
-    console.log("Product ID:", product[index]?.id); // just for troubleshoot
+    console.log("Company ID:", company[index]?.id); // just for troubleshoot
     toggleModal();
-    setRowIdEdit(product[index]?.id); // need to make null after this is done
+    setRowIdEdit(company[index]?.id); // need to make null after this is done
     setRowToEdit(index);
     setMethod("edit");
-    setBtnTitle("Edit Product");
+    setBtnTitle("Edit Company");
     setDeleteBtn("active");
   };
 
@@ -253,23 +257,29 @@ export default function Products() {
   return (
     <section className={`font-main h-full overflow-hidden`}>
       <div className={`bg-normalGray box-border flex h-full `}>
-        <Overview title={`Products`} overviewArr={overviewArr} />
+        <Overview title={`Companies`} overviewArr={overviewArr} />
 
         <div className={`flex flex-col flex-1 m-4 `}>
           <div className={`m-4`}>
             <div className={`flex justify-between`}>
-              <h1 className={`text-3xl font-bold`}>Products</h1>
-              <div>
+              <h1 className={`text-3xl font-bold`}>Companies</h1>
+              <div className={`flex`}>
+                <DynamicCustomLink to="/walkIn">
+                  <div>
+                    <UserPlusIcon className="size-6 " />
+                  </div>
+                  <p>Walk-In Customers</p>
+                </DynamicCustomLink>
                 <button
                   onClick={toggleModal}
                   className={`text-white bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center`}
                 >
-                  Create Product
                   <div
-                    className={`py-2 px-3 rounded-lg bg-red-700 hover:bg-red-800 transition-all duration-100`}
+                    className={`py-2 px-3 rounded-lg bg-red-700  transition-all duration-100`}
                   >
                     <UserPlusIcon className="size-5" />
                   </div>
+                  Create Company
                 </button>
               </div>
             </div>
@@ -278,14 +288,14 @@ export default function Products() {
               <DynamicForm
                 error={errorFields}
                 btnTitle={btnTitle}
-                title={"Product"}
+                title={"Company"}
                 deleteBtn={deleteBtn}
                 deleteHandler={deleteHandler}
-                deleteBtnTitle={"Delete Product"}
+                deleteBtnTitle={"Delete Company"}
                 trashIcon={<TrashIcon className="size-5" />}
                 formArr={formArr}
                 onSubmit={onSubmitHandler}
-                defaultValue={rowToEdit !== null ? product[rowToEdit] : ""}
+                defaultValue={rowToEdit !== null ? company[rowToEdit] : ""}
                 icon={<UserPlusIcon className="size-5" />}
               />
             </DynamicModal>
@@ -311,7 +321,7 @@ export default function Products() {
           </div>
           <Table
             columnArr={tableColumns}
-            dataArr={product}
+            dataArr={company} // changed from companyArr
             editRow={handleEditRow}
           />
         </div>

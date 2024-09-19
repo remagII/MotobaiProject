@@ -1,17 +1,13 @@
 import React, { useState, useEffect } from "react";
-import {
-  UserPlusIcon,
-  ArrowsPointingOutIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
+
+import { UserPlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Table from "../DynamicTable.jsx";
 import Overview from "../Overview.jsx";
 import DynamicForm from "../DynamicForm.jsx";
 import DynamicModal from "../DynamicModal.jsx";
 import api from "../../../api";
-
-// WHOLE PAGE
-export default function Companies() {
+import DynamicCustomLink from "../../DynamicCustomLink.jsx";
+const WalkIn = () => {
   const [method, setMethod] = useState("");
   const [modal, setModal] = useState(false);
 
@@ -265,18 +261,24 @@ export default function Companies() {
         <div className={`flex flex-col flex-1 m-4 `}>
           <div className={`m-4`}>
             <div className={`flex justify-between`}>
-              <h1 className={`text-3xl font-bold`}>Companies</h1>
-              <div>
+              <h1 className={`text-3xl font-bold`}>Walk-In</h1>
+              <div className={`flex`}>
+                <DynamicCustomLink to="/companies">
+                  <div>
+                    <UserPlusIcon className="size-6 " />
+                  </div>
+                  <p>Company Customers</p>
+                </DynamicCustomLink>
                 <button
                   onClick={toggleModal}
                   className={`text-white bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center`}
                 >
-                  Create Company
                   <div
-                    className={`py-2 px-3 rounded-lg bg-red-700 hover:bg-red-800 transition-all duration-100`}
+                    className={`py-2 px-3 rounded-lg bg-red-700  transition-all duration-100`}
                   >
                     <UserPlusIcon className="size-5" />
                   </div>
+                  Create Walk-In
                 </button>
               </div>
             </div>
@@ -325,4 +327,6 @@ export default function Companies() {
       </div>
     </section>
   );
-}
+};
+
+export default WalkIn;

@@ -1,6 +1,7 @@
 import "./App.css";
 import Header from "./Components/Header/Header.jsx";
-import Companies from "./Components/Pages/Company/Companies";
+import Companies from "./Components/Pages/Customers/Companies";
+import WalkIn from "./Components/Pages/Customers/WalkIn";
 import Products from "./Components/Pages/Product/Products";
 import Inventory from "./Components/Pages/Inventory/Inventory";
 import Orders from "./Components/Pages/Orders";
@@ -24,6 +25,7 @@ function App() {
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/orderList" element={<OrderList />} />
+          <Route path="/walkIn" element={<WalkIn />} />
 
           {/* 
           LACKING PAGES:
@@ -33,7 +35,6 @@ function App() {
           - HOME PAGE
           - ABOUT PAGE(optional)
           */}
-          <Route path="/" element={<Companies />} />
         </Routes>
       </Container>
     </>
