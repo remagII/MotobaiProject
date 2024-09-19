@@ -14,7 +14,7 @@ const WalkIn = () => {
   // MODAL TOGGLE
   const toggleModal = () => {
     setMethod("create");
-    setBtnTitle("Create Company");
+    setBtnTitle("Create Customer");
     setModal((m) => (m = !m));
     setDeleteBtn("inactive");
 
@@ -35,59 +35,36 @@ const WalkIn = () => {
   var errorFields = [];
 
   /////////////////////////// BACKEND
-  // fetch companies
-  const [company, setCompany] = useState([]);
+  // fetch customers
+  const [customer, setCustomer] = useState([]);
 
   useEffect(() => {
-    fetchCompany();
+    fetchCustomer();
   }, []);
 
-  const fetchCompany = async () => {
+  const fetchCustomer = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/company/list?format=json"
+        "http://127.0.0.1:8000/api/customer/list?format=json"
       );
 
       if (!response.ok) {
-        throw new Error("Failed to fetch companies");
+        throw new Error("Failed to fetch customers");
       }
       const data = await response.json();
-      setCompany(data); // ito ung data ng list of companies (company)
+      setCustomer(data); // ito ung data ng list of customers (customer)
     } catch (error) {
-      console.error("Error fetching companies:", error);
+      console.error("Error fetching customers:", error);
     }
   };
 
   //PROPS FOR <INPUT>
   const formArr = [
-    { label: "Company Name", name: "company_name" },
-    {
-      label: "Representative Name",
-      name: "representative_name",
-    },
-    {
-      label: "Representative Position",
-      name: "representative_position",
-    },
+    { label: "Customer Name", 
+      name: "customer_name" },
     {
       label: "Phone Number",
       name: "phone_number",
-    },
-    {
-      label: "Email",
-      name: "email",
-    },
-    {
-      label: "City",
-      name: "city",
-    },
-    {
-      label: "Barangay",
-      name: "barangay",
-    },
-    {
-      label: "Street",
-      name: "street",
     },
   ];
 
@@ -95,38 +72,19 @@ const WalkIn = () => {
 
   const tableColumns = [
     {
-      header: "Company ID",
+      header: "Customer ID",
       row: "id",
     },
-
+    { header: "Customer Name", 
+      row: "customer_name" },
     {
-      header: "Company Name",
-      row: "company_name",
-    },
-    {
-      header: "Name",
-      row: "representative_name",
-    },
-    {
-      header: "Position",
-      row: "representative_position",
-    },
-    {
-      header: "City",
-      row: "city",
-    },
-    {
-      header: "Phone number",
+      header: "Phone Number",
       row: "phone_number",
-    },
-    {
-      header: "Email",
-      row: "email",
     },
   ];
 
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
-  const overviewArr = [{ title: "Companies", quantity: `${company.length}` }];
+  const overviewArr = [{ title: "Customers", quantity: `${customer.length}` }];
 
   /////////////////////////////////////////////////////////// BACKEND
 
@@ -140,16 +98,10 @@ const WalkIn = () => {
       if (rowToEdit === null) {
         try {
           const res = await api.post(
-            "http://127.0.0.1:8000/api/company/create",
+            "http://127.0.0.1:8000/api/customer/create",
             {
-              company_name: form.company_name,
-              representative_name: form.representative_name,
-              representative_position: form.representative_position,
-              city: form.city,
-              barangay: form.barangay,
-              street: form.street,
+              customer_name: form.customer_name,
               phone_number: form.phone_number,
-              email: form.email,
             }
           );
 
@@ -182,16 +134,10 @@ const WalkIn = () => {
       ////////////////////////////////////////// CODE FOR EDITING DATA
       try {
         const res = await api.put(
-          `http://127.0.0.1:8000/api/company/update/${rowIdEdit}`,
+          `http://127.0.0.1:8000/api/customer/update/${rowIdEdit}`,
           {
-            company_name: form.company_name,
-            representative_name: form.representative_name,
-            representative_position: form.representative_position,
-            city: form.city,
-            barangay: form.barangay,
-            street: form.street,
+            customer_name: form.customer_name,
             phone_number: form.phone_number,
-            email: form.email,
           }
         );
         window.location.reload();
@@ -214,7 +160,7 @@ const WalkIn = () => {
         callback();
       } finally {
         setLoading(false);
-        setRowIdEdit(null); // ito ung company id
+        setRowIdEdit(null); // ito ung customer id
       }
 
       callback();
@@ -222,7 +168,7 @@ const WalkIn = () => {
       // rename rowIdEdit to rowIdSelected or smth similar
       try {
         const res = await api.delete(
-          `http://127.0.0.1:8000/api/company/delete/${rowIdEdit}`
+          `http://127.0.0.1:8000/api/customer/delete/${rowIdEdit}`
         );
         console.log("product deleted.");
       } catch (error) {
@@ -230,22 +176,22 @@ const WalkIn = () => {
         console.log(error);
       } finally {
         setLoading(false);
-        setRowIdEdit(null); // ito ung company id
+        setRowIdEdit(null); // ito ung customer id
       }
     }
   };
   const [deleteBtn, setDeleteBtn] = useState(""); // HANDLES DELETE BUTTON STATE
   const [rowToEdit, setRowToEdit] = useState(null);
   const [rowIdEdit, setRowIdEdit] = useState(null);
-  const [btnTitle, setBtnTitle] = useState("Create Company");
+  const [btnTitle, setBtnTitle] = useState("Create Customer");
   const handleEditRow = (index) => {
     console.log("Editing row:", index); // just for troubleshoot
-    console.log("Company ID:", company[index]?.id); // just for troubleshoot
+    console.log("Customer ID:", customer[index]?.id); // just for troubleshoot
     toggleModal();
-    setRowIdEdit(company[index]?.id); // need to make null after this is done
+    setRowIdEdit(customer[index]?.id); // need to make null after this is done
     setRowToEdit(index);
     setMethod("edit");
-    setBtnTitle("Edit Company");
+    setBtnTitle("Edit Customer");
     setDeleteBtn("active");
   };
 
@@ -256,18 +202,18 @@ const WalkIn = () => {
   return (
     <section className={`font-main h-full overflow-hidden`}>
       <div className={`bg-normalGray box-border flex h-full `}>
-        <Overview title={`Companies`} overviewArr={overviewArr} />
+        <Overview title={`Customers`} overviewArr={overviewArr} />
 
         <div className={`flex flex-col flex-1 m-4 `}>
           <div className={`m-4`}>
             <div className={`flex justify-between`}>
               <h1 className={`text-3xl font-bold`}>Walk-In</h1>
               <div className={`flex`}>
-                <DynamicCustomLink to="/companies">
+                <DynamicCustomLink to="/customers">
                   <div>
                     <UserPlusIcon className="size-6 " />
                   </div>
-                  <p>Company Customers</p>
+                  <p>Customers</p>
                 </DynamicCustomLink>
                 <button
                   onClick={toggleModal}
@@ -287,14 +233,14 @@ const WalkIn = () => {
               <DynamicForm
                 error={errorFields}
                 btnTitle={btnTitle}
-                title={"Company"}
+                title={"Customer"}
                 deleteBtn={deleteBtn}
                 deleteHandler={deleteHandler}
-                deleteBtnTitle={"Delete Company"}
+                deleteBtnTitle={"Delete Customer"}
                 trashIcon={<TrashIcon className="size-5" />}
                 formArr={formArr}
                 onSubmit={onSubmitHandler}
-                defaultValue={rowToEdit !== null ? company[rowToEdit] : ""}
+                defaultValue={rowToEdit !== null ? customer[rowToEdit] : ""}
                 icon={<UserPlusIcon className="size-5" />}
               />
             </DynamicModal>
@@ -320,7 +266,7 @@ const WalkIn = () => {
           </div>
           <Table
             columnArr={tableColumns}
-            dataArr={company} // changed from companyArr
+            dataArr={customer} // changed from customerArr
             editRow={handleEditRow}
           />
         </div>
