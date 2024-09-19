@@ -39,27 +39,26 @@ class CustomerSerializer(serializers.ModelSerializer):
         fields = '__all__'
     
 class InboundStockSerializer(serializers.ModelSerializer):
+    inventory = serializers.PrimaryKeyRelatedField(queryset=Inventory.objects.all(), required=True)
+    supplier = serializers.PrimaryKeyRelatedField(queryset=Supplier.objects.all(), required=True)
+
     class Meta:
         model = InboundStock
         fields = '__all__'
         depth = 1
     
-    # def create(self, validated_data):
-    #     # Create the inbound stock
-    #     inbound_stock = super().create(validated_data)
+    def create(self, validated_data):
+        inbound_stock = super().create(validated_data)
 
-    #     # Get the related product and inventory
-    #     product = inbound_stock.product
-    #     quantity = inbound_stock.quantity
+        product = inbound_stock.inventory.product
+        quantity = inbound_stock.quantity
 
-    #     # Find the existing inventory for this product
-    #     inventory, created = Inventory.objects.get_or_create(product=product)
+        inventory, created = Inventory.objects.get_or_create(product=product)
 
-    #     # Update the stock by adding the inbound quantity
-    #     inventory.stock += quantity
-    #     inventory.save()
+        inventory.stock += quantity
+        inventory.save()
 
-    #     return inbound_stock
+        return inbound_stock
 
 class InventorySerializer(serializers.ModelSerializer):
     class Meta:
