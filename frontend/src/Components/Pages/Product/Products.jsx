@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
   UserPlusIcon,
-  ArrowsPointingOutIcon,
+  ArrowDownTrayIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import Table from "../DynamicTable.jsx";
@@ -268,7 +268,7 @@ export default function Products() {
                   <div
                     className={`py-2 px-3 rounded-lg bg-red-700 hover:bg-red-800 transition-all duration-100`}
                   >
-                    <UserPlusIcon className="size-5" />
+                    <ArrowDownTrayIcon className="size-5" />
                   </div>
                 </button>
               </div>
@@ -286,7 +286,7 @@ export default function Products() {
                 formArr={formArr}
                 onSubmit={onSubmitHandler}
                 defaultValue={rowToEdit !== null ? product[rowToEdit] : ""}
-                icon={<UserPlusIcon className="size-5" />}
+                icon={<ArrowDownTrayIcon className="size-5" />}
               />
             </DynamicModal>
 

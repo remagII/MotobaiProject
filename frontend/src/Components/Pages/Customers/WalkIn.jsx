@@ -60,8 +60,7 @@ const WalkIn = () => {
 
   //PROPS FOR <INPUT>
   const formArr = [
-    { label: "Customer Name", 
-      name: "customer_name" },
+    { label: "Customer Name", name: "customer_name" },
     {
       label: "Phone Number",
       name: "phone_number",
@@ -75,16 +74,21 @@ const WalkIn = () => {
       header: "Customer ID",
       row: "id",
     },
-    { header: "Customer Name", 
-      row: "customer_name" },
+    { header: "Customer Name", row: "customer_name" },
     {
       header: "Phone Number",
       row: "phone_number",
     },
+    {
+      header: "Date Created",
+      row: "date_created",
+    },
   ];
 
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
-  const overviewArr = [{ title: "Customers", quantity: `${customer.length}` }];
+  const overviewArr = [
+    { title: "Walk-in Customers", quantity: `${customer.length}` },
+  ];
 
   /////////////////////////////////////////////////////////// BACKEND
 
@@ -202,18 +206,18 @@ const WalkIn = () => {
   return (
     <section className={`font-main h-full overflow-hidden`}>
       <div className={`bg-normalGray box-border flex h-full `}>
-        <Overview title={`Customers`} overviewArr={overviewArr} />
+        <Overview overviewArr={overviewArr} />
 
         <div className={`flex flex-col flex-1 m-4 `}>
           <div className={`m-4`}>
             <div className={`flex justify-between`}>
               <h1 className={`text-3xl font-bold`}>Walk-In</h1>
               <div className={`flex`}>
-                <DynamicCustomLink to="/customers">
+                <DynamicCustomLink to="/companies">
                   <div>
                     <UserPlusIcon className="size-6 " />
                   </div>
-                  <p>Customers</p>
+                  <p>Company Customers</p>
                 </DynamicCustomLink>
                 <button
                   onClick={toggleModal}

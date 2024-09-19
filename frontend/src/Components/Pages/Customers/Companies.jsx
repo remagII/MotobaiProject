@@ -124,8 +124,11 @@ export default function Companies() {
       header: "Email",
       row: "email",
     },
+    {
+      header: "Date Created",
+      row: "date_created",
+    },
   ];
-
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
   const overviewArr = [{ title: "Companies", quantity: `${company.length}` }];
 
@@ -257,7 +260,7 @@ export default function Companies() {
   return (
     <section className={`font-main h-full overflow-hidden`}>
       <div className={`bg-normalGray box-border flex h-full `}>
-        <Overview title={`Companies`} overviewArr={overviewArr} />
+        <Overview overviewArr={overviewArr} />
 
         <div className={`flex flex-col flex-1 m-4 `}>
           <div className={`m-4`}>
