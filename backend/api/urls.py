@@ -15,6 +15,11 @@ urlpatterns = [
     path("company/update/<int:pk>", views.CompanyUpdateView.as_view(), name="company-update"),
     path("company/delete/<int:pk>", views.CompanyDeleteView.as_view(), name="company-delete"),
 
+    path("customer/list", views.CustomerListView.as_view(), name="customer-list"),
+    path("customer/create", views.CustomerAdd.as_view(), name="customer-add"),
+    path("customer/update/<int:pk>", views.CustomerUpdateView.as_view(), name="customer-update"),
+    path("customer/delete/<int:pk>", views.CustomerDeleteView.as_view(), name="customer-delete"),
+
     path('order/create', views.OrderAdd.as_view(), name='order-create'),
     path('order/list', views.OrderListView.as_view(), name='order-list'),
 
@@ -23,4 +28,16 @@ urlpatterns = [
 
     path('ordertracking/create', views.OrderTrackingCreate.as_view(), name='ordertracking-add'),
     path('ordertracking/list', views.OrderTrackingListView.as_view(), name='ordertracking-list'),
+
+    path("supplier/list", views.SupplierListView.as_view(), name="supplier-list"),
+    path("supplier/create", views.SupplierAdd.as_view(), name="supplier-add"),
+    path("supplier/update/<int:pk>", views.SupplierUpdateView.as_view(), name="supplier-update"),
+    path("supplier/delete/<int:pk>", views.SupplierDeleteView.as_view(), name="supplier-delete"),
+
+    path("employee/list", views.EmployeeListView.as_view(), name="employee-list"),
+    path("employee/create", views.EmployeeAdd.as_view(), name="employee-add"),
+    path("employee/update/<int:pk>", views.EmployeeUpdateView.as_view(), name="employee-update"),
+    path("employee/delete/<int:pk>", views.EmployeeDeleteView.as_view(), name="employee-delete"),
+
+    path("stockin/create", views.InboundStockCreateView.as_view(), name="stockin"),
 ]

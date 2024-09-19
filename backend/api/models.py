@@ -3,25 +3,35 @@ from django.contrib.auth.models import User
 
 class Product(models.Model):
     product_name = models.CharField(max_length=100)
-    price = models.DecimalField(decimal_places=2, max_digits=10)
-    product_type = models.CharField(max_length=100, default='DefaultType')
-    description = models.TextField(max_length=32, default='DefaultDescription')
-    brand = models.CharField(max_length=32, default='DefaultBrand')
-    vehicle_type = models.CharField(max_length=32, default='DefaultVehicleType')
+    price = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True, default=0)
+    product_type = models.CharField(max_length=100, null=True, blank=True, default='')
+    description = models.TextField(max_length=32, null=True, blank=True, default='')
+    brand = models.CharField(max_length=32, null=True, blank=True, default='')
+    vehicle_type = models.CharField(max_length=32, null=True, blank=True, default='')
     
     def __str__(self):
         return '{}: {}'.format(self.product_name, self.product_type)
 
-# INBOUND STOCK NOT YET ADDED
 class Inventory(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    stock = models.PositiveIntegerField()
-    stock_minimum_threshold = models.PositiveIntegerField()
+    stock = models.PositiveIntegerField(null=True, blank=True, default=0)
+    stock_minimum_threshold = models.PositiveIntegerField(null=True, blank=True, default=0)
     date_added = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return '{}: {}'.format(self.product, self.stock)
+    
+class Supplier(models.Model):
+    supplier_name = models.CharField(max_length=100, default='')
+    phone_number = models.CharField(max_length=100, default='')
+    description = models.CharField(max_length=100, default='')
+
+class InboundStock(models.Model):
+    inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE)
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(null=True, blank=True, default=0)
+    date_created = models.DateTimeField(auto_now_add=True)
 
 class Company(models.Model):
     company_name = models.CharField(max_length=100)
@@ -36,6 +46,11 @@ class Company(models.Model):
 
     def __str__(self):
         return '{}: {}'.format(self.company_name, self.representative_name)
+    
+class Customer(models.Model):
+    customer_name = models.CharField(max_length=100, default='')
+    phone_number = models.CharField(max_length=100, default='')
+    date_created = models.DateTimeField(auto_now_add=True)
 
 # DISCOUNT NOT YET ADDED
 # CHOICES NOT COMPLETE
@@ -80,3 +95,16 @@ class OrderTracking(models.Model):
 
     def __str__(self):
         return f'{self.order} - {self.status}'
+    
+
+    
+class Employee(models.Model):
+    first_name = models.CharField(max_length=100)
+    middle_name = models.CharField(max_length=100) 
+    last_name = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    barangay = models.CharField(max_length=100)
+    street = models.CharField(max_length=100)
+    phone_number = models.CharField(max_length=100)
+    email = models.CharField(max_length=100)
+    date_created = models.DateTimeField(auto_now_add=True)
