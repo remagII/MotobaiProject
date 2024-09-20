@@ -38,7 +38,7 @@ export default function Products() {
   var errorFields = [];
 
   /////////////////////////// BACKEND
-  // fetch companies
+  // fetch products
   const [product, setProduct] = useState([]);
 
   useEffect(() => {
@@ -52,17 +52,16 @@ export default function Products() {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to fetch companies");
+        throw new Error("Failed to fetch products");
       }
       const data = await response.json();
-      setProduct(data); // ito ung data ng list of companies (product)
+      setProduct(data); // ito ung data ng list of products (product)
     } catch (error) {
       console.error("Error fetching products:", error);
     }
   };
 
   //PROPS FOR <INPUT>
-
   const formArr = [
     {
       label: "Product Name",
