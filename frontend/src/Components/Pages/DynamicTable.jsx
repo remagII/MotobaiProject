@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./pages.css";
 
 export default function Table({ editRow, columnArr, dataArr }) {
@@ -7,6 +7,8 @@ export default function Table({ editRow, columnArr, dataArr }) {
       path.split(".").reduce((acc, part) => acc && acc[part], obj) || "N/A"
     );
   };
+
+  const [status, setStatus] = useState(false);
 
   return (
     <section className={`h-full`}>
@@ -39,12 +41,14 @@ export default function Table({ editRow, columnArr, dataArr }) {
                     {columnArr.map((header, i) => {
                       return (
                         <td key={i} className="p-4">
-                          {header.row
+                          {/* {header.row
                             ? header.row.includes(".")
                               ? getNestedValue(item, header.row)
                               : item[header.row] ?? "N/A"
-                            : "N/A"}
-                          {/* handle product.product_name etc. */}
+                            : "N/A"} */}
+                          {header.row.includes(".")
+                            ? getNestedValue(item, header.row)
+                            : item[header.row] ?? "Inactive" ?? "N/A"}
                         </td>
                       );
                     })}

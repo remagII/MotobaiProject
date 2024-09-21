@@ -3,7 +3,8 @@ import { ArchiveBoxIcon } from "@heroicons/react/24/outline";
 import { ArchiveBoxArrowDownIcon } from "@heroicons/react/24/outline";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline";
-import { Link, useMatch, useResolvedPath } from "react-router-dom";
+import { BuildingStorefrontIcon } from "@heroicons/react/24/outline";
+
 import DynamicCustomLink from "../DynamicCustomLink";
 
 function Navigation() {
@@ -20,6 +21,13 @@ function Navigation() {
           <ArchiveBoxIcon className="size-6 " />
         </div>
         <p>Products</p>
+      </DynamicCustomLink>
+
+      <DynamicCustomLink to="/suppliers">
+        <div>
+          <BuildingStorefrontIcon className="size-6 " />
+        </div>
+        <p>Suppliers</p>
       </DynamicCustomLink>
 
       <DynamicCustomLink to="/inventory">

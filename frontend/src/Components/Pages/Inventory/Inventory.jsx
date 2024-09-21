@@ -92,7 +92,6 @@ export default function Inventory() {
   ];
 
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
-
   const tableColumns = [
     {
       header: "Product ID",
@@ -120,7 +119,17 @@ export default function Inventory() {
       header: "Brand",
       row: "product.brand",
     },
+    {
+      header: "Status",
+      row: "status",
+    },
+    {
+      header: "Quantity",
+      row: "stock",
+    },
   ];
+
+  const statusChecker = () => {};
 
   // backend :))))))))))
   const [loading, setLoading] = useState(false);
@@ -136,7 +145,7 @@ export default function Inventory() {
   const handleEditRow = (index) => {
     console.log("Editing row:", index); // just for troubleshoot
     toggleModal();
-    setRowIdEdit(inventory[index]?.id); 
+    setRowIdEdit(inventory[index]?.id);
     setRowToEdit(index);
     setMethod("edit");
     setBtnTitle("Edit Inventory");
@@ -146,7 +155,6 @@ export default function Inventory() {
   const deleteHandler = () => {
     setMethod("delete");
   };
-
 
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
   const overviewArr = [{ title: "Products", quantity: `${inventory.length}` }];
@@ -192,7 +200,7 @@ export default function Inventory() {
             </DynamicModal> */}
 
             <div>
-              {errorWindow &&(
+              {errorWindow && (
                 <div
                   className={`rounded mt-8 p-4 text-lg font-bold text-red-600  shadow-shadowTable bg-red-200 flex justify-between transition-all`}
                 >
@@ -212,7 +220,7 @@ export default function Inventory() {
           </div>
           <Table
             columnArr={tableColumns}
-            dataArr={inventory} 
+            dataArr={inventory}
             editRow={handleEditRow}
           />
         </div>
