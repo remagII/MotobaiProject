@@ -38,6 +38,17 @@ export default function Inventory() {
   var errorFields = [];
 
   /////////////////////////// BACKEND
+  const fetchProductDetail = async () => {
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/inventory/view/${props.id}/"
+      );
+      console.log(response.data)
+    } catch (error) {
+      console.error("Error fetching product:", error);
+    }
+  };
+  
   // fetch inventory
   const [inventory, setInventory] = useState([]);
 
