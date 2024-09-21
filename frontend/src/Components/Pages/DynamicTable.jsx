@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 import "./pages.css";
 
-export default function Table({ editRow, columnArr, dataArr }) {
+export default function Table({ editRow, columnArr, dataArr, status }) {
   const getNestedValue = (obj, path) => {
     return (
       path.split(".").reduce((acc, part) => acc && acc[part], obj) || "N/A"
     );
   };
-
-  const [status, setStatus] = useState(false);
 
   return (
     <section className={`h-full`}>
@@ -48,7 +46,7 @@ export default function Table({ editRow, columnArr, dataArr }) {
                             : "N/A"} */}
                           {header.row.includes(".")
                             ? getNestedValue(item, header.row)
-                            : item[header.row] ?? "Inactive" ?? "N/A"}
+                            : item[header.row] ?? `${status}` ?? "N/A"}
                         </td>
                       );
                     })}

@@ -37,18 +37,6 @@ export default function Inventory() {
   const [errors, setErrors] = useState("");
   var errorFields = [];
 
-  /////////////////////////// BACKEND
-  const fetchProductDetail = async () => {
-    try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/inventory/view/${props.id}/"
-      );
-      console.log(response.data)
-    } catch (error) {
-      console.error("Error fetching product:", error);
-    }
-  };
-  
   // fetch inventory
   const [inventory, setInventory] = useState([]);
 
@@ -71,6 +59,24 @@ export default function Inventory() {
       console.error("Error fetching inventory:", error);
     }
   };
+
+  const [productDetails, setProductDetails] = useState([]);
+
+  /////////////////////////// BACKEND
+
+  const fetchProductDetail = async () => {
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/inventory/view/${props.id}/"
+      );
+      const data = await response.json();
+      setProductDetails(data);
+    } catch (error) {
+      console.error("Error fetching product:", error);
+    }
+  };
+
+  const [status, setStatus] = useState("Inactive");
 
   //PROPS FOR <INPUT>
   const formArr = [
@@ -105,7 +111,7 @@ export default function Inventory() {
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
   const tableColumns = [
     {
-      header: "Product ID",
+      header: "Inventory ID",
       row: "id",
     },
 
@@ -233,6 +239,7 @@ export default function Inventory() {
             columnArr={tableColumns}
             dataArr={inventory}
             editRow={handleEditRow}
+            status={status}
           />
         </div>
       </div>
