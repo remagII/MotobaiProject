@@ -36,20 +36,16 @@ export default function Table({ editRow, columnArr, dataArr, status }) {
                     className={`  hover:bg-red-700 hover:border-red-800 hover:text-white  border-b-2 border-gray-200 transition-all duration-75 ease-in cursor-pointer`}
                     key={item.id}
                   >
-                    {columnArr.map((header, i) => {
-                      return (
-                        <td key={i} className="p-4">
-                          {/* {header.row
-                            ? header.row.includes(".")
-                              ? getNestedValue(item, header.row)
-                              : item[header.row] ?? "N/A"
-                            : "N/A"} */}
-                          {header.row.includes(".")
-                            ? getNestedValue(item, header.row)
-                            : item[header.row] ?? `${status}` ?? "N/A"}
-                        </td>
-                      );
-                    })}
+                    {columnArr.map((header, i) => (
+                    <td key={i} className="p-4">
+                      {/* Check for customRender in columnArr, else render the value normally */}
+                      {header.customRender
+                        ? header.customRender(item)
+                        : header.row.includes(".")
+                        ? getNestedValue(item, header.row)
+                        : item[header.row] ?? "N/A"}
+                    </td>
+                  ))}
                   </tr>
                 );
               })}

@@ -138,7 +138,17 @@ export default function Inventory() {
     },
     {
       header: "Status",
-      row: "status",
+      customRender: (item) => {
+        if (item.stock === 0) {
+          return "Inactive";
+        } else if (item.stock < item.stock_minimum_threshold) {
+          return "Low Stock";
+        } else if (item.stock > item.stock_maximum_threshold) {
+          return "Over Stock";
+        } else {
+          return "Active";
+        }
+      },
     },
     {
       header: "Quantity",

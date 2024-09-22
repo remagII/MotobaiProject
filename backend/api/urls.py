@@ -9,6 +9,7 @@ urlpatterns = [
 
     path("inventory/list", views.InventoryListView.as_view(), name="inventory-list"),
     path("inventory/view/<int:pk>/", views.InventoryDetailView.as_view(), name="inventory-view"),
+    path("inventory/update/<int:pk>/", views.InventoryUpdateView.as_view(), name="inventory-update"),
     # path("inventory/create", views.InventoryAdd.as_view(), name="inventory-add"),
 
     path("company/list", views.CompanyListView.as_view(), name="company-list"),
@@ -40,6 +41,6 @@ urlpatterns = [
     path("employee/update/<int:pk>", views.EmployeeUpdateView.as_view(), name="employee-update"),
     path("employee/delete/<int:pk>", views.EmployeeDeleteView.as_view(), name="employee-delete"),
 
-    path("stockin/create", views.InboundStockCreateView.as_view(), name="stocki-add"),
+    path("stockin/create", views.InboundStockCreateView.as_view(), name="stockin-add"),
     path("stockin/list", views.InboundStockListView.as_view(), name="stockin-list"),
 ]

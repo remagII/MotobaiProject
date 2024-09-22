@@ -111,6 +111,11 @@ class InventoryAdd(generics.CreateAPIView):
     serializer_class = InventorySerializer
     permission_classes = [AllowAny] 
 
+class InventoryUpdateView(generics.RetrieveUpdateAPIView):
+    queryset = Inventory.objects.all()
+    serializer_class = InventorySerializer
+    permission_classes = [AllowAny]
+
 class InventoryDetailView(generics.RetrieveAPIView):
     queryset = Inventory.objects.all()
     serializer_class = InventorySerializer
