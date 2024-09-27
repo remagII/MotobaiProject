@@ -6,9 +6,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Table from "../DynamicTable.jsx";
 import Overview from "../Overview.jsx";
-import DynamicForm from "../DynamicForm.jsx";
-import DynamicModal from "../DynamicModal.jsx";
-import api from "../../../api";
+import StockInForm from "./StockInForm.jsx";
 
 export default function Inventory() {
   const [method, setMethod] = useState("");
@@ -60,54 +58,6 @@ export default function Inventory() {
     }
   };
 
-  const [productDetails, setProductDetails] = useState([]);
-
-  /////////////////////////// BACKEND
-
-  const fetchProductDetail = async () => {
-    try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/inventory/view/${props.id}/"
-      );
-      const data = await response.json();
-      setProductDetails(data);
-    } catch (error) {
-      console.error("Error fetching product:", error);
-    }
-  };
-
-  const [status, setStatus] = useState("Inactive");
-
-  //PROPS FOR <INPUT>
-  const formArr = [
-    {
-      header: "Product ID",
-      row: "id",
-    },
-
-    {
-      header: "Product Name",
-      row: "product.product_name",
-    },
-    {
-      header: "Price",
-      row: "product.price",
-    },
-    {
-      header: "Product Type",
-      row: "product.product_type",
-    },
-
-    {
-      header: "Vehicle type",
-      row: "product.vehicle_type",
-    },
-    {
-      header: "Brand",
-      row: "product.brand",
-    },
-  ];
-
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
   const tableColumns = [
     {
@@ -140,11 +90,11 @@ export default function Inventory() {
       header: "Status",
       customRender: (item) => {
         if (item.stock === 0) {
-          return "Inactive";
+          return <p className={`text-orange-500 font-bold`}>INACTIVE</p>;
         } else if (item.stock < item.stock_minimum_threshold) {
-          return "Low Stock";
-        } else if (item.stock > item.stock_maximum_threshold) {
-          return "Over Stock";
+          return <p className={`text-yellow-500 font-bold`}>LOW STOCK</p>;
+        } else if (item.stock == item.stock_maximum_threshold) {
+          return <p className={`text-green-500 font-bold`}>MAX STOCK</p>;
         } else {
           return "Active";
         }
@@ -195,12 +145,46 @@ export default function Inventory() {
           <div className={`m-4`}>
             <div className={`flex justify-between`}>
               <h1 className={`text-3xl font-bold`}>Inventory</h1>
-              <div>
+
+              <div className="flex mr-24">
+                <div className="flex gap-4 mr-32 items-center">
+                  <label className="font-bold ">Status</label>
+                  <select
+                    className={`min-w-[10vw] max-h-4 rounded-lg p-4`}
+                  ></select>
+                </div>
+                <div>
+                  <button
+                    onClick={toggleModal}
+                    className={`text-white bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center`}
+                  >
+                    Stock In
+                    <div
+                      className={`py-2 px-3 rounded-lg bg-red-700 hover:bg-red-800 transition-all duration-100`}
+                    >
+                      <UserPlusIcon className="size-5" />
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex gap">
                 <button
                   onClick={toggleModal}
                   className={`text-white bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center`}
                 >
-                  Create Order
+                  Delivery Order
+                  <div
+                    className={`py-2 px-3 rounded-lg bg-red-700 hover:bg-red-800 transition-all duration-100`}
+                  >
+                    <UserPlusIcon className="size-5" />
+                  </div>
+                </button>
+                <button
+                  onClick={toggleModal}
+                  className={`text-white bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center`}
+                >
+                  Walk-In Order
                   <div
                     className={`py-2 px-3 rounded-lg bg-red-700 hover:bg-red-800 transition-all duration-100`}
                   >
@@ -210,21 +194,15 @@ export default function Inventory() {
               </div>
             </div>
 
-            {/* <DynamicModal modal={modal} toggleModal={toggleModal}>
-              <DynamicForm
-                error={errorFields}
-                btnTitle={btnTitle}
-                title={"Inventory"}
-                deleteBtn={deleteBtn}
-                deleteHandler={deleteHandler}
-                deleteBtnTitle={"Delete Product"}
-                trashIcon={<TrashIcon className="size-5" />}
-                formArr={formArr}
-                onSubmit={null}
-                defaultValue={rowToEdit !== null ? company[rowToEdit] : ""}
-                icon={<UserPlusIcon className="size-5" />}
-              />
-            </DynamicModal> */}
+            {/* <StockInForm
+              error={errorFields}
+              title={"Add Stock"}
+              formArr={initialStockIn}
+              onSubmit={null}
+              defaultValue={rowToEdit !== null ? company[rowToEdit] : ""}
+              icon={<UserPlusIcon className="size-5" />}
+            /> */}
+            <StockInForm />
 
             <div>
               {errorWindow && (
@@ -249,7 +227,6 @@ export default function Inventory() {
             columnArr={tableColumns}
             dataArr={inventory}
             editRow={handleEditRow}
-            status={status}
           />
         </div>
       </div>

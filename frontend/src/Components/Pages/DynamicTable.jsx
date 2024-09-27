@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./pages.css";
 
-export default function Table({ editRow, columnArr, dataArr, status }) {
+export default function Table({ editRow, columnArr, dataArr }) {
   const getNestedValue = (obj, path) => {
     return (
       path.split(".").reduce((acc, part) => acc && acc[part], obj) || "N/A"
@@ -33,19 +33,19 @@ export default function Table({ editRow, columnArr, dataArr, status }) {
                 return (
                   <tr
                     onClick={() => editRow(index)}
-                    className={`  hover:bg-red-700 hover:border-red-800 hover:text-white  border-b-2 border-gray-200 transition-all duration-75 ease-in cursor-pointer`}
-                    key={item.id}
+                    className={`  hover:bg-red-700 hover:border-red-800 hover:text-white border-b-2 border-gray-200 transition-all duration-75 ease-in cursor-pointer`}
+                    key={index}
                   >
                     {columnArr.map((header, i) => (
-                    <td key={i} className="p-4">
-                      {/* Check for customRender in columnArr, else render the value normally */}
-                      {header.customRender
-                        ? header.customRender(item)
-                        : header.row.includes(".")
-                        ? getNestedValue(item, header.row)
-                        : item[header.row] ?? "N/A"}
-                    </td>
-                  ))}
+                      <td key={i} className={`p-4`}>
+                        {/* Check for customRender in columnArr, else render the value normally */}
+                        {header.customRender
+                          ? header.customRender(item)
+                          : header.row.includes(".")
+                          ? getNestedValue(item, header.row)
+                          : item[header.row] ?? "N/A"}
+                      </td>
+                    ))}
                   </tr>
                 );
               })}

@@ -45,6 +45,8 @@ export default function Products() {
     fetchProduct();
   }, []);
 
+  useEffect(() => {}, []);
+
   const fetchProduct = async () => {
     try {
       const response = await fetch(
