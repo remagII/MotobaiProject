@@ -3,12 +3,10 @@ import Logo from "./Logo.png";
 import "../pages.css";
 import Table from "../DynamicTable";
 
-const StockInForm = () => {
+const StockInForm = ({ confirmHandler }) => {
   const [initialStockIn, setInitialStockIn] = useState([]);
-  const [options, setOptions] = useState([]);
+  const [productOptions, setProductOptions] = useState([]);
   const [supplier, setSupplier] = useState([]);
-
-  const [product, setProduct] = useState("");
 
   useEffect(() => {
     fetchProduct();
@@ -24,7 +22,7 @@ const StockInForm = () => {
         throw new Error("Failed to fetch products");
       }
       const data = await response.json();
-      setOptions(data); // ito ung data ng list of products (product)
+      setProductOptions(data); // ito ung data ng list of products (product)
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -87,16 +85,30 @@ const StockInForm = () => {
   const [form, setForm] = useState(prepareForm(formArr));
   const initialForm = prepareForm(formArr);
 
-  const onChangeHandler = (e) => {
-    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+  // const onChangeHandler = (e) => {
+  //   setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+  // };
+
+  const onChangeHandler = (e, fieldName, extraData = {}) => {
+    const { name, value } = e.target;
+
+    // Update the form state and capture any extra data (like id) in the form
+    setForm((prevForm) => ({
+      ...prevForm,
+      [name]: value,
+      ...extraData,
+    }));
   };
 
   //SET FORM BACK TO OLD STATE
   const onSubmitHandler = () => {
     setForm(initialForm);
-    setInitialStockIn((s) => [...s, form]); // NOT FINAL may problem sa pag kuha ng obj
-    console.log(form);
-    console.log(initialStockIn);
+    setInitialStockIn((s) => [...s, form]);
+  };
+
+  const confirmButton = () => {
+    //BUTTON WHERE YOU SET THE NEW INVENTORY TABLE
+    window.location.reload();
   };
 
   return (
@@ -114,38 +126,66 @@ const StockInForm = () => {
                 alt="Motobai-Logo"
               />
             </div>
-            <form onSubmit={onSubmitHandler} className={`min-w-[65vw] `}>
-              <div className={`bg-gray-100 py-10 px-8 rounded-b-lg`}>
+            <form onSubmit={confirmHandler} className={`min-w-[65vw] `}>
+              <div className={`bg-gray-100 py-10 px-8 h-[75vh]  rounded-b-lg`}>
                 <h1 className="font-bold text-2xl mb-10">Stock In</h1>
-                <div className="mb-12 ml-4">
+                <div className="mb-12 ml-4 min-h-[40vh] max-h-[40vh] overflow-hidden">
                   <Table columnArr={tableColumns} dataArr={initialStockIn} />
                 </div>
                 <div className={`gap-x-6 gap-y-8 flex flex-wrap `}>
                   <div className="flex gap-4">
+                    {/* PRODUCT SELECT */}
                     <label className="font-bold">Product</label>
+
                     <select
-                      className={`text-lg min-w-[10vw] min-h-6 rounded-lg pl-2`}
+                      className="text-lg min-w-[10vw] min-h-6 rounded-lg pl-2"
                       required
-                      onChange={(e) => onChangeHandler(e)}
+                      onChange={(e) =>
+                        onChangeHandler(e, "product_name", {
+                          product_id:
+                            e.target.selectedOptions[0].getAttribute("data-id"),
+                        })
+                      }
                       name="product_name"
+                      defaultValue={``}
                     >
-                      {options.map((option, index) => (
-                        <option key={index} value={`${option.product_name}`}>
-                          {option.product_name}
+                      <option value="" disabled>
+                        Select A Product
+                      </option>
+                      {productOptions.map((option) => (
+                        <option
+                          key={option.id}
+                          value={option.product_name}
+                          data-id={option.id}
+                        >
+                          {`${option.id} : ${option.product_name}`}
                         </option>
                       ))}
                     </select>
+                    {/* SUPPLIER SELECT */}
                     <label className="font-bold">Supplier</label>
                     <select
-                      className={`text-lg min-w-[10vw] min-h-6 rounded-lg pl-2`}
+                      className="text-lg min-w-[10vw] min-h-6 rounded-lg pl-2"
                       required
-                      onChange={(e) => onChangeHandler(e)}
+                      onChange={(e) =>
+                        onChangeHandler(e, "supplier_name", {
+                          supplier_id:
+                            e.target.selectedOptions[0].getAttribute("data-id"),
+                        })
+                      }
                       name="supplier_name"
-                      defaultValue={`${supplier.supplier_name}`}
+                      defaultValue={``}
                     >
-                      {supplier.map((supplier, index) => (
-                        <option key={index} value={`${supplier.supplier_name}`}>
-                          {supplier.supplier_name}
+                      <option value="" disabled>
+                        Select A Supplier
+                      </option>
+                      {supplier.map((sup) => (
+                        <option
+                          key={sup.id}
+                          value={sup.supplier_name}
+                          data-id={sup.id}
+                        >
+                          {`${sup.id} : ${sup.supplier_name}`}
                         </option>
                       ))}
                     </select>
@@ -176,6 +216,7 @@ const StockInForm = () => {
                   ))}
                 </div>
                 <div className={`flex justify-end gap-4 mt-12`}>
+                  {/* CREATE ROW BUTTON */}
                   <button
                     onClick={(e) => {
                       onSubmitHandler();
@@ -184,6 +225,18 @@ const StockInForm = () => {
                     className={`bg-white border-2 border-red-600 rounded px-4 py-2 hover:bg-red-600 hover:text-white transition-all duration-100 flex gap-4 items-center`}
                   >
                     Add Product to Stock In
+                  </button>
+                  {/* CONFIRM BUTTON */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      {
+                        confirmButton();
+                      }
+                    }}
+                    className={` bg-white border-2 border-red-600 rounded px-4 py-2 hover:bg-red-600 hover:text-white transition-all duration-100 flex gap-4 items-center `}
+                  >
+                    Confirm Stock-In
                   </button>
                 </div>
               </div>

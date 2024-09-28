@@ -7,6 +7,7 @@ import {
 import Table from "../DynamicTable.jsx";
 import Overview from "../Overview.jsx";
 import StockInForm from "./StockInForm.jsx";
+import DynamicModal from "../DynamicModal.jsx";
 
 export default function Inventory() {
   const [method, setMethod] = useState("");
@@ -14,14 +15,11 @@ export default function Inventory() {
 
   // MODAL TOGGLE
   const toggleModal = () => {
-    setMethod("create");
-    setBtnTitle("Create Order");
-    setModal((m) => (m = !m));
-    setDeleteBtn("inactive");
+    // setModal((m) => (m = !m));
+  };
 
-    if (method === "edit") {
-      setRowToEdit(null);
-    }
+  const toggleStockInModal = () => {
+    setModal((m) => (m = !m));
   };
 
   const [errorWindow, setErrorWindow] = useState(false);
@@ -106,8 +104,6 @@ export default function Inventory() {
     },
   ];
 
-  const statusChecker = () => {};
-
   // backend :))))))))))
   const [loading, setLoading] = useState(false);
 
@@ -155,7 +151,7 @@ export default function Inventory() {
                 </div>
                 <div>
                   <button
-                    onClick={toggleModal}
+                    onClick={toggleStockInModal}
                     className={`text-white bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center`}
                   >
                     Stock In
@@ -194,15 +190,10 @@ export default function Inventory() {
               </div>
             </div>
 
-            {/* <StockInForm
-              error={errorFields}
-              title={"Add Stock"}
-              formArr={initialStockIn}
-              onSubmit={null}
-              defaultValue={rowToEdit !== null ? company[rowToEdit] : ""}
-              icon={<UserPlusIcon className="size-5" />}
-            /> */}
-            <StockInForm />
+            {/* STOCK IN FORM */}
+            <DynamicModal modal={modal} toggleModal={toggleStockInModal}>
+              <StockInForm />
+            </DynamicModal>
 
             <div>
               {errorWindow && (
