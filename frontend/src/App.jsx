@@ -4,6 +4,7 @@ import Companies from "./Components/Pages/Customers/Companies";
 import WalkIn from "./Components/Pages/Customers/WalkIn";
 import Products from "./Components/Pages/Product/Products";
 import Inventory from "./Components/Pages/Inventory/Inventory";
+import StockLogs from "./Components/Pages/Inventory/StockLogs.jsx";
 import Orders from "./Components/Pages/Orders";
 import OrderList from "./Components/Pages/OrderList";
 import Login from "./Components/Pages/Login.jsx";
@@ -28,6 +29,7 @@ function App() {
           <Route path="/orders" element={<Orders />} />
           <Route path="/orderList" element={<OrderList />} />
           <Route path="/walkIn" element={<WalkIn />} />
+          <Route path="/stockinlogs" element={<StockLogs />} />
           <Route path="/" element={<Companies />} />
 
           {/* 
