@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Logo from "./Logo.png";
 import "../pages.css";
 import Table from "../DynamicTable";
+import api from "../../../api"
 
 const StockInForm = ({ confirmHandler }) => {
   const [initialStockIn, setInitialStockIn] = useState([]);
@@ -15,7 +16,7 @@ const StockInForm = ({ confirmHandler }) => {
   const fetchProduct = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/product/list?format=json"
+        "http://127.0.0.1:8000/api/inventory/list?format=json"
       );
 
       if (!response.ok) {
@@ -51,7 +52,7 @@ const StockInForm = ({ confirmHandler }) => {
   const formArr = [
     {
       label: "Minimum Threshold",
-      name: "minimum_treshold",
+      name: "minimum_threshold",
     },
     {
       label: "Quantity",
@@ -69,7 +70,7 @@ const StockInForm = ({ confirmHandler }) => {
     },
     {
       header: "Minimum Threshold",
-      row: "minimum_treshold",
+      row: "minimum_threshold",
     },
     {
       header: "Quantity to add",
@@ -102,12 +103,37 @@ const StockInForm = ({ confirmHandler }) => {
 
   //SET FORM BACK TO OLD STATE
   const onSubmitHandler = () => {
-    setForm(initialForm);
-    setInitialStockIn((s) => [...s, form]);
+    setInitialStockIn((prevStock) => {
+    const updatedStock = [...prevStock, form]; // Update stock
+    setForm(initialForm); // Reset the form
+    console.log(updatedStock); // This will now correctly log the updated stock
+    return updatedStock; // Return updated state
+  });
   };
 
-  const confirmButton = () => {
-    //BUTTON WHERE YOU SET THE NEW INVENTORY TABLE
+  // send data to database
+  const confirmButton = async () => {
+    console.log(initialStockIn);
+
+    const inboundStockItems = initialStockIn.map((stockInItem) => ({
+      inventory: stockInItem.inventory_id,  // Assuming this is the inventory ID
+      supplier: stockInItem.supplier_id,    // Assuming this is the supplier ID
+      quantity: stockInItem.quantity || 0,  // Ensure quantity is not empty
+    }));
+
+    try {
+      const res = await api.post(
+        "http://127.0.0.1:8000/api/stockin/create",
+        {
+          inboundStockItems: inboundStockItems,
+        }
+      );
+
+      console.log("Stocking in successful:", res.data);
+    } catch (error) {
+      console.error("Error stocking in:", error);``
+    } 
+
     window.location.reload();
   };
 
@@ -142,7 +168,7 @@ const StockInForm = ({ confirmHandler }) => {
                       required
                       onChange={(e) =>
                         onChangeHandler(e, "product_name", {
-                          product_id:
+                          inventory_id:
                             e.target.selectedOptions[0].getAttribute("data-id"),
                         })
                       }
@@ -155,10 +181,10 @@ const StockInForm = ({ confirmHandler }) => {
                       {productOptions.map((option) => (
                         <option
                           key={option.id}
-                          value={option.product_name}
+                          value={option.product.product_name}
                           data-id={option.id}
                         >
-                          {`${option.id} : ${option.product_name}`}
+                          {`${option.product.product_name}`}
                         </option>
                       ))}
                     </select>
@@ -185,7 +211,7 @@ const StockInForm = ({ confirmHandler }) => {
                           value={sup.supplier_name}
                           data-id={sup.id}
                         >
-                          {`${sup.id} : ${sup.supplier_name}`}
+                          {`${sup.supplier_name}`}
                         </option>
                       ))}
                     </select>

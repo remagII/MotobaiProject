@@ -41,6 +41,6 @@ urlpatterns = [
     path("employee/update/<int:pk>", views.EmployeeUpdateView.as_view(), name="employee-update"),
     path("employee/delete/<int:pk>", views.EmployeeDeleteView.as_view(), name="employee-delete"),
 
-    path("stockin/create", views.InboundStockCreateView.as_view(), name="stockin-add"),
+    path("stockin/create", views.InboundStockCreateView.as_view(), name="stockin-create"),
     path("stockin/list", views.InboundStockListView.as_view(), name="stockin-list"),
 ]

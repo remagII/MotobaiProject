@@ -1,9 +1,20 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from rest_framework import generics
-from .serializers import UserSerializer, ProductSerializer, InventorySerializer, CompanySerializer, OrderDetailsSerializer, OrderSerializer, OrderTrackingSerializer, CustomerSerializer, EmployeeSerializer, SupplierSerializer, InboundStockSerializer
+from rest_framework import generics, status
+from rest_framework.response import Response
+from .serializers import (
+        UserSerializer, ProductSerializer, InventorySerializer, 
+        CompanySerializer, OrderDetailsSerializer, OrderSerializer, 
+        OrderTrackingSerializer, CustomerSerializer, EmployeeSerializer, 
+        SupplierSerializer, InboundStockSerializer
+    )
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import Product, Inventory, Company, Order, OrderDetails, OrderTracking, Customer, Employee, Supplier, InboundStock
+from .models import (
+        Product, Inventory, Company, 
+        Order, OrderDetails, OrderTracking, 
+        Customer, Employee, Supplier, 
+        InboundStock, InboundStockItem
+    )
 
 # USER
 class CreateUserView(generics.CreateAPIView):

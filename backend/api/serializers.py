@@ -1,8 +1,12 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Product, Inventory, Company, Order, OrderDetails, OrderTracking, Customer, Employee, Supplier, InboundStock
+from .models import (
+        Product, Inventory, Company, Order, OrderDetails,
+        OrderTracking, Customer, Employee, Supplier, 
+        InboundStock, InboundStockItem
+    )
 
-
+# USER
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -14,6 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         return user
 
+# PRODUCT
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
@@ -28,6 +33,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
         return product
 
+# CUSTOMER
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
@@ -37,35 +43,49 @@ class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = '__all__'
+
+# STOCKIN
+class InboundStockItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InboundStockItem
+        fields = ['inventory', 'supplier', 'quantity']
     
 class InboundStockSerializer(serializers.ModelSerializer):
-    inventory = serializers.PrimaryKeyRelatedField(queryset=Inventory.objects.all(), required=True)
-    supplier = serializers.PrimaryKeyRelatedField(queryset=Supplier.objects.all(), required=True)
+    inboundStockItems = InboundStockItemSerializer(many=True)
 
     class Meta:
         model = InboundStock
-        fields = '__all__'
-        depth = 1
-    
+        fields = ['inboundStockItems', 'date_created']
+
     def create(self, validated_data):
-        inbound_stock = super().create(validated_data)
+        inbound_stock_items_data = validated_data.pop('inboundStockItems')
 
-        product = inbound_stock.inventory.product
-        quantity = inbound_stock.quantity
+        # Create the InboundStock object first
+        inbound_stock = InboundStock.objects.create(**validated_data)
 
-        inventory, created = Inventory.objects.get_or_create(product=product)
+        # Iterate through each inbound_stock_item
+        for item_data in inbound_stock_items_data:
+            inventory = item_data['inventory']
+            quantity = item_data['quantity']
 
-        inventory.stock += quantity
-        inventory.save()
+            # Create each InboundStockItem linked to this InboundStock
+            inbound_stock_item = InboundStockItem.objects.create(**item_data)
+            inbound_stock.inboundStockItems.add(inbound_stock_item)
+
+            # Update the Inventory stock for the related product
+            inventory.stock += quantity
+            inventory.save()
 
         return inbound_stock
 
+# INVENTORY
 class InventorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Inventory
         fields = '__all__'
         depth = 1
 
+# ORDER MANAGEMENT
 class OrderSerializer(serializers.ModelSerializer):
     company = serializers.PrimaryKeyRelatedField(queryset=Company.objects.all())
 
@@ -95,6 +115,7 @@ class OrderTrackingSerializer(serializers.ModelSerializer):
         model = OrderTracking
         fields = '__all__'
 
+# MISC
 class SupplierSerializer(serializers.ModelSerializer):
     class Meta:
         model = Supplier

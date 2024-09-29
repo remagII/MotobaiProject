@@ -28,14 +28,18 @@ class Supplier(models.Model):
     phone_number = models.CharField(max_length=100, default='')
     description = models.CharField(max_length=100, default='')
 
-class InboundStock(models.Model):
+class InboundStockItem(models.Model):
     inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE)
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(null=True, blank=True, default=0)
+
+class InboundStock(models.Model):
+    inboundStockItems = models.ManyToManyField(InboundStockItem, related_name='inbound_stocks')
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return '{}: {}'.format(self.inventory, self.supplier)
+        return 'Stock Entry: {} items on {}'.format(self.inboundStockItems.count(), self.date_created)
+    
 
 class Company(models.Model):
     company_name = models.CharField(max_length=100)
