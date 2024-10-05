@@ -9,7 +9,7 @@ const DynamicCustomLink = ({ to, children, ...props }) => {
     <button
       as={Link}
       to={to}
-      className={` transition-all duration-150  text-black rounded-md border-2 border-red-600  hover:bg-red-600    hover:text-white ${
+      className={`flex items-center justify-center min-w-[120px] relative shadow-md transition-all duration-150  text-black rounded-md border-2 border-red-600  hover:bg-red-600    hover:text-white ${
         isActive ? "bg-red-600 text-white" : "bg-white"
       } `}
     >

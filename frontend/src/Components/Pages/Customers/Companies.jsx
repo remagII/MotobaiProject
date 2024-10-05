@@ -275,7 +275,7 @@ export default function Companies() {
                 </DynamicCustomLink>
                 <button
                   onClick={toggleModal}
-                  className={`text-white bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center`}
+                  className={`text-white bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center shadow-md`}
                 >
                   <div
                     className={`py-2 px-3 rounded-lg bg-red-700  transition-all duration-100`}

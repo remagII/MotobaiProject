@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  UserPlusIcon,
-  ArrowsPointingOutIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
+import { GiftIcon, TruckIcon, CubeIcon } from "@heroicons/react/24/outline";
 import Table from "../DynamicTable.jsx";
 import Overview from "../Overview.jsx";
 import StockInForm from "./StockInForm.jsx";
@@ -91,10 +87,13 @@ export default function Inventory() {
           return <p className={`text-orange-500 font-bold`}>INACTIVE</p>;
         } else if (item.stock < item.stock_minimum_threshold) {
           return <p className={`text-yellow-500 font-bold`}>LOW STOCK</p>;
-        } else if (item.stock == item.stock_maximum_threshold) {
-          return <p className={`text-green-500 font-bold`}>MAX STOCK</p>;
+        } else if (
+          item.stock == item.stock_maximum_threshold &&
+          item.stock > item.stock_minimum_threshold
+        ) {
+          return <p className={`text-green-600 font-bold`}>MAX STOCK</p>;
         } else {
-          return "Active";
+          return <p className={`text-green-500 font-bold`}>HIGH STOCK</p>;
         }
       },
     },
@@ -152,13 +151,13 @@ export default function Inventory() {
                 <div>
                   <button
                     onClick={toggleStockInModal}
-                    className={`text-white bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center`}
+                    className={`bg-white border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700 hover:text-gray-100 transition-all duration-100 flex gap-4 items-center shadow-md`}
                   >
                     Stock In
                     <div
-                      className={`py-2 px-3 rounded-lg bg-red-700 hover:bg-red-800 transition-all duration-100`}
+                      className={`text-gray-100 py-2 px-3 rounded-lg bg-red-800 hover:bg-red-800 transition-all duration-100`}
                     >
-                      <UserPlusIcon className="size-5" />
+                      <CubeIcon className="size-5" />
                     </div>
                   </button>
                 </div>
@@ -167,24 +166,24 @@ export default function Inventory() {
               <div className="flex gap">
                 <button
                   onClick={toggleModal}
-                  className={`text-white bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center`}
+                  className={`text-gray-100 bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center shadow-md`}
                 >
                   Delivery Order
                   <div
-                    className={`py-2 px-3 rounded-lg bg-red-700 hover:bg-red-800 transition-all duration-100`}
+                    className={`py-2 px-3 rounded-lg bg-red-700  transition-all duration-100`}
                   >
-                    <UserPlusIcon className="size-5" />
+                    <TruckIcon className="size-5" />
                   </div>
                 </button>
                 <button
                   onClick={toggleModal}
-                  className={`text-white bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center`}
+                  className={`text-gray-100 bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center shadow-md`}
                 >
                   Walk-In Order
                   <div
-                    className={`py-2 px-3 rounded-lg bg-red-700 hover:bg-red-800 transition-all duration-100`}
+                    className={`py-2 px-3 rounded-lg bg-red-700  transition-all duration-100`}
                   >
-                    <UserPlusIcon className="size-5" />
+                    <GiftIcon className="size-5" />
                   </div>
                 </button>
               </div>

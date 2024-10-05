@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import Logo from "./Logo.png";
 import "../pages.css";
 import Table from "../DynamicTable";
-import api from "../../../api"
+import api from "../../../api";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 const StockInForm = ({ confirmHandler }) => {
   const [initialStockIn, setInitialStockIn] = useState([]);
@@ -52,7 +53,7 @@ const StockInForm = ({ confirmHandler }) => {
   const formArr = [
     {
       label: "Minimum Threshold",
-      name: "minimum_threshold",
+      name: "stock_minimum_threshold",
     },
     {
       label: "Quantity",
@@ -70,7 +71,7 @@ const StockInForm = ({ confirmHandler }) => {
     },
     {
       header: "Minimum Threshold",
-      row: "minimum_threshold",
+      row: "stock_minimum_threshold",
     },
     {
       header: "Quantity to add",
@@ -86,10 +87,6 @@ const StockInForm = ({ confirmHandler }) => {
   const [form, setForm] = useState(prepareForm(formArr));
   const initialForm = prepareForm(formArr);
 
-  // const onChangeHandler = (e) => {
-  //   setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
-  // };
-
   const onChangeHandler = (e, fieldName, extraData = {}) => {
     const { name, value } = e.target;
 
@@ -104,11 +101,11 @@ const StockInForm = ({ confirmHandler }) => {
   //SET FORM BACK TO OLD STATE
   const onSubmitHandler = () => {
     setInitialStockIn((prevStock) => {
-    const updatedStock = [...prevStock, form]; // Update stock
-    setForm(initialForm); // Reset the form
-    console.log(updatedStock); // This will now correctly log the updated stock
-    return updatedStock; // Return updated state
-  });
+      const updatedStock = [...prevStock, form]; // Update stock
+      setForm(initialForm); // Reset the form
+      console.log(updatedStock); // This will now correctly log the updated stock
+      return updatedStock; // Return updated state
+    });
   };
 
   // send data to database
@@ -116,23 +113,21 @@ const StockInForm = ({ confirmHandler }) => {
     console.log(initialStockIn);
 
     const inboundStockItems = initialStockIn.map((stockInItem) => ({
-      inventory: stockInItem.inventory_id,  // Assuming this is the inventory ID
-      supplier: stockInItem.supplier_id,    // Assuming this is the supplier ID
-      quantity: stockInItem.quantity || 0,  // Ensure quantity is not empty
+      inventory: stockInItem.inventory_id, // Assuming this is the inventory ID
+      supplier: stockInItem.supplier_id, // Assuming this is the supplier ID
+      quantity: stockInItem.quantity || 0, // Ensure quantity is not empty
     }));
 
     try {
-      const res = await api.post(
-        "http://127.0.0.1:8000/api/stockin/create",
-        {
-          inboundStockItems: inboundStockItems,
-        }
-      );
+      const res = await api.post("http://127.0.0.1:8000/api/stockin/create", {
+        inboundStockItems: inboundStockItems,
+      });
 
       console.log("Stocking in successful:", res.data);
     } catch (error) {
-      console.error("Error stocking in:", error);``
-    } 
+      console.error("Error stocking in:", error);
+      ``;
+    }
 
     window.location.reload();
   };
@@ -159,62 +154,79 @@ const StockInForm = ({ confirmHandler }) => {
                   <Table columnArr={tableColumns} dataArr={initialStockIn} />
                 </div>
                 <div className={`gap-x-6 gap-y-8 flex flex-wrap `}>
-                  <div className="flex gap-4">
+                  <div className="flex items-center gap-4">
                     {/* PRODUCT SELECT */}
                     <label className="font-bold">Product</label>
-
-                    <select
-                      className="text-lg min-w-[10vw] min-h-6 rounded-lg pl-2"
-                      required
-                      onChange={(e) =>
-                        onChangeHandler(e, "product_name", {
-                          inventory_id:
-                            e.target.selectedOptions[0].getAttribute("data-id"),
-                        })
-                      }
-                      name="product_name"
-                      defaultValue={``}
-                    >
-                      <option value="" disabled>
-                        Select A Product
-                      </option>
-                      {productOptions.map((option) => (
-                        <option
-                          key={option.id}
-                          value={option.product.product_name}
-                          data-id={option.id}
-                        >
-                          {`${option.product.product_name}`}
+                    <div className={`flex justify-center relative`}>
+                      <select
+                        className=" appearance-none shadow-shadowTable text-lg min-w-[10vw] min-h-6 p-2 w-full rounded-md border-2"
+                        required
+                        onChange={(e) =>
+                          onChangeHandler(e, "product_name", {
+                            inventory_id:
+                              e.target.selectedOptions[0].getAttribute(
+                                "data-id"
+                              ),
+                          })
+                        }
+                        name="product_name"
+                        defaultValue={``}
+                      >
+                        <option value="" disabled>
+                          Select A Product
                         </option>
-                      ))}
-                    </select>
+                        {productOptions.map((option) => (
+                          <option
+                            key={option.id}
+                            value={option.product.product_name}
+                            data-id={option.id}
+                          >
+                            {`${option.product.product_name}`}
+                          </option>
+                        ))}
+                      </select>
+                      <div>
+                        <ChevronDownIcon
+                          className={` size-4 h-full mr-2  absolute flex right-0 items-center justify-center`}
+                        />
+                      </div>
+                    </div>
                     {/* SUPPLIER SELECT */}
                     <label className="font-bold">Supplier</label>
-                    <select
-                      className="text-lg min-w-[10vw] min-h-6 rounded-lg pl-2"
-                      required
-                      onChange={(e) =>
-                        onChangeHandler(e, "supplier_name", {
-                          supplier_id:
-                            e.target.selectedOptions[0].getAttribute("data-id"),
-                        })
-                      }
-                      name="supplier_name"
-                      defaultValue={``}
-                    >
-                      <option value="" disabled>
-                        Select A Supplier
-                      </option>
-                      {supplier.map((sup) => (
-                        <option
-                          key={sup.id}
-                          value={sup.supplier_name}
-                          data-id={sup.id}
-                        >
-                          {`${sup.supplier_name}`}
+                    <div className={`flex justify-center relative`}>
+                      <select
+                        className="appearance-none shadow-shadowTable text-lg min-w-[10vw] min-h-6 p-2 w-full rounded-md border-2"
+                        required
+                        onChange={(e) =>
+                          onChangeHandler(e, "supplier_name", {
+                            supplier_id:
+                              e.target.selectedOptions[0].getAttribute(
+                                "data-id"
+                              ),
+                          })
+                        }
+                        name="supplier_name"
+                        defaultValue={``}
+                      >
+                        <option value="" disabled>
+                          Select A Supplier
                         </option>
-                      ))}
-                    </select>
+                        {supplier.map((sup) => (
+                          <option
+                            key={sup.id}
+                            value={sup.supplier_name}
+                            data-id={sup.id}
+                          >
+                            {`${sup.supplier_name}`}
+                          </option>
+                        ))}
+                      </select>
+                      <div>
+                        <ChevronDownIcon
+                          className={` size-4 h-full mr-2  absolute flex right-0 items-center justify-center`}
+                        />
+                      </div>
+                    </div>
                   </div>
                   {formArr.map(({ label, name, type, readOnly }, index) => (
                     <div
@@ -222,7 +234,7 @@ const StockInForm = ({ confirmHandler }) => {
                       key={index}
                     >
                       <input
-                        className={`text-base border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none`}
+                        className={`text-base border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none shadow-sm`}
                         readOnly={readOnly}
                         label={label}
                         id={name}
@@ -248,11 +260,10 @@ const StockInForm = ({ confirmHandler }) => {
                       onSubmitHandler();
                     }}
                     type="submit"
-                    className={`bg-white border-2 border-red-600 rounded px-4 py-2 hover:bg-red-600 hover:text-white transition-all duration-100 flex gap-4 items-center`}
+                    className={`shadow-md bg-white border-2 border-red-700 rounded px-4 py-2 hover:bg-red-700 hover:text-white transition-all duration-100 flex gap-4 items-center`}
                   >
                     Add Product to Stock In
                   </button>
-                  {/* CONFIRM BUTTON */}
                   <button
                     type="button"
                     onClick={(e) => {
@@ -260,7 +271,7 @@ const StockInForm = ({ confirmHandler }) => {
                         confirmButton();
                       }
                     }}
-                    className={` bg-white border-2 border-red-600 rounded px-4 py-2 hover:bg-red-600 hover:text-white transition-all duration-100 flex gap-4 items-center `}
+                    className={` shadow-md bg-white border-2 border-red-700 rounded px-4 py-2 hover:bg-red-700 hover:text-white transition-all duration-100 flex gap-4 items-center `}
                   >
                     Confirm Stock-In
                   </button>

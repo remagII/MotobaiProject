@@ -226,7 +226,7 @@ const Suppliers = () => {
               <div>
                 <button
                   onClick={toggleModal}
-                  className={`text-white bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center`}
+                  className={` shadow-md text-white bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center`}
                 >
                   Create Supplier
                   <div

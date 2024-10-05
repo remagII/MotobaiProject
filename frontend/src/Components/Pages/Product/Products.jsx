@@ -90,6 +90,10 @@ export default function Products() {
       label: "Brand",
       name: "brand",
     },
+    {
+      label: "Minimum Threshold",
+      name: "minimum_threshold",
+    },
   ];
 
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
@@ -123,6 +127,10 @@ export default function Products() {
     {
       header: "Brand",
       row: "brand",
+    },
+    {
+      header: "Minimum Threshold",
+      row: "minimum_threshold",
     },
   ];
 
@@ -263,7 +271,7 @@ export default function Products() {
               <div>
                 <button
                   onClick={toggleModal}
-                  className={`text-white bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center`}
+                  className={`shadow-md text-white bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center`}
                 >
                   Create Product
                   <div

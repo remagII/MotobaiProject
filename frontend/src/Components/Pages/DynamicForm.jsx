@@ -60,7 +60,7 @@ export default function DynamicForm({
                       key={index}
                     >
                       <input
-                        className={`text-base border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none`}
+                        className={`shadow-sm text-base border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none`}
                         readOnly={readOnly}
                         label={label}
                         id={name}
@@ -79,14 +79,15 @@ export default function DynamicForm({
                     </div>
                   ))}
                 </div>
-                <div className={`flex justify-end gap-4 mt-12`}>
+                <div className={`flex justify-end gap-4 mt-12 `}>
                   <button
+                    type="button"
                     onClick={(e) => {
                       {
                         deleteHandler(e);
                       }
                     }}
-                    className={`${deleteBtn} bg-white border-2 border-red-600 rounded px-4 py-2 hover:bg-red-600 hover:text-white transition-all duration-100 flex gap-4 items-center`}
+                    className={`${deleteBtn} shadow-md bg-white border-2 border-red-700 rounded px-4 py-2 hover:bg-red-700 hover:text-white transition-all duration-100 flex gap-4 items-center`}
                   >
                     {deleteBtnTitle}
                     {trashIcon}
@@ -97,7 +98,7 @@ export default function DynamicForm({
                       onsubmitHandler();
                     }}
                     type="submit"
-                    className={`bg-white border-2 border-red-600 rounded px-4 py-2 hover:bg-red-600 hover:text-white transition-all duration-100 flex gap-4 items-center`}
+                    className={`shadow-md bg-white border-2 border-red-700 rounded px-4 py-2 hover:bg-red-700 hover:text-white transition-all duration-100 flex gap-4 items-center`}
                   >
                     {btnTitle}
                     {icon}
