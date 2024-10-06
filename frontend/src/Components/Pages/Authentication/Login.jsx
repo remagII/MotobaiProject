@@ -1,4 +1,4 @@
-import Form from "../AuthForm"
+import Form from "../../AuthForm"
 
 function Login() {
     return <Form route="/api/token/" method="login" />

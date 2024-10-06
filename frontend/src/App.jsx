@@ -5,12 +5,12 @@ import WalkIn from "./Components/Pages/Customers/WalkIn";
 import Products from "./Components/Pages/Product/Products";
 import Inventory from "./Components/Pages/Inventory/Inventory";
 import StockLogs from "./Components/Pages/Inventory/StockLogs.jsx";
-import Orders from "./Components/Pages/Orders";
-import OrderList from "./Components/Pages/OrderList";
-import Login from "./Components/Pages/Login.jsx";
-import Register from "./Components/Pages/Register.jsx";
+import Orders from "./Components/Pages/Orders/Orders";
+import OrderList from "./Components/Pages/Orders/OrderList";
+import Login from "./Components/Pages/Authentication/Login.jsx";
+import Register from "./Components/Pages/Authentication/Register.jsx";
 import Suppliers from "./Components/Pages/Suppliers/Suppliers";
-
+import NotFound from "./Components/Pages/NotFound/NotFound";
 import { Route, Routes } from "react-router-dom";
 import Container from "./Components/Container.jsx";
 
@@ -32,14 +32,7 @@ function App() {
           <Route path="/stockinlogs" element={<StockLogs />} />
           <Route path="/" element={<Companies />} />
 
-          {/* 
-          LACKING PAGES:
-          - LOGIN 
-          - REGISTER
-          - NOT FOUND
-          - HOME PAGE
-          - ABOUT PAGE(optional)
-          */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Container>
     </>

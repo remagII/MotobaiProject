@@ -1,4 +1,4 @@
-import Form from "../AuthForm"
+import Form from "../../AuthForm"
 
 function Register() {
     return <Form route="/api/user/register/" method="register" />
