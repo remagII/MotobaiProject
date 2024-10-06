@@ -1,5 +1,5 @@
 import React from "react";
-import DynamicCustomLink from "../DynamicCustomLink";
+import DynamicCustomLink from "../DynamicComponents/DynamicCustomLink";
 
 const NavDropDown = ({ navigationArr }) => {
   return (

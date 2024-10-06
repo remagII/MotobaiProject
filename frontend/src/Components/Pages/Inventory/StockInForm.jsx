@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import Logo from "./Logo.png";
-import "../pages.css";
-import Table from "../DynamicTable";
+import Logo from "../../../assets/Logo.png";
+import "../../pages.css";
+import Table from "../../DynamicComponents/DynamicTable";
 import api from "../../../api";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 

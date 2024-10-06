@@ -3,8 +3,8 @@ import {
   UserPlusIcon,
   ArrowsPointingOutIcon,
 } from "@heroicons/react/24/outline";
-import Logo from "./Logo.png";
-import "./pages.css";
+import Logo from "../../assets/Logo.png";
+import "../pages.css";
 
 export default function DynamicForm({
   btnTitle,

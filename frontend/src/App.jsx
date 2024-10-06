@@ -1,6 +1,6 @@
 import "./App.css";
 import Header from "./Components/Header/Header.jsx";
-import Companies from "./Components/Pages/Customers/Companies";
+import Companies from "./Components/Pages/Customers/Accounts.jsx";
 import WalkIn from "./Components/Pages/Customers/WalkIn";
 import Products from "./Components/Pages/Product/Products";
 import Inventory from "./Components/Pages/Inventory/Inventory";
@@ -12,7 +12,7 @@ import Register from "./Components/Pages/Register.jsx";
 import Suppliers from "./Components/Pages/Suppliers/Suppliers";
 
 import { Route, Routes } from "react-router-dom";
-import Container from "./Components/Pages/Container";
+import Container from "./Components/Container.jsx";
 
 function App() {
   return (

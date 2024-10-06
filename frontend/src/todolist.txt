@@ -1,0 +1,16 @@
+NOTES:
+- Re organize folders / 
+- rename company -> accounts
+- inventory id -> sku
+- delete function on most fields
+- fix nav bar
+- remove high stock threshold
+- Fix date time in table
+- remove minimum threshold in stock-in; add min thresh on create product
+- details modal(see information of a row onclick)
+
+Todo Pages:
+- StockLogs
+- OrderList + Order History -> Order Management
+- Employee List
+- 

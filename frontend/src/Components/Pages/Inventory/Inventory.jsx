@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { GiftIcon, TruckIcon, CubeIcon } from "@heroicons/react/24/outline";
-import Table from "../DynamicTable.jsx";
-import Overview from "../Overview.jsx";
+import Table from "../../DynamicComponents/DynamicTable.jsx";
+import Overview from "../../Overview.jsx";
 import StockInForm from "./StockInForm.jsx";
-import DynamicModal from "../DynamicModal.jsx";
+import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
 
 export default function Inventory() {
   const [method, setMethod] = useState("");

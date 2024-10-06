@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./pages.css";
+import "../pages.css";
 
 export default function Table({ editRow, columnArr, dataArr }) {
   const getNestedValue = (obj, path) => {

@@ -5,8 +5,8 @@ import { ArchiveBoxArrowDownIcon } from "@heroicons/react/24/outline";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline";
 import { BuildingStorefrontIcon } from "@heroicons/react/24/outline";
-import NavDropDown from "../Pages/NavDropDown";
-import DynamicCustomLink from "../DynamicCustomLink";
+import NavDropDown from "./NavDropDown";
+import DynamicCustomLink from "../DynamicComponents/DynamicCustomLink";
 
 function Navigation() {
   const [dropDown, setDropDown] = useState(false);

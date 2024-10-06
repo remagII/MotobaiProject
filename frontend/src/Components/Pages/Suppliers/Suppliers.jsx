@@ -5,10 +5,10 @@ import {
   ArrowDownTrayIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
-import Table from "../DynamicTable.jsx";
-import Overview from "../Overview.jsx";
-import DynamicForm from "../DynamicForm.jsx";
-import DynamicModal from "../DynamicModal.jsx";
+import Table from "../../DynamicComponents/DynamicTable.jsx";
+import Overview from "../../Overview.jsx";
+import DynamicForm from "../../DynamicComponents/DynamicForm.jsx";
+import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
 import api from "../../../api";
 
 const Suppliers = () => {

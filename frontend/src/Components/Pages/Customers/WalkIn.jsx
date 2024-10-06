@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 
 import { UserPlusIcon, TrashIcon } from "@heroicons/react/24/outline";
-import Table from "../DynamicTable.jsx";
-import Overview from "../Overview.jsx";
-import DynamicForm from "../DynamicForm.jsx";
-import DynamicModal from "../DynamicModal.jsx";
+import Table from "../../DynamicComponents/DynamicTable.jsx";
+import Overview from "../../Overview.jsx";
+import DynamicForm from "../../DynamicComponents/DynamicForm.jsx";
+import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
 import api from "../../../api";
-import DynamicCustomLink from "../../DynamicCustomLink.jsx";
+import DynamicCustomLink from "../../DynamicComponents/DynamicCustomLink.jsx";
 const WalkIn = () => {
   const [method, setMethod] = useState("");
   const [modal, setModal] = useState(false);
