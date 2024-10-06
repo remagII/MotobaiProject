@@ -56,7 +56,8 @@ const WalkIn = () => {
         throw new Error("Failed to fetch customers");
       }
       const data = await response.json();
-      setCustomer(data); // ito ung data ng list of customers (customer)
+      const filteredData = data.filter(customer => !customer.is_deleted);
+      setCustomer(filteredData); // Set filtered customers
     } catch (error) {
       console.error("Error fetching customers:", error);
     }
@@ -64,7 +65,8 @@ const WalkIn = () => {
 
   //PROPS FOR <INPUT>
   const formArr = [
-    { label: "Customer Name", name: "customer_name" },
+    { label: "Customer Name", 
+      name: "customer_name" },
     {
       label: "Phone Number",
       name: "phone_number",
@@ -78,7 +80,8 @@ const WalkIn = () => {
       header: "Customer ID",
       row: "id",
     },
-    { header: "Customer Name", row: "customer_name" },
+    { header: "Customer Name", 
+      row: "customer_name" },
     {
       header: "Phone Number",
       row: "phone_number",
@@ -94,7 +97,6 @@ const WalkIn = () => {
     },
   ];
 
-  // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
   const overviewArr = [
     { title: "Walk-in Customers", quantity: `${customer.length}` },
   ];
@@ -102,6 +104,7 @@ const WalkIn = () => {
   const [loading, setLoading] = useState(false);
 
   const onSubmitHandler = async (form, callback) => {
+    console.log("submitting..");
     if (method === "create") {
       console.log("create method");
       if (rowToEdit === null) {
@@ -139,7 +142,6 @@ const WalkIn = () => {
       }
     } else if (method === "edit") {
       console.log(`edit method, id: ` + rowIdEdit);
-      ////////////////////////////////////////// CODE FOR EDITING DATA
       try {
         const res = await api.put(
           `http://127.0.0.1:8000/api/customer/update/${rowIdEdit}`,
@@ -171,27 +173,39 @@ const WalkIn = () => {
       }
 
       callback();
-    } else if (method === "delete") {
-      console.log("deleting... ")
-    }
+    } 
   };
   const [deleteBtn, setDeleteBtn] = useState(""); // HANDLES DELETE BUTTON STATE
   const [rowToEdit, setRowToEdit] = useState(null);
   const [rowIdEdit, setRowIdEdit] = useState(null);
   const [btnTitle, setBtnTitle] = useState("Create Customer");
-  const handleEditRow = (index) => {
+  const handleEditRow = (index, id) => {
     console.log("Editing row:", index); // just for troubleshoot
-    console.log("Customer ID:", customer[index]?.id); // just for troubleshoot
+    console.log("ID:", id); // just for troubleshoot
     toggleModal();
-    setRowIdEdit(customer[index]?.id); // need to make null after this is done
+    setRowIdEdit(id); // need to make null after this is done
     setRowToEdit(index);
     setMethod("edit");
     setBtnTitle("Edit Customer");
     setDeleteBtn("active");
   };
 
-  const deleteHandler = () => {
-    setMethod("delete");
+  const deleteHandler = async() => {
+    console.log(rowIdEdit);
+    try {
+      const res = await api.put(
+        `http://127.0.0.1:8000/api/customer/update/${rowIdEdit}`,
+        {
+          is_deleted : "True",
+        }
+      );
+      window.location.reload();
+      {
+        errorWindow ? toggleErrorWindow() : "";
+      }
+    } catch (error) {
+      console.error("Error deleting Customer:", error);
+    } 
   };
 
   return (

@@ -8,6 +8,8 @@ export default function Table({ editRow, columnArr, dataArr }) {
     );
   };
 
+  const filteredDataArr = dataArr.filter(item => !item.is_deleted);
+
   return (
     <section className={`h-full`}>
       <div
@@ -29,26 +31,34 @@ export default function Table({ editRow, columnArr, dataArr }) {
               </tr>
             </thead>
             <tbody>
-              {dataArr.map((item, index) => {
-                return (
-                  <tr
-                    onClick={() => editRow(index)}
-                    className={` bg-gray-100 hover:bg-red-700 hover:border-red-800 hover:text-white border-b-2 border-gray-200 transition-all duration-75 ease-in cursor-pointer`}
-                    key={item.id}
-                  >
-                    {columnArr.map((header, i) => (
-                      <td key={i} className={`p-4`}>
-                        {/* Check for customRender in columnArr, else render the value normally */}
-                        {header.customRender
-                          ? header.customRender(item)
-                          : header.row.includes(".")
-                          ? getNestedValue(item, header.row)
-                          : item[header.row] ?? "N/A"}
-                      </td>
-                    ))}
-                  </tr>
-                );
-              })}
+              {filteredDataArr.length > 0 ? (
+                filteredDataArr.map((item, index) => {
+                  return (
+                    <tr
+                      onClick={() => editRow(index, item.id)}
+                      className={` bg-gray-100 hover:bg-red-700 hover:border-red-800 hover:text-white border-b-2 border-gray-200 transition-all duration-75 ease-in cursor-pointer`}
+                      key={item.id}
+                    >
+                      {columnArr.map((header, i) => (
+                        <td key={i} className={`p-4`}>
+                          {/* Check for customRender in columnArr, else render the value normally */}
+                          {header.customRender
+                            ? header.customRender(item)
+                            : header.row.includes(".")
+                            ? getNestedValue(item, header.row)
+                            : item[header.row] ?? "N/A"}
+                        </td>
+                      ))}
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan={columnArr.length} className={`p-4 text-center`}>
+                    No data available
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

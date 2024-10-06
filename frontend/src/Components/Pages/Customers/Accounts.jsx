@@ -64,7 +64,8 @@ export default function Accounts() {
         throw new Error("Failed to fetch account");
       }
       const data = await response.json();
-      setAccount(data); // ito ung data ng list of accounts 
+      const filteredData = data.filter(account => !account.is_deleted);
+      setAccount(filteredData); 
     } catch (error) {
       console.error("Error fetching accounts:", error);
     }
@@ -240,39 +241,41 @@ export default function Accounts() {
       }
 
       callback();
-    } else if (method === "delete") {
-      // rename rowIdEdit to rowIdSelected or smth similar
-      try {
-        const res = await api.delete(
-          `http://127.0.0.1:8000/api/account/delete/${rowIdEdit}`
-        );
-        console.log("account deleted.");
-      } catch (error) {
-        // feel free to change here
-        console.log(error);
-      } finally {
-        setLoading(false);
-        setRowIdEdit(null); // ito ung Account id
-      }
-    }
+    } 
   };
   const [deleteBtn, setDeleteBtn] = useState(""); // HANDLES DELETE BUTTON STATE
   const [rowToEdit, setRowToEdit] = useState(null);
   const [rowIdEdit, setRowIdEdit] = useState(null);
   const [btnTitle, setBtnTitle] = useState("Create Account");
-  const handleEditRow = (index) => {
+  const handleEditRow = (index, id) => {
     console.log("Editing row:", index); // just for troubleshoot
-    console.log("Account ID:", account[index]?.id); // just for troubleshoot
+    console.log("ID:", id); // just for troubleshoot
     toggleModal();
-    setRowIdEdit(account[index]?.id); // need to make null after this is done
+    setRowIdEdit(id); // need to make null after this is done
     setRowToEdit(index);
     setMethod("edit");
     setBtnTitle("Edit Account");
     setDeleteBtn("active");
   };
 
-  const deleteHandler = () => {
-    setMethod("delete");
+  const deleteHandler = async() => {
+    console.log(rowIdEdit);
+    const accountToDelete = account.find(account => account.id === rowIdEdit);
+    try {
+      const res = await api.put(
+        `http://127.0.0.1:8000/api/account/update/${rowIdEdit}`,
+        {
+          ...accountToDelete,
+          is_deleted : true,
+        }
+      );
+      window.location.reload();
+      {
+        errorWindow ? toggleErrorWindow() : "";
+      }
+    } catch (error) {
+      console.error("Error deleting Account:", error.response.data);
+    } 
   };
 
   return (

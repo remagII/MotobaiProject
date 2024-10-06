@@ -5,6 +5,7 @@ NOTES:
 - details modal(see information of a row onclick)
 - StockLogs needs a detail view modal; also place the navigation button inside inventory
 - Detail View Modal sana for most features like employee, supplier, etc.
+- Order Management System not yet started (very big project)
 
 Todo Pages:
 - OrderList + Order History -> Order Management
@@ -29,3 +30,37 @@ const response = await fetch(
           }
         }
       );
+
+
+
+
+
+const filteredData = data.filter(customer => !customer.is_deleted);
+setCustomer(filteredData);
+
+const handleEditRow = (index, id) => {
+    console.log("Editing row:", index); // just for troubleshoot
+    console.log("ID:", id); // just for troubleshoot
+    toggleModal();
+    setRowIdEdit(id); // need to make null after this is done
+    setRowToEdit(index);
+    setMethod("edit");
+
+
+const deleteHandler = async() => {
+    console.log(rowIdEdit);
+    try {
+      const res = await api.put(
+        `http://127.0.0.1:8000/api/customer/update/${rowIdEdit}`,
+        {
+          is_deleted : "True",
+        }
+      );
+      window.location.reload();
+      {
+        errorWindow ? toggleErrorWindow() : "";
+      }
+    } catch (error) {
+      console.error("Error deleting Customer:", error);
+    } 
+  };

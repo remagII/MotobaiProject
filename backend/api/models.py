@@ -50,6 +50,8 @@ class Account(models.Model):
     phone_number = models.CharField(max_length=100)
     email = models.CharField(max_length=100)
     date_created = models.DateTimeField(auto_now_add=True)
+    
+    is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return '{}: {}'.format(self.account_name, self.representative_name)
@@ -58,6 +60,8 @@ class Customer(models.Model):
     customer_name = models.CharField(max_length=100, default='')
     phone_number = models.CharField(max_length=100, default='')
     date_created = models.DateTimeField(auto_now_add=True)
+
+    is_deleted = models.BooleanField(default=False)
 
 # DISCOUNT NOT YET ADDED 
 # CHOICES NOT COMPLETE

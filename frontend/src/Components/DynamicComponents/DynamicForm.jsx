@@ -18,14 +18,13 @@ export default function DynamicForm({
   deleteBtnTitle,
   trashIcon,
 }) {
-  //Makes array to OBJECT
   const prepareForm = () => {
     return formArr.reduce((acc, curr) => {
-      const keys = curr.name.split('.'); // Split for nested keys
+      const keys = curr.name.split('.'); 
       if (keys.length > 1) {
         acc[keys[0]] = { ...acc[keys[0]], [keys[1]]: "" };
       } else {
-        acc[curr.name] = ""; // For flat keys
+        acc[curr.name] = ""; 
       }
       return acc;
     }, {});
