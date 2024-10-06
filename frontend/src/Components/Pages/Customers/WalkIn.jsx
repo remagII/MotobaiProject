@@ -12,6 +12,7 @@ import DynamicCustomLink from "../../DynamicComponents/DynamicCustomLink.jsx";
 const WalkIn = () => {
   const [method, setMethod] = useState("");
   const [modal, setModal] = useState(false);
+
   const token = localStorage.getItem(ACCESS_TOKEN); 
 
   // MODAL TOGGLE
@@ -28,17 +29,13 @@ const WalkIn = () => {
 
   const [errorWindow, setErrorWindow] = useState(false);
 
-  // ERROR WINDOW TOGGLE
   const toggleErrorWindow = () => {
     setErrorWindow((e) => (e = !e));
   };
 
-  // ERROR TEXT
   const [errors, setErrors] = useState("");
   var errorFields = [];
 
-  /////////////////////////// BACKEND
-  // fetch customers
   const [customer, setCustomer] = useState([]);
 
   useEffect(() => {
@@ -47,12 +44,11 @@ const WalkIn = () => {
 
   const fetchCustomer = async () => {
     try {
-
       const response = await fetch("http://127.0.0.1:8000/api/customer/list?format=json", {
         method: "GET",
         headers: {
-          "Authorization": `Bearer ${token}`, // Include the token in the Authorization header
-          "Content-Type": "application/json" // Optional: specify content type
+          "Authorization": `Bearer ${token}`, 
+          "Content-Type": "application/json" 
         }
       });
 
@@ -177,18 +173,6 @@ const WalkIn = () => {
       callback();
     } else if (method === "delete") {
       console.log("deleting... ")
-      // rename rowIdEdit to rowIdSelected or smth similar
-      try {
-        const res = await api.delete(
-          `http://127.0.0.1:8000/api/customer/delete/${rowIdEdit}`
-        );
-        console.log("product deleted.");
-      } catch (error) {
-        // feel free to change here
-        console.log(error);
-      } finally {
-        setRowIdEdit(null); // ito ung customer id
-      }
     }
   };
   const [deleteBtn, setDeleteBtn] = useState(""); // HANDLES DELETE BUTTON STATE

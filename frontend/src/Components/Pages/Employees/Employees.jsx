@@ -2,16 +2,18 @@ import React, { useState, useEffect } from "react";
 
 import { ACCESS_TOKEN } from "../../../constants.js"; 
 
-import { UserPlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  UserPlusIcon,
+  ArrowDownTrayIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import Table from "../../DynamicComponents/DynamicTable.jsx";
 import Overview from "../../Overview.jsx";
 import DynamicForm from "../../DynamicComponents/DynamicForm.jsx";
 import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
-import api from "../../../api.js";
-import DynamicCustomLink from "../../DynamicComponents/DynamicCustomLink.jsx";
+import api from "../../../api";
 
-// WHOLE PAGE
-export default function Accounts() {
+const Employees = () => {
   const [method, setMethod] = useState("");
   const [modal, setModal] = useState(false);
 
@@ -20,7 +22,7 @@ export default function Accounts() {
   // MODAL TOGGLE
   const toggleModal = () => {
     setMethod("create");
-    setBtnTitle("Create Account");
+    setBtnTitle("Create Employee");
     setModal((m) => (m = !m));
     setDeleteBtn("inactive");
 
@@ -31,27 +33,23 @@ export default function Accounts() {
 
   const [errorWindow, setErrorWindow] = useState(false);
 
-  // ERROR WINDOW TOGGLE
   const toggleErrorWindow = () => {
     setErrorWindow((e) => (e = !e));
   };
 
-  // ERROR TEXT
   const [errors, setErrors] = useState("");
   var errorFields = [];
 
-  /////////////////////////// BACKEND
-  // fetch accounts
-  const [account, setAccount] = useState([]);
+  const [employee, setEmployee] = useState([]);
 
   useEffect(() => {
-    fetchAccount();
+    fetchEmployee();
   }, []);
 
-  const fetchAccount = async () => {
+  const fetchEmployee = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/account/list?format=json", {
+        "http://127.0.0.1:8000/api/employee/list?format=json", {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`, 
@@ -61,35 +59,28 @@ export default function Accounts() {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to fetch account");
+        throw new Error("Failed to fetch employee");
       }
       const data = await response.json();
-      setAccount(data); // ito ung data ng list of accounts 
+      setEmployee(data);
     } catch (error) {
-      console.error("Error fetching accounts:", error);
+      console.error("Error fetching employee:", error);
     }
   };
 
   //PROPS FOR <INPUT>
   const formArr = [
-    { label: "Account Name", 
-      name: "account" 
+    {
+      label: "First Name",
+      name: "first_name",
     },
     {
-      label: "Representative Name",
-      name: "representative_name",
+      label: "Middle Name",
+      name: "middle_name",
     },
     {
-      label: "Representative Position",
-      name: "representative_position",
-    },
-    {
-      label: "Phone Number",
-      name: "phone_number",
-    },
-    {
-      label: "Email",
-      name: "email",
+      label: "Last Name",
+      name: "last_name",
     },
     {
       label: "City",
@@ -103,52 +94,53 @@ export default function Accounts() {
       label: "Street",
       name: "street",
     },
+    {
+      label: "Phone Number",
+      name: "phone_number",
+    },
+    {
+      label: "Email",
+      name: "email",
+    },
   ];
 
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
 
   const tableColumns = [
     {
-      header: "Account ID",
+      header: "Employee ID",
       row: "id",
     },
-
     {
-      header: "Account Name",
-      row: "account",
-    },
-    {
-      header: "Name",
-      row: "representative_name",
-    },
-    {
-      header: "Position",
-      row: "representative_position",
+      header: "Employee Name",
+      customRender: (item) => {
+        return <p>{item.first_name} {item.middle_name} {item.last_name}</p>
+      },
     },
     {
       header: "City",
       row: "city",
     },
     {
-      header: "Phone number",
+      header: "Barangay",
+      row: "barangay",
+    },
+    {
+      header: "Street",
+      row: "street",
+    },
+    {
+      header: "Phone Number",
       row: "phone_number",
     },
     {
       header: "Email",
       row: "email",
     },
-    {
-      header: "Date Created",
-      customRender: (item) => {
-        const createdAtDate = new Date(item.date_created);
-        const formattedDate = `${createdAtDate.getMonth() + 1}/${createdAtDate.getDate()}/${createdAtDate.getFullYear()}`;
-
-        return <p>{formattedDate}</p>;
-      },
-    },
   ];
+
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
-  const overviewArr = [{ title: "Accounts", quantity: `${account.length}` }];
+  const overviewArr = [{ title: "Employees", quantity: `${employee.length}` }];
 
   /////////////////////////////////////////////////////////// BACKEND
 
@@ -162,16 +154,16 @@ export default function Accounts() {
       if (rowToEdit === null) {
         try {
           const res = await api.post(
-            "http://127.0.0.1:8000/api/account/create",
+            "http://127.0.0.1:8000/api/employee/create",
             {
-              account: form.account,
-              representative_name: form.representative_name,
-              representative_position: form.representative_position,
-              city: form.city,
-              barangay: form.barangay,
-              street: form.street,
-              phone_number: form.phone_number,
-              email: form.email,
+              first_name : form.first_name,
+              middle_name : form.middle_name,
+              last_name : form.last_name,
+              city : form.city,
+              barangay : form.barangay,
+              street : form.street, 
+              phone_number : form.phone_number,
+              email : form.email,
             }
           );
 
@@ -204,16 +196,16 @@ export default function Accounts() {
       ////////////////////////////////////////// CODE FOR EDITING DATA
       try {
         const res = await api.put(
-          `http://127.0.0.1:8000/api/account/update/${rowIdEdit}`,
+          `http://127.0.0.1:8000/api/employee/update/${rowIdEdit}`,
           {
-            account: form.account,
-            representative_name: form.representative_name,
-            representative_position: form.representative_position,
-            city: form.city,
-            barangay: form.barangay,
-            street: form.street,
-            phone_number: form.phone_number,
-            email: form.email,
+            first_name : form.first_name,
+            middle_name : form.middle_name,
+            last_name : form.last_name,
+            city : form.city,
+            barangay : form.barangay,
+            street : form.street, 
+            phone_number : form.phone_number,
+            email : form.email,
           }
         );
         window.location.reload();
@@ -236,7 +228,7 @@ export default function Accounts() {
         callback();
       } finally {
         setLoading(false);
-        setRowIdEdit(null); // ito ung Account id
+        setRowIdEdit(null);
       }
 
       callback();
@@ -244,30 +236,29 @@ export default function Accounts() {
       // rename rowIdEdit to rowIdSelected or smth similar
       try {
         const res = await api.delete(
-          `http://127.0.0.1:8000/api/account/delete/${rowIdEdit}`
+          `http://127.0.0.1:8000/api/employee/delete/${rowIdEdit}`
         );
-        console.log("account deleted.");
+        console.log("product deleted.");
       } catch (error) {
         // feel free to change here
         console.log(error);
       } finally {
         setLoading(false);
-        setRowIdEdit(null); // ito ung Account id
+        setRowIdEdit(null); // ito ung delete id
       }
     }
   };
+
   const [deleteBtn, setDeleteBtn] = useState(""); // HANDLES DELETE BUTTON STATE
   const [rowToEdit, setRowToEdit] = useState(null);
   const [rowIdEdit, setRowIdEdit] = useState(null);
-  const [btnTitle, setBtnTitle] = useState("Create Account");
+  const [btnTitle, setBtnTitle] = useState("Create Employee");
   const handleEditRow = (index) => {
-    console.log("Editing row:", index); // just for troubleshoot
-    console.log("Account ID:", account[index]?.id); // just for troubleshoot
     toggleModal();
-    setRowIdEdit(account[index]?.id); // need to make null after this is done
+    setRowIdEdit(employee[index]?.id);
     setRowToEdit(index);
     setMethod("edit");
-    setBtnTitle("Edit Account");
+    setBtnTitle("Edit Employee");
     setDeleteBtn("active");
   };
 
@@ -283,24 +274,18 @@ export default function Accounts() {
         <div className={`flex flex-col flex-1 m-4 `}>
           <div className={`m-4`}>
             <div className={`flex justify-between`}>
-              <h1 className={`text-3xl font-bold`}>Accounts</h1>
-              <div className={`flex`}>
-                <DynamicCustomLink to="/walkIn">
-                  <div>
-                    <UserPlusIcon className="size-6 " />
-                  </div>
-                  <p>Walk-In Customers</p>
-                </DynamicCustomLink>
+              <h1 className={`text-3xl font-bold`}>Employee</h1>
+              <div>
                 <button
                   onClick={toggleModal}
-                  className={`text-white bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center shadow-md`}
+                  className={` shadow-md text-white bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center`}
                 >
+                  Create Employee
                   <div
-                    className={`py-2 px-3 rounded-lg bg-red-700  transition-all duration-100`}
+                    className={`py-2 px-3 rounded-lg bg-red-700 hover:bg-red-800 transition-all duration-100`}
                   >
-                    <UserPlusIcon className="size-5" />
+                    <ArrowDownTrayIcon className="size-5" />
                   </div>
-                  Create Account
                 </button>
               </div>
             </div>
@@ -309,15 +294,15 @@ export default function Accounts() {
               <DynamicForm
                 error={errorFields}
                 btnTitle={btnTitle}
-                title={"Account"}
+                title={"Employee"}
                 deleteBtn={deleteBtn}
                 deleteHandler={deleteHandler}
-                deleteBtnTitle={"Delete Account"}
+                deleteBtnTitle={"Delete Employee"}
                 trashIcon={<TrashIcon className="size-5" />}
                 formArr={formArr}
                 onSubmit={onSubmitHandler}
-                defaultValue={rowToEdit !== null ? account[rowToEdit] : ""}
-                icon={<UserPlusIcon className="size-5" />}
+                defaultValue={rowToEdit !== null ? employee[rowToEdit] : ""}
+                icon={<ArrowDownTrayIcon className="size-5" />}
               />
             </DynamicModal>
 
@@ -342,11 +327,13 @@ export default function Accounts() {
           </div>
           <Table
             columnArr={tableColumns}
-            dataArr={account} 
+            dataArr={employee}
             editRow={handleEditRow}
           />
         </div>
       </div>
     </section>
   );
-}
+};
+
+export default Employees;

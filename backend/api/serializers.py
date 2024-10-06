@@ -36,6 +36,23 @@ class ProductSerializer(serializers.ModelSerializer):
         Inventory.objects.create(product=product, stock=0, stock_minimum_threshold=stock_minimum_threshold)
 
         return product
+    
+    def update(self, instance, validated_data):
+        # Update the product instance
+        instance = super().update(instance, validated_data)
+
+         # Update the stock_minimum_threshold if provided
+        stock_minimum_threshold = validated_data.get('stock_minimum_threshold', None)
+        
+        if stock_minimum_threshold is not None:
+            # Access the related inventory object using the reverse relationship
+            inventory_instance = instance.inventory_set.first()  # Get the first related inventory
+            
+            if inventory_instance:
+                inventory_instance.stock_minimum_threshold = stock_minimum_threshold
+                inventory_instance.save()
+
+        return instance
 
 # CUSTOMER
 class AccountSerializer(serializers.ModelSerializer):
@@ -59,7 +76,7 @@ class InboundStockSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = InboundStock
-        fields = ['inboundStockItems', 'date_created']
+        fields = ['id', 'inboundStockItems', 'date_created']
 
     def create(self, validated_data):
         inbound_stock_items_data = validated_data.pop('inboundStockItems')

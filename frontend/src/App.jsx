@@ -10,6 +10,7 @@ import OrderList from "./Components/Pages/Orders/OrderList";
 import Login from "./Components/Pages/Authentication/Login.jsx";
 import Register from "./Components/Pages/Authentication/Register.jsx";
 import Suppliers from "./Components/Pages/Suppliers/Suppliers";
+import Employees from "./Components/Pages/Employees/Employees";
 import NotFound from "./Components/Pages/NotFound/NotFound";
 import { Route, Routes } from "react-router-dom";
 import Container from "./Components/Container.jsx";
@@ -25,6 +26,7 @@ function App() {
           <Route path="/accounts" element={<Accounts />} />
           <Route path="/products" element={<Products />} />
           <Route path="/suppliers" element={<Suppliers />} />
+          <Route path="/employees" element={<Employees />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/orderList" element={<OrderList />} />

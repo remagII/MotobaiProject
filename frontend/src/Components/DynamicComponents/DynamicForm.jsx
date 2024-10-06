@@ -20,14 +20,35 @@ export default function DynamicForm({
 }) {
   //Makes array to OBJECT
   const prepareForm = () => {
-    return formArr.reduce((r, v) => ({ ...r, [v.name]: "" }), {});
+    return formArr.reduce((acc, curr) => {
+      const keys = curr.name.split('.'); // Split for nested keys
+      if (keys.length > 1) {
+        acc[keys[0]] = { ...acc[keys[0]], [keys[1]]: "" };
+      } else {
+        acc[curr.name] = ""; // For flat keys
+      }
+      return acc;
+    }, {});
   };
 
-  const [form, setForm] = useState(defaultValue || prepareForm(formArr));
-  const initialForm = prepareForm(formArr);
+  const [form, setForm] = useState(defaultValue || prepareForm());
+  const initialForm = prepareForm();
 
   const onChangeHandler = (e) => {
-    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    const keys = name.split('.'); // Handle nested state
+
+    if (keys.length > 1) {
+      setForm((prev) => ({
+        ...prev,
+        [keys[0]]: {
+          ...prev[keys[0]],
+          [keys[1]]: value,
+        },
+      }));
+    } else {
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   //SET FORM BACK TO OLD STATE
@@ -66,7 +87,7 @@ export default function DynamicForm({
                         id={name}
                         name={name}
                         type={type}
-                        value={form[name] || ""}
+                        value={form[name] || (name.includes('.') ? form[name.split('.')[0]][name.split('.')[1]] : "")}
                         onChange={(e) => onChangeHandler(e)}
                         required
                       ></input>

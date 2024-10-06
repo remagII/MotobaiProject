@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+
+import { ACCESS_TOKEN } from "../../../constants.js"; 
+
 import {
   UserPlusIcon,
   ArrowDownTrayIcon,
@@ -13,6 +16,8 @@ import api from "../../../api";
 export default function Products() {
   const [method, setMethod] = useState("");
   const [modal, setModal] = useState(false);
+
+  const token = localStorage.getItem(ACCESS_TOKEN); 
 
   // MODAL TOGGLE
   const toggleModal = () => {
@@ -50,7 +55,13 @@ export default function Products() {
   const fetchProduct = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/product/list?format=json"
+        "http://127.0.0.1:8000/api/inventory/list?format=json", {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json" 
+          }
+        }
       );
 
       if (!response.ok) {
@@ -67,28 +78,28 @@ export default function Products() {
   const formArr = [
     {
       label: "Product Name",
-      name: "product_name",
+      name: "product.product_name",
     },
     {
       label: "Price",
-      name: "price",
+      name: "product.price",
     },
     {
       label: "Product Type",
-      name: "product_type",
+      name: "product.product_type",
     },
     {
       label: "Description",
-      name: "description",
+      name: "product.description",
     },
     {
       label: "Vehicle Type",
-      name: "vehicle_type",
+      name: "product.vehicle_type",
     },
 
     {
       label: "Brand",
-      name: "brand",
+      name: "product.brand",
     },
     {
       label: "Stock Minimum Threshold",
@@ -101,32 +112,32 @@ export default function Products() {
   const tableColumns = [
     {
       header: "Product ID",
-      row: "id",
+      row: "product.id",
     },
 
     {
       header: "Product Name",
-      row: "product_name",
+      row: "product.product_name",
     },
     {
       header: "Price",
-      row: "price",
+      row: "product.price",
     },
     {
       header: "Product Type",
-      row: "product_type",
+      row: "product.product_type",
     },
     {
       header: "Description",
-      row: "description",
+      row: "product.description",
     },
     {
       header: "Vehicle type",
-      row: "vehicle_type",
+      row: "product.vehicle_type",
     },
     {
       header: "Brand",
-      row: "brand",
+      row: "product.brand",
     },
   ];
 
@@ -153,7 +164,7 @@ export default function Products() {
               description: form.description,
               vehicle_type: form.vehicle_type,
               brand: form.brand,
-              stock_minimum_threshold: form.stock_minimum_threshold
+              stock_minimum_threshold: form.stock_minimum_threshold,
             }
           );
 
@@ -187,12 +198,13 @@ export default function Products() {
         const res = await api.put(
           `http://127.0.0.1:8000/api/product/update/${rowIdEdit}`,
           {
-            product_name: form.product_name,
-            product_type: form.product_type,
-            price: form.price,
-            description: form.description,
-            vehicle_type: form.vehicle_type,
-            brand: form.brand,
+            product_name: form.product.product_name,
+            product_type: form.product.product_type,
+            price: form.product.price,
+            description: form.product.description,
+            vehicle_type: form.product.vehicle_type,
+            brand: form.product.brand,
+            stock_minimum_threshold: form.stock_minimum_threshold, 
           }
         );
         window.location.reload();

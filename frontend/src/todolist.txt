@@ -3,15 +3,29 @@ NOTES:
 - delete function on most fields (in progress)
 - optimize nav bar
 - details modal(see information of a row onclick)
-- fix authentication process on everything backend (in progress)
+- StockLogs needs a detail view modal; also place the navigation button inside inventory
+- Detail View Modal sana for most features like employee, supplier, etc.
 
 Todo Pages:
-- StockLogs
 - OrderList + Order History -> Order Management
-- Employee List
 - Dashboard/Landing Page
 - Authentication
 
 
 Extra Interview Questions:
 - Tama ba ung values na gina keep natin, ishow ung current lahat
+
+
+import { ACCESS_TOKEN } from "../../../constants.js"; 
+
+const token = localStorage.getItem(ACCESS_TOKEN); 
+
+const response = await fetch(
+        "http://127.0.0.1:8000/api/product/list?format=json", {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`, 
+            "Content-Type": "application/json" 
+          }
+        }
+      );

@@ -77,6 +77,18 @@ function Navigation() {
         </div>
         <p>Order History</p>
       </DynamicCustomLink>
+      <DynamicCustomLink to="/stockinlogs">
+        <div>
+          <ClipboardDocumentListIcon className="size-6 " />
+        </div>
+        <p>Stock-in Logs</p>
+      </DynamicCustomLink>
+      <DynamicCustomLink to="/employees">
+        <div>
+          <ClipboardDocumentListIcon className="size-6 " />
+        </div>
+        <p>Employees</p>
+      </DynamicCustomLink>
     </nav>
   );
 }

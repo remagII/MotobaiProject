@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { ACCESS_TOKEN } from "../../../constants.js"; 
 import {
   UserPlusIcon,
   ArrowsPointingOutIcon,
@@ -6,12 +7,11 @@ import {
 } from "@heroicons/react/24/outline";
 import Table from "../../DynamicComponents/DynamicTable.jsx";
 import Overview from "../../Overview.jsx";
-import StockInForm from "./StockInForm.jsx";
 import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
 
 export default function Inventory() {
+  const token = localStorage.getItem(ACCESS_TOKEN); 
   
-  // fetch 
   const [logs, setLogs] = useState([]);
 
   useEffect(() => {
@@ -21,7 +21,13 @@ export default function Inventory() {
   const fetchInboundStock = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/stockin/list?format=json"
+        "http://127.0.0.1:8000/api/stockin/list?format=json", {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`, 
+            "Content-Type": "application/json" 
+          }
+        }
       );
 
       if (!response.ok) {
@@ -45,13 +51,19 @@ export default function Inventory() {
     {
       header: "Number of Items",
       customRender: (item) => {
-        // count how many "inboundStockItems"
-        <p>{logs.length}</p>
+        return <p>{item.inboundStockItems.length}</p>;
       },
     },
     {
-      header: "Date Created",
-      row: "date_created",
+      header: "Date and Time Created",
+      customRender: (item) => {
+        const createdAtDate = new Date(item.date_created);
+        const options = { hour: 'numeric', minute: 'numeric', hour12: true }; // Options for formatting time
+        const formattedTime = createdAtDate.toLocaleString('en-US', options); // Format the time
+        const formattedDate = `${createdAtDate.getMonth() + 1}/${createdAtDate.getDate()}/${createdAtDate.getFullYear()} - ${formattedTime}`;
+
+        return <p>{formattedDate}</p>;
+      },
     },
   ];
 
@@ -66,7 +78,7 @@ export default function Inventory() {
         <div className={`flex flex-col flex-1 m-4 `}>
           <div className={`m-4`}>
             <div className={`flex justify-between`}>
-              <h1 className={`text-3xl font-bold`}>Stock-in Information</h1>
+              <h1 className={`text-3xl font-bold`}>Stock-in Information (please add me as a button in Inventory ty)</h1>
             </div>
             <Table
               columnArr={tableColumns}

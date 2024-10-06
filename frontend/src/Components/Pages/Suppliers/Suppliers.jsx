@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 
+import { ACCESS_TOKEN } from "../../../constants.js"; 
+
 import {
   UserPlusIcon,
   ArrowDownTrayIcon,
@@ -15,6 +17,8 @@ const Suppliers = () => {
   const [method, setMethod] = useState("");
   const [modal, setModal] = useState(false);
 
+  const token = localStorage.getItem(ACCESS_TOKEN); 
+
   // MODAL TOGGLE
   const toggleModal = () => {
     setMethod("create");
@@ -29,17 +33,13 @@ const Suppliers = () => {
 
   const [errorWindow, setErrorWindow] = useState(false);
 
-  // ERROR WINDOW TOGGLE
   const toggleErrorWindow = () => {
     setErrorWindow((e) => (e = !e));
   };
 
-  // ERROR TEXT
   const [errors, setErrors] = useState("");
   var errorFields = [];
 
-  /////////////////////////// BACKEND
-  // fetch supplier
   const [supplier, setSupplier] = useState([]);
 
   useEffect(() => {
@@ -49,7 +49,13 @@ const Suppliers = () => {
   const fetchSupplier = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/supplier/list?format=json"
+        "http://127.0.0.1:8000/api/supplier/list?format=json", {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`, 
+            "Content-Type": "application/json" 
+          }
+        }
       );
 
       if (!response.ok) {

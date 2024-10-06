@@ -42,5 +42,5 @@ urlpatterns = [
     path("employee/delete/<int:pk>", views.EmployeeDeleteView.as_view(), name="employee-delete"),
 
     path("stockin/create", views.InboundStockCreateView.as_view(), name="stockin-create"),
-    path("stockin/list", views.InboundStockListView.as_view(), name="stockin-list"),
+    path("stockin/list", views.InboundStockListView.as_view(), name="stockin-list"), 
 ]

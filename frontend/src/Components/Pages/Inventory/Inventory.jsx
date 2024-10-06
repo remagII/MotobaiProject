@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+
+import { ACCESS_TOKEN } from "../../../constants.js"; 
+
 import { GiftIcon, TruckIcon, CubeIcon } from "@heroicons/react/24/outline";
 import Table from "../../DynamicComponents/DynamicTable.jsx";
 import Overview from "../../Overview.jsx";
@@ -8,6 +11,8 @@ import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
 export default function Inventory() {
   const [method, setMethod] = useState("");
   const [modal, setModal] = useState(false);
+
+  const token = localStorage.getItem(ACCESS_TOKEN); 
 
   // MODAL TOGGLE
   const toggleModal = () => {
@@ -39,7 +44,13 @@ export default function Inventory() {
   const fetchInventory = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/inventory/list?format=json"
+        "http://127.0.0.1:8000/api/inventory/list?format=json", {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`, 
+            "Content-Type": "application/json" 
+          }
+        }
       );
 
       if (!response.ok) {

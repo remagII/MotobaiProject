@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+
+import { ACCESS_TOKEN } from "../../../constants.js"; 
+
 import Logo from "../../../assets/Logo.png";
 import "../../pages.css";
 import Table from "../../DynamicComponents/DynamicTable";
@@ -10,6 +13,8 @@ const StockInForm = ({ confirmHandler }) => {
   const [productOptions, setProductOptions] = useState([]);
   const [supplier, setSupplier] = useState([]);
 
+  const token = localStorage.getItem(ACCESS_TOKEN); 
+
   useEffect(() => {
     fetchProduct();
   }, []);
@@ -17,7 +22,13 @@ const StockInForm = ({ confirmHandler }) => {
   const fetchProduct = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/inventory/list?format=json"
+        "http://127.0.0.1:8000/api/inventory/list?format=json", {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`, 
+            "Content-Type": "application/json" 
+          }
+        }
       );
 
       if (!response.ok) {
@@ -37,7 +48,13 @@ const StockInForm = ({ confirmHandler }) => {
   const fetchSupplier = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/supplier/list?format=json"
+        "http://127.0.0.1:8000/api/supplier/list?format=json", {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`, 
+            "Content-Type": "application/json" 
+          }
+        }
       );
 
       if (!response.ok) {
