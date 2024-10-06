@@ -62,27 +62,27 @@ class AccountUpdateView(generics.RetrieveUpdateAPIView):
 class AccountDeleteView(generics.DestroyAPIView):
     queryset = Account.objects.all()
     serializer_class = AccountSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
 # Customer
 class CustomerAdd(generics.CreateAPIView):
     serializer_class = CustomerSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
 class CustomerListView(generics.ListAPIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
 class CustomerUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
 class CustomerDeleteView(generics.DestroyAPIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
 # ORDER
 class OrderAdd(generics.CreateAPIView):

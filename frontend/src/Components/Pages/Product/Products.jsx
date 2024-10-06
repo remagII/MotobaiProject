@@ -91,8 +91,8 @@ export default function Products() {
       name: "brand",
     },
     {
-      label: "Minimum Threshold",
-      name: "minimum_threshold",
+      label: "Stock Minimum Threshold",
+      name: "stock_minimum_threshold",
     },
   ];
 
@@ -128,10 +128,6 @@ export default function Products() {
       header: "Brand",
       row: "brand",
     },
-    {
-      header: "Minimum Threshold",
-      row: "minimum_threshold",
-    },
   ];
 
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
@@ -157,6 +153,7 @@ export default function Products() {
               description: form.description,
               vehicle_type: form.vehicle_type,
               brand: form.brand,
+              stock_minimum_threshold: form.stock_minimum_threshold
             }
           );
 
@@ -186,7 +183,6 @@ export default function Products() {
       }
     } else if (method === "edit") {
       console.log(`edit method, id: ` + rowIdEdit);
-      ////////////////////////////////////////// CODE FOR EDITING DATA
       try {
         const res = await api.put(
           `http://127.0.0.1:8000/api/product/update/${rowIdEdit}`,
@@ -224,7 +220,6 @@ export default function Products() {
 
       callback();
     } else if (method === "delete") {
-      // rename rowIdEdit to rowIdSelected or smth similar
       try {
         const res = await api.delete(
           `http://127.0.0.1:8000/api/product/delete/${rowIdEdit}`

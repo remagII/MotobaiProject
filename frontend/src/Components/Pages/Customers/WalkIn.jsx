@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 
+import { ACCESS_TOKEN } from "../../../constants.js"; 
+
 import { UserPlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Table from "../../DynamicComponents/DynamicTable.jsx";
 import Overview from "../../Overview.jsx";
@@ -10,6 +12,7 @@ import DynamicCustomLink from "../../DynamicComponents/DynamicCustomLink.jsx";
 const WalkIn = () => {
   const [method, setMethod] = useState("");
   const [modal, setModal] = useState(false);
+  const token = localStorage.getItem(ACCESS_TOKEN); 
 
   // MODAL TOGGLE
   const toggleModal = () => {
@@ -44,9 +47,14 @@ const WalkIn = () => {
 
   const fetchCustomer = async () => {
     try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/customer/list?format=json"
-      );
+
+      const response = await fetch("http://127.0.0.1:8000/api/customer/list?format=json", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`, // Include the token in the Authorization header
+          "Content-Type": "application/json" // Optional: specify content type
+        }
+      });
 
       if (!response.ok) {
         throw new Error("Failed to fetch customers");
@@ -81,7 +89,12 @@ const WalkIn = () => {
     },
     {
       header: "Date Created",
-      row: "date_created",
+      customRender: (item) => {
+        const createdAtDate = new Date(item.date_created);
+        const formattedDate = `${createdAtDate.getMonth() + 1}/${createdAtDate.getDate()}/${createdAtDate.getFullYear()}`;
+
+        return <p>{formattedDate}</p>;
+      },
     },
   ];
 
@@ -90,15 +103,11 @@ const WalkIn = () => {
     { title: "Walk-in Customers", quantity: `${customer.length}` },
   ];
 
-  /////////////////////////////////////////////////////////// BACKEND
-
   const [loading, setLoading] = useState(false);
 
   const onSubmitHandler = async (form, callback) => {
-    setLoading(true);
     if (method === "create") {
       console.log("create method");
-      ////////////////////////////////////////// CODE FOR SAVING DATA
       if (rowToEdit === null) {
         try {
           const res = await api.post(
@@ -130,7 +139,6 @@ const WalkIn = () => {
           }
           callback();
         } finally {
-          setLoading(false);
         }
       }
     } else if (method === "edit") {
@@ -163,12 +171,12 @@ const WalkIn = () => {
         }
         callback();
       } finally {
-        setLoading(false);
         setRowIdEdit(null); // ito ung customer id
       }
 
       callback();
     } else if (method === "delete") {
+      console.log("deleting... ")
       // rename rowIdEdit to rowIdSelected or smth similar
       try {
         const res = await api.delete(
@@ -179,7 +187,6 @@ const WalkIn = () => {
         // feel free to change here
         console.log(error);
       } finally {
-        setLoading(false);
         setRowIdEdit(null); // ito ung customer id
       }
     }

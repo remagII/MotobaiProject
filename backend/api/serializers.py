@@ -20,16 +20,20 @@ class UserSerializer(serializers.ModelSerializer):
 
 # PRODUCT
 class ProductSerializer(serializers.ModelSerializer):
+    stock_minimum_threshold = serializers.IntegerField(write_only=True, required=False, default=0)
+
     class Meta:
         model = Product
         fields = '__all__'
 
     def create(self, validated_data):
+        stock_minimum_threshold = validated_data.pop('stock_minimum_threshold', 0)
+        
         # Create the product
         product = super().create(validated_data)
 
         # Add the product to the inventory with default values
-        Inventory.objects.create(product=product, stock=0, stock_minimum_threshold=0)
+        Inventory.objects.create(product=product, stock=0, stock_minimum_threshold=stock_minimum_threshold)
 
         return product
 

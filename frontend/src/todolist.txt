@@ -1,16 +1,17 @@
 NOTES:
-- Re organize folders / 
-- rename company -> accounts /
 - inventory id -> sku
-- delete function on most fields
-- fix nav bar
-- remove high stock threshold
-- Fix date time in table
-- remove minimum threshold in stock-in; add min thresh on create product
+- delete function on most fields (in progress)
+- optimize nav bar
 - details modal(see information of a row onclick)
+- fix authentication process on everything backend (in progress)
 
 Todo Pages:
 - StockLogs
 - OrderList + Order History -> Order Management
 - Employee List
-- 
+- Dashboard/Landing Page
+- Authentication
+
+
+Extra Interview Questions:
+- Tama ba ung values na gina keep natin, ishow ung current lahat

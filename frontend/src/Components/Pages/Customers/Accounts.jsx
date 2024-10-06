@@ -128,7 +128,12 @@ export default function Accounts() {
     },
     {
       header: "Date Created",
-      row: "date_created",
+      customRender: (item) => {
+        const createdAtDate = new Date(item.date_created);
+        const formattedDate = `${createdAtDate.getMonth() + 1}/${createdAtDate.getDate()}/${createdAtDate.getFullYear()}`;
+
+        return <p>{formattedDate}</p>;
+      },
     },
   ];
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>

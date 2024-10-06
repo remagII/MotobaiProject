@@ -77,8 +77,8 @@ export default function Inventory() {
       row: "product.vehicle_type",
     },
     {
-      header: "Brand",
-      row: "product.brand",
+      header: "Threshold",
+      row: "stock_minimum_threshold",
     },
     {
       header: "Status",
@@ -87,13 +87,9 @@ export default function Inventory() {
           return <p className={`text-orange-500 font-bold`}>INACTIVE</p>;
         } else if (item.stock < item.stock_minimum_threshold) {
           return <p className={`text-yellow-500 font-bold`}>LOW STOCK</p>;
-        } else if (
-          item.stock == item.stock_maximum_threshold &&
-          item.stock > item.stock_minimum_threshold
-        ) {
-          return <p className={`text-green-600 font-bold`}>MAX STOCK</p>;
-        } else {
-          return <p className={`text-green-500 font-bold`}>HIGH STOCK</p>;
+        } 
+         else {
+          return <p className={`text-green-500 font-bold`}>ACTIVE</p>;
         }
       },
     },
