@@ -1,6 +1,6 @@
 import "./App.css";
 import Header from "./Components/Header/Header.jsx";
-import Companies from "./Components/Pages/Customers/Accounts.jsx";
+import Accounts from "./Components/Pages/Customers/Accounts.jsx";
 import WalkIn from "./Components/Pages/Customers/WalkIn";
 import Products from "./Components/Pages/Product/Products";
 import Inventory from "./Components/Pages/Inventory/Inventory";
@@ -22,7 +22,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/companies" element={<Companies />} />
+          <Route path="/accounts" element={<Accounts />} />
           <Route path="/products" element={<Products />} />
           <Route path="/suppliers" element={<Suppliers />} />
           <Route path="/inventory" element={<Inventory />} />
@@ -30,7 +30,7 @@ function App() {
           <Route path="/orderList" element={<OrderList />} />
           <Route path="/walkIn" element={<WalkIn />} />
           <Route path="/stockinlogs" element={<StockLogs />} />
-          <Route path="/" element={<Companies />} />
+          <Route path="/" element={<Accounts />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>

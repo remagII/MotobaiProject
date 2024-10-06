@@ -41,8 +41,8 @@ class InboundStock(models.Model):
         return 'Stock Entry: {} items on {}'.format(self.inboundStockItems.count(), self.date_created)
     
 
-class Company(models.Model):
-    company_name = models.CharField(max_length=100)
+class Account(models.Model):
+    account = models.CharField(max_length=100)
     representative_name = models.CharField(max_length=100)
     representative_position = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
@@ -53,7 +53,7 @@ class Company(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return '{}: {}'.format(self.company_name, self.representative_name)
+        return '{}: {}'.format(self.account_name, self.representative_name)
     
 class Customer(models.Model):
     customer_name = models.CharField(max_length=100, default='')
@@ -63,7 +63,7 @@ class Customer(models.Model):
 # DISCOUNT NOT YET ADDED 
 # CHOICES NOT COMPLETE
 class Order(models.Model): 
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True)
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True)
     customer_walk_in_name = models.CharField(max_length=100, null=True, blank=True)
     order_date = models.DateTimeField(auto_now_add=True)
     payment_method = models.CharField(max_length=32,
@@ -72,8 +72,8 @@ class Order(models.Model):
                                   ('cash', 'Cash'),
                               ], default='cash')
     def __str__(self):
-        if self.company:
-            return f'Order ID: {self.pk}, Company: {self.company.name}'
+        if self.account:
+            return f'Order ID: {self.pk}, Account: {self.account.name}'
         else:
             return f'Order ID: {self.pk}, Customer Walk-In Name: {self.customer_walk_in_name}'
 

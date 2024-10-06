@@ -8,14 +8,14 @@ import api from "../../../api.js";
 import DynamicCustomLink from "../../DynamicComponents/DynamicCustomLink.jsx";
 
 // WHOLE PAGE
-export default function Companies() {
+export default function Accounts() {
   const [method, setMethod] = useState("");
   const [modal, setModal] = useState(false);
 
   // MODAL TOGGLE
   const toggleModal = () => {
     setMethod("create");
-    setBtnTitle("Create Company");
+    setBtnTitle("Create Account");
     setModal((m) => (m = !m));
     setDeleteBtn("inactive");
 
@@ -36,32 +36,34 @@ export default function Companies() {
   var errorFields = [];
 
   /////////////////////////// BACKEND
-  // fetch companies
-  const [company, setCompany] = useState([]);
+  // fetch accounts
+  const [account, setAccount] = useState([]);
 
   useEffect(() => {
-    fetchCompany();
+    fetchAccount();
   }, []);
 
-  const fetchCompany = async () => {
+  const fetchAccount = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/company/list?format=json"
+        "http://127.0.0.1:8000/api/account/list?format=json"
       );
 
       if (!response.ok) {
-        throw new Error("Failed to fetch companies");
+        throw new Error("Failed to fetch account");
       }
       const data = await response.json();
-      setCompany(data); // ito ung data ng list of companies (company)
+      setAccount(data); // ito ung data ng list of accounts 
     } catch (error) {
-      console.error("Error fetching companies:", error);
+      console.error("Error fetching accounts:", error);
     }
   };
 
   //PROPS FOR <INPUT>
   const formArr = [
-    { label: "Company Name", name: "company_name" },
+    { label: "Account Name", 
+      name: "account" 
+    },
     {
       label: "Representative Name",
       name: "representative_name",
@@ -96,13 +98,13 @@ export default function Companies() {
 
   const tableColumns = [
     {
-      header: "Company ID",
+      header: "Account ID",
       row: "id",
     },
 
     {
-      header: "Company Name",
-      row: "company_name",
+      header: "Account Name",
+      row: "account",
     },
     {
       header: "Name",
@@ -130,7 +132,7 @@ export default function Companies() {
     },
   ];
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
-  const overviewArr = [{ title: "Companies", quantity: `${company.length}` }];
+  const overviewArr = [{ title: "Accounts", quantity: `${account.length}` }];
 
   /////////////////////////////////////////////////////////// BACKEND
 
@@ -144,9 +146,9 @@ export default function Companies() {
       if (rowToEdit === null) {
         try {
           const res = await api.post(
-            "http://127.0.0.1:8000/api/company/create",
+            "http://127.0.0.1:8000/api/account/create",
             {
-              company_name: form.company_name,
+              account: form.account,
               representative_name: form.representative_name,
               representative_position: form.representative_position,
               city: form.city,
@@ -186,9 +188,9 @@ export default function Companies() {
       ////////////////////////////////////////// CODE FOR EDITING DATA
       try {
         const res = await api.put(
-          `http://127.0.0.1:8000/api/company/update/${rowIdEdit}`,
+          `http://127.0.0.1:8000/api/account/update/${rowIdEdit}`,
           {
-            company_name: form.company_name,
+            account: form.account,
             representative_name: form.representative_name,
             representative_position: form.representative_position,
             city: form.city,
@@ -218,7 +220,7 @@ export default function Companies() {
         callback();
       } finally {
         setLoading(false);
-        setRowIdEdit(null); // ito ung company id
+        setRowIdEdit(null); // ito ung Account id
       }
 
       callback();
@@ -226,30 +228,30 @@ export default function Companies() {
       // rename rowIdEdit to rowIdSelected or smth similar
       try {
         const res = await api.delete(
-          `http://127.0.0.1:8000/api/company/delete/${rowIdEdit}`
+          `http://127.0.0.1:8000/api/account/delete/${rowIdEdit}`
         );
-        console.log("product deleted.");
+        console.log("account deleted.");
       } catch (error) {
         // feel free to change here
         console.log(error);
       } finally {
         setLoading(false);
-        setRowIdEdit(null); // ito ung company id
+        setRowIdEdit(null); // ito ung Account id
       }
     }
   };
   const [deleteBtn, setDeleteBtn] = useState(""); // HANDLES DELETE BUTTON STATE
   const [rowToEdit, setRowToEdit] = useState(null);
   const [rowIdEdit, setRowIdEdit] = useState(null);
-  const [btnTitle, setBtnTitle] = useState("Create Company");
+  const [btnTitle, setBtnTitle] = useState("Create Account");
   const handleEditRow = (index) => {
     console.log("Editing row:", index); // just for troubleshoot
-    console.log("Company ID:", company[index]?.id); // just for troubleshoot
+    console.log("Account ID:", account[index]?.id); // just for troubleshoot
     toggleModal();
-    setRowIdEdit(company[index]?.id); // need to make null after this is done
+    setRowIdEdit(account[index]?.id); // need to make null after this is done
     setRowToEdit(index);
     setMethod("edit");
-    setBtnTitle("Edit Company");
+    setBtnTitle("Edit Account");
     setDeleteBtn("active");
   };
 
@@ -265,7 +267,7 @@ export default function Companies() {
         <div className={`flex flex-col flex-1 m-4 `}>
           <div className={`m-4`}>
             <div className={`flex justify-between`}>
-              <h1 className={`text-3xl font-bold`}>Companies</h1>
+              <h1 className={`text-3xl font-bold`}>Accounts</h1>
               <div className={`flex`}>
                 <DynamicCustomLink to="/walkIn">
                   <div>
@@ -282,7 +284,7 @@ export default function Companies() {
                   >
                     <UserPlusIcon className="size-5" />
                   </div>
-                  Create Company
+                  Create Account
                 </button>
               </div>
             </div>
@@ -291,14 +293,14 @@ export default function Companies() {
               <DynamicForm
                 error={errorFields}
                 btnTitle={btnTitle}
-                title={"Company"}
+                title={"Account"}
                 deleteBtn={deleteBtn}
                 deleteHandler={deleteHandler}
-                deleteBtnTitle={"Delete Company"}
+                deleteBtnTitle={"Delete Account"}
                 trashIcon={<TrashIcon className="size-5" />}
                 formArr={formArr}
                 onSubmit={onSubmitHandler}
-                defaultValue={rowToEdit !== null ? company[rowToEdit] : ""}
+                defaultValue={rowToEdit !== null ? account[rowToEdit] : ""}
                 icon={<UserPlusIcon className="size-5" />}
               />
             </DynamicModal>
@@ -324,7 +326,7 @@ export default function Companies() {
           </div>
           <Table
             columnArr={tableColumns}
-            dataArr={company} // changed from companyArr
+            dataArr={account} 
             editRow={handleEditRow}
           />
         </div>

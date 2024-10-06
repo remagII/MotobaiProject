@@ -19,8 +19,8 @@ function Navigation() {
 
   const navigationArr = [
     {
-      route: "/companies",
-      navName: "Companies",
+      route: "/accounts",
+      navName: "Accounts",
     },
     {
       route: "/walkIn",
@@ -31,7 +31,7 @@ function Navigation() {
   return (
     <nav className=" flex ml-6 justify-between max-h-12 gap-4 text-base">
       <div className={`relative`} onMouseEnter={onHover}>
-        <DynamicCustomLink to="/companies">
+        <DynamicCustomLink to="/accounts">
           <div>
             <UserGroupIcon className="size-6 " />
           </div>

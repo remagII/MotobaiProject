@@ -20,7 +20,7 @@ function Form({ route, method }) {
       if (method === "login") {
         localStorage.setItem(ACCESS_TOKEN, res.data.access);
         localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-        navigate("/companies");
+        navigate("/accounts");
       } else {
         navigate("/login");
       }

@@ -1,6 +1,6 @@
 NOTES:
 - Re organize folders / 
-- rename company -> accounts
+- rename company -> accounts /
 - inventory id -> sku
 - delete function on most fields
 - fix nav bar

@@ -12,10 +12,10 @@ urlpatterns = [
     path("inventory/update/<int:pk>/", views.InventoryUpdateView.as_view(), name="inventory-update"),
     # path("inventory/create", views.InventoryAdd.as_view(), name="inventory-add"),
 
-    path("company/list", views.CompanyListView.as_view(), name="company-list"),
-    path("company/create", views.CompanyAdd.as_view(), name="company-add"),
-    path("company/update/<int:pk>", views.CompanyUpdateView.as_view(), name="company-update"),
-    path("company/delete/<int:pk>", views.CompanyDeleteView.as_view(), name="company-delete"),
+    path("account/list", views.AccountListView.as_view(), name="account-list"),
+    path("account/create", views.AccountAdd.as_view(), name="account-add"),
+    path("account/update/<int:pk>", views.AccountUpdateView.as_view(), name="account-update"),
+    path("account/delete/<int:pk>", views.AccountDeleteView.as_view(), name="account-delete"),
 
     path("customer/list", views.CustomerListView.as_view(), name="customer-list"),
     path("customer/create", views.CustomerAdd.as_view(), name="customer-add"),

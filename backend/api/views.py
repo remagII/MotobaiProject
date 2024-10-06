@@ -4,13 +4,13 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from .serializers import (
         UserSerializer, ProductSerializer, InventorySerializer, 
-        CompanySerializer, OrderDetailsSerializer, OrderSerializer, 
+        AccountSerializer, OrderDetailsSerializer, OrderSerializer, 
         OrderTrackingSerializer, CustomerSerializer, EmployeeSerializer, 
         SupplierSerializer, InboundStockSerializer
     )
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import (
-        Product, Inventory, Company, 
+        Product, Inventory, Account, 
         Order, OrderDetails, OrderTracking, 
         Customer, Employee, Supplier, 
         InboundStock, InboundStockItem
@@ -44,24 +44,24 @@ class ProductDeleteView(generics.DestroyAPIView):
     permission_classes = [AllowAny]
 
 
-# COMPANY
-class CompanyAdd(generics.CreateAPIView):
-    serializer_class = CompanySerializer
+# Account
+class AccountAdd(generics.CreateAPIView):
+    serializer_class = AccountSerializer
     permission_classes = [AllowAny]
 
-class CompanyListView(generics.ListAPIView):
-    queryset = Company.objects.all()
-    serializer_class = CompanySerializer
+class AccountListView(generics.ListAPIView):
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
     permission_classes = [AllowAny]
 
-class CompanyUpdateView(generics.RetrieveUpdateAPIView):
-    queryset = Company.objects.all()
-    serializer_class = CompanySerializer
+class AccountUpdateView(generics.RetrieveUpdateAPIView):
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
     permission_classes = [AllowAny]
 
-class CompanyDeleteView(generics.DestroyAPIView):
-    queryset = Company.objects.all()
-    serializer_class = CompanySerializer
+class AccountDeleteView(generics.DestroyAPIView):
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
     permission_classes = [AllowAny]
 
 # Customer

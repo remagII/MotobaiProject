@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from .models import (
-        Product, Inventory, Company, Order, OrderDetails,
+        Product, Inventory, Account, Order, OrderDetails,
         OrderTracking, Customer, Employee, Supplier, 
         InboundStock, InboundStockItem
     )
@@ -34,9 +34,9 @@ class ProductSerializer(serializers.ModelSerializer):
         return product
 
 # CUSTOMER
-class CompanySerializer(serializers.ModelSerializer):
+class AccountSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Company
+        model = Account
         fields = '__all__'
 
 class CustomerSerializer(serializers.ModelSerializer):
@@ -87,7 +87,7 @@ class InventorySerializer(serializers.ModelSerializer):
 
 # ORDER MANAGEMENT
 class OrderSerializer(serializers.ModelSerializer):
-    company = serializers.PrimaryKeyRelatedField(queryset=Company.objects.all())
+    account = serializers.PrimaryKeyRelatedField(queryset=Account.objects.all())
 
     class Meta:
         model = Order

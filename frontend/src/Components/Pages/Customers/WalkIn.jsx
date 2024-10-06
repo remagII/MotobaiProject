@@ -213,11 +213,11 @@ const WalkIn = () => {
             <div className={`flex justify-between`}>
               <h1 className={`text-3xl font-bold`}>Walk-In</h1>
               <div className={`flex`}>
-                <DynamicCustomLink to="/companies">
+                <DynamicCustomLink to="/accounts">
                   <div>
                     <UserPlusIcon className="size-6 " />
                   </div>
-                  <p>Company Customers</p>
+                  <p>Accounts</p>
                 </DynamicCustomLink>
                 <button
                   onClick={toggleModal}
