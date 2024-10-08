@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { ACCESS_TOKEN } from "../../../constants.js"; 
+import { ACCESS_TOKEN } from "../../../constants.js";
 
 import {
   UserPlusIcon,
@@ -17,7 +17,7 @@ export default function Products() {
   const [method, setMethod] = useState("");
   const [modal, setModal] = useState(false);
 
-  const token = localStorage.getItem(ACCESS_TOKEN); 
+  const token = localStorage.getItem(ACCESS_TOKEN);
 
   // MODAL TOGGLE
   const toggleModal = () => {
@@ -55,12 +55,13 @@ export default function Products() {
   const fetchProduct = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/inventory/list?format=json", {
+        "http://127.0.0.1:8000/api/inventory/list?format=json",
+        {
           method: "GET",
           headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json" 
-          }
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
       );
 
@@ -128,16 +129,18 @@ export default function Products() {
       row: "product.product_type",
     },
     {
-      header: "Description",
-      row: "product.description",
-    },
-    {
       header: "Vehicle type",
       row: "product.vehicle_type",
     },
     {
       header: "Brand",
       row: "product.brand",
+    },
+    {
+      header: "Minimum Treshold",
+      customRender: (item) => {
+        return <p className="font-semibold">{item.stock_minimum_threshold}</p>;
+      },
     },
   ];
 
@@ -151,6 +154,7 @@ export default function Products() {
   const onSubmitHandler = async (form, callback) => {
     setLoading(true);
     if (method === "create") {
+      console.log(form);
       console.log("create method");
       ////////////////////////////////////////// CODE FOR SAVING DATA
       if (rowToEdit === null) {
@@ -158,12 +162,12 @@ export default function Products() {
           const res = await api.post(
             "http://127.0.0.1:8000/api/product/create",
             {
-              product_name: form.product_name,
-              product_type: form.product_type,
-              price: form.price,
-              description: form.description,
-              vehicle_type: form.vehicle_type,
-              brand: form.brand,
+              product_name: form.product.product_name,
+              product_type: form.product.product_type,
+              price: form.product.price,
+              description: form.product.description,
+              vehicle_type: form.product.vehicle_type,
+              brand: form.product.brand,
               stock_minimum_threshold: form.stock_minimum_threshold,
             }
           );
@@ -178,10 +182,13 @@ export default function Products() {
           setRowToEdit(null);
           errorFields = [];
           toggleModal();
-          for (const [key, value] of Object.entries(form)) {
+          for (const [key, value] of Object.entries(form.product)) {
             if (!value) {
               errorFields.push(key);
             }
+          }
+          if (!form.stock_minimum_threshold) {
+            errorFields.push("stock_minimum_threshold");
           }
           setErrors((e) => errorFields.join(", "));
           {
@@ -204,7 +211,7 @@ export default function Products() {
             description: form.product.description,
             vehicle_type: form.product.vehicle_type,
             brand: form.product.brand,
-            stock_minimum_threshold: form.stock_minimum_threshold, 
+            stock_minimum_threshold: form.stock_minimum_threshold,
           }
         );
         window.location.reload();
@@ -215,10 +222,13 @@ export default function Products() {
         setRowToEdit(null);
         errorFields = [];
         toggleModal();
-        for (const [key, value] of Object.entries(form)) {
+        for (const [key, value] of Object.entries(form.product)) {
           if (!value) {
             errorFields.push(key);
           }
+        }
+        if (!form.stock_minimum_threshold) {
+          errorFields.push("stock_minimum_threshold");
         }
         setErrors((e) => errorFields.join(", "));
         {
@@ -292,7 +302,6 @@ export default function Products() {
 
             <DynamicModal modal={modal} toggleModal={toggleModal}>
               <DynamicForm
-                error={errorFields}
                 btnTitle={btnTitle}
                 title={"Product"}
                 deleteBtn={deleteBtn}

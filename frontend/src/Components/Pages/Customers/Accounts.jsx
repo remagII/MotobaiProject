@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { ACCESS_TOKEN } from "../../../constants.js"; 
+import { ACCESS_TOKEN } from "../../../constants.js";
 
 import { UserPlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Table from "../../DynamicComponents/DynamicTable.jsx";
@@ -15,7 +15,7 @@ export default function Accounts() {
   const [method, setMethod] = useState("");
   const [modal, setModal] = useState(false);
 
-  const token = localStorage.getItem(ACCESS_TOKEN); 
+  const token = localStorage.getItem(ACCESS_TOKEN);
 
   // MODAL TOGGLE
   const toggleModal = () => {
@@ -51,12 +51,13 @@ export default function Accounts() {
   const fetchAccount = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/account/list?format=json", {
+        "http://127.0.0.1:8000/api/account/list?format=json",
+        {
           method: "GET",
           headers: {
-            "Authorization": `Bearer ${token}`, 
-            "Content-Type": "application/json" 
-          }
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
       );
 
@@ -64,8 +65,8 @@ export default function Accounts() {
         throw new Error("Failed to fetch account");
       }
       const data = await response.json();
-      const filteredData = data.filter(account => !account.is_deleted);
-      setAccount(filteredData); 
+      const filteredData = data.filter((account) => !account.is_deleted);
+      setAccount(filteredData);
     } catch (error) {
       console.error("Error fetching accounts:", error);
     }
@@ -73,9 +74,7 @@ export default function Accounts() {
 
   //PROPS FOR <INPUT>
   const formArr = [
-    { label: "Account Name", 
-      name: "account" 
-    },
+    { label: "Account Name", name: "account" },
     {
       label: "Representative Name",
       name: "representative_name",
@@ -142,7 +141,9 @@ export default function Accounts() {
       header: "Date Created",
       customRender: (item) => {
         const createdAtDate = new Date(item.date_created);
-        const formattedDate = `${createdAtDate.getMonth() + 1}/${createdAtDate.getDate()}/${createdAtDate.getFullYear()}`;
+        const formattedDate = `${
+          createdAtDate.getMonth() + 1
+        }/${createdAtDate.getDate()}/${createdAtDate.getFullYear()}`;
 
         return <p>{formattedDate}</p>;
       },
@@ -241,7 +242,7 @@ export default function Accounts() {
       }
 
       callback();
-    } 
+    }
   };
   const [deleteBtn, setDeleteBtn] = useState(""); // HANDLES DELETE BUTTON STATE
   const [rowToEdit, setRowToEdit] = useState(null);
@@ -258,15 +259,15 @@ export default function Accounts() {
     setDeleteBtn("active");
   };
 
-  const deleteHandler = async() => {
+  const deleteHandler = async () => {
     console.log(rowIdEdit);
-    const accountToDelete = account.find(account => account.id === rowIdEdit);
+    const accountToDelete = account.find((account) => account.id === rowIdEdit);
     try {
       const res = await api.put(
         `http://127.0.0.1:8000/api/account/update/${rowIdEdit}`,
         {
           ...accountToDelete,
-          is_deleted : true,
+          is_deleted: true,
         }
       );
       window.location.reload();
@@ -275,7 +276,7 @@ export default function Accounts() {
       }
     } catch (error) {
       console.error("Error deleting Account:", error.response.data);
-    } 
+    }
   };
 
   return (
@@ -310,7 +311,6 @@ export default function Accounts() {
 
             <DynamicModal modal={modal} toggleModal={toggleModal}>
               <DynamicForm
-                error={errorFields}
                 btnTitle={btnTitle}
                 title={"Account"}
                 deleteBtn={deleteBtn}
@@ -345,7 +345,7 @@ export default function Accounts() {
           </div>
           <Table
             columnArr={tableColumns}
-            dataArr={account} 
+            dataArr={account}
             editRow={handleEditRow}
           />
         </div>

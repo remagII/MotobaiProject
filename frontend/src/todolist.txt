@@ -6,6 +6,10 @@ NOTES:
 - StockLogs needs a detail view modal; also place the navigation button inside inventory
 - Detail View Modal sana for most features like employee, supplier, etc.
 - Order Management System not yet started (very big project)
+- Catch error for EDIT in products
+- Fix editing product price affecting past product orders
+- Revert/Delete row in initial Stock-In
+- Walki-in in progress shit
 
 Todo Pages:
 - OrderList + Order History -> Order Management

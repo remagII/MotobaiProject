@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { ACCESS_TOKEN } from "../../../constants.js"; 
+import { ACCESS_TOKEN } from "../../../constants.js";
 
 import { UserPlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Table from "../../DynamicComponents/DynamicTable.jsx";
@@ -13,7 +13,7 @@ const WalkIn = () => {
   const [method, setMethod] = useState("");
   const [modal, setModal] = useState(false);
 
-  const token = localStorage.getItem(ACCESS_TOKEN); 
+  const token = localStorage.getItem(ACCESS_TOKEN);
 
   // MODAL TOGGLE
   const toggleModal = () => {
@@ -44,19 +44,22 @@ const WalkIn = () => {
 
   const fetchCustomer = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/customer/list?format=json", {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${token}`, 
-          "Content-Type": "application/json" 
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/customer/list?format=json",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
-      });
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch customers");
       }
       const data = await response.json();
-      const filteredData = data.filter(customer => !customer.is_deleted);
+      const filteredData = data.filter((customer) => !customer.is_deleted);
       setCustomer(filteredData); // Set filtered customers
     } catch (error) {
       console.error("Error fetching customers:", error);
@@ -65,8 +68,7 @@ const WalkIn = () => {
 
   //PROPS FOR <INPUT>
   const formArr = [
-    { label: "Customer Name", 
-      name: "customer_name" },
+    { label: "Customer Name", name: "customer_name" },
     {
       label: "Phone Number",
       name: "phone_number",
@@ -80,8 +82,7 @@ const WalkIn = () => {
       header: "Customer ID",
       row: "id",
     },
-    { header: "Customer Name", 
-      row: "customer_name" },
+    { header: "Customer Name", row: "customer_name" },
     {
       header: "Phone Number",
       row: "phone_number",
@@ -90,7 +91,9 @@ const WalkIn = () => {
       header: "Date Created",
       customRender: (item) => {
         const createdAtDate = new Date(item.date_created);
-        const formattedDate = `${createdAtDate.getMonth() + 1}/${createdAtDate.getDate()}/${createdAtDate.getFullYear()}`;
+        const formattedDate = `${
+          createdAtDate.getMonth() + 1
+        }/${createdAtDate.getDate()}/${createdAtDate.getFullYear()}`;
 
         return <p>{formattedDate}</p>;
       },
@@ -173,7 +176,7 @@ const WalkIn = () => {
       }
 
       callback();
-    } 
+    }
   };
   const [deleteBtn, setDeleteBtn] = useState(""); // HANDLES DELETE BUTTON STATE
   const [rowToEdit, setRowToEdit] = useState(null);
@@ -190,13 +193,13 @@ const WalkIn = () => {
     setDeleteBtn("active");
   };
 
-  const deleteHandler = async() => {
+  const deleteHandler = async () => {
     console.log(rowIdEdit);
     try {
       const res = await api.put(
         `http://127.0.0.1:8000/api/customer/update/${rowIdEdit}`,
         {
-          is_deleted : "True",
+          is_deleted: "True",
         }
       );
       window.location.reload();
@@ -205,7 +208,7 @@ const WalkIn = () => {
       }
     } catch (error) {
       console.error("Error deleting Customer:", error);
-    } 
+    }
   };
 
   return (
@@ -222,7 +225,7 @@ const WalkIn = () => {
                   <div>
                     <UserPlusIcon className="size-6 " />
                   </div>
-                  <p>Accounts</p>
+                  <p>Walk In</p>
                 </DynamicCustomLink>
                 <button
                   onClick={toggleModal}

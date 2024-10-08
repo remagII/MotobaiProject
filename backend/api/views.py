@@ -181,4 +181,4 @@ class InboundStockCreateView(generics.CreateAPIView):
 class InboundStockListView(generics.ListAPIView):
     queryset = InboundStock.objects.all()
     serializer_class = InboundStockSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]

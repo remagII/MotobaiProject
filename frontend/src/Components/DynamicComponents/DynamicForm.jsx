@@ -20,11 +20,11 @@ export default function DynamicForm({
 }) {
   const prepareForm = () => {
     return formArr.reduce((acc, curr) => {
-      const keys = curr.name.split('.'); 
+      const keys = curr.name.split(".");
       if (keys.length > 1) {
         acc[keys[0]] = { ...acc[keys[0]], [keys[1]]: "" };
       } else {
-        acc[curr.name] = ""; 
+        acc[curr.name] = "";
       }
       return acc;
     }, {});
@@ -35,7 +35,7 @@ export default function DynamicForm({
 
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
-    const keys = name.split('.'); // Handle nested state
+    const keys = name.split("."); // Handle nested state
 
     if (keys.length > 1) {
       setForm((prev) => ({
@@ -80,13 +80,18 @@ export default function DynamicForm({
                       key={index}
                     >
                       <input
-                        className={`shadow-sm text-base border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none`}
+                        className={`shadow-inner text-base border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none`}
                         readOnly={readOnly}
                         label={label}
                         id={name}
                         name={name}
                         type={type}
-                        value={form[name] || (name.includes('.') ? form[name.split('.')[0]][name.split('.')[1]] : "")}
+                        value={
+                          form[name] ||
+                          (name.includes(".")
+                            ? form[name.split(".")[0]][name.split(".")[1]]
+                            : "")
+                        }
                         onChange={(e) => onChangeHandler(e)}
                         required
                       ></input>

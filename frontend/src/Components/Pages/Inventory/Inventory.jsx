@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { ACCESS_TOKEN } from "../../../constants.js"; 
+import { ACCESS_TOKEN } from "../../../constants.js";
 
 import { GiftIcon, TruckIcon, CubeIcon } from "@heroicons/react/24/outline";
 import Table from "../../DynamicComponents/DynamicTable.jsx";
@@ -12,7 +12,7 @@ export default function Inventory() {
   const [method, setMethod] = useState("");
   const [modal, setModal] = useState(false);
 
-  const token = localStorage.getItem(ACCESS_TOKEN); 
+  const token = localStorage.getItem(ACCESS_TOKEN);
 
   // MODAL TOGGLE
   const toggleModal = () => {
@@ -44,12 +44,13 @@ export default function Inventory() {
   const fetchInventory = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/inventory/list?format=json", {
+        "http://127.0.0.1:8000/api/inventory/list?format=json",
+        {
           method: "GET",
           headers: {
-            "Authorization": `Bearer ${token}`, 
-            "Content-Type": "application/json" 
-          }
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
       );
 
@@ -89,7 +90,9 @@ export default function Inventory() {
     },
     {
       header: "Threshold",
-      row: "stock_minimum_threshold",
+      customRender: (item) => {
+        return <p className="font-semibold">{item.stock_minimum_threshold}</p>;
+      },
     },
     {
       header: "Status",
@@ -98,15 +101,16 @@ export default function Inventory() {
           return <p className={`text-orange-500 font-bold`}>INACTIVE</p>;
         } else if (item.stock < item.stock_minimum_threshold) {
           return <p className={`text-yellow-500 font-bold`}>LOW STOCK</p>;
-        } 
-         else {
+        } else {
           return <p className={`text-green-500 font-bold`}>ACTIVE</p>;
         }
       },
     },
     {
       header: "Quantity",
-      row: "stock",
+      customRender: (item) => {
+        return <p className="font-bold">{item.stock}</p>;
+      },
     },
   ];
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { ACCESS_TOKEN } from "../../../constants.js"; 
+import { ACCESS_TOKEN } from "../../../constants.js";
 
 import Logo from "../../../assets/Logo.png";
 import "../../pages.css";
@@ -13,7 +13,7 @@ const StockInForm = ({ confirmHandler }) => {
   const [productOptions, setProductOptions] = useState([]);
   const [supplier, setSupplier] = useState([]);
 
-  const token = localStorage.getItem(ACCESS_TOKEN); 
+  const token = localStorage.getItem(ACCESS_TOKEN);
 
   useEffect(() => {
     fetchProduct();
@@ -22,12 +22,13 @@ const StockInForm = ({ confirmHandler }) => {
   const fetchProduct = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/inventory/list?format=json", {
+        "http://127.0.0.1:8000/api/inventory/list?format=json",
+        {
           method: "GET",
           headers: {
-            "Authorization": `Bearer ${token}`, 
-            "Content-Type": "application/json" 
-          }
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
       );
 
@@ -48,12 +49,13 @@ const StockInForm = ({ confirmHandler }) => {
   const fetchSupplier = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/supplier/list?format=json", {
+        "http://127.0.0.1:8000/api/supplier/list?format=json",
+        {
           method: "GET",
           headers: {
-            "Authorization": `Bearer ${token}`, 
-            "Content-Type": "application/json" 
-          }
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
       );
 
@@ -69,10 +71,6 @@ const StockInForm = ({ confirmHandler }) => {
 
   const formArr = [
     {
-      label: "Minimum Threshold",
-      name: "stock_minimum_threshold",
-    },
-    {
       label: "Quantity",
       name: "quantity",
     },
@@ -86,10 +84,7 @@ const StockInForm = ({ confirmHandler }) => {
       header: "Supplier Name",
       row: "supplier_name",
     },
-    {
-      header: "Minimum Threshold",
-      row: "stock_minimum_threshold",
-    },
+
     {
       header: "Quantity to add",
       row: "quantity",
@@ -167,8 +162,12 @@ const StockInForm = ({ confirmHandler }) => {
             <form onSubmit={confirmHandler} className={`min-w-[65vw] `}>
               <div className={`bg-gray-100 py-10 px-8 h-[75vh]  rounded-b-lg`}>
                 <h1 className="font-bold text-2xl mb-10">Stock In</h1>
-                <div className="mb-12 ml-4 min-h-[40vh] max-h-[40vh] overflow-hidden">
-                  <Table columnArr={tableColumns} dataArr={initialStockIn} />
+                <div className="mb-12 ml-4 min-h-[40vh] max-h-[40vh] overflow-y-hidden">
+                  <Table
+                    columnArr={tableColumns}
+                    dataArr={initialStockIn}
+                    className={`!max-h-[40vh]`}
+                  />
                 </div>
                 <div className={`gap-x-6 gap-y-8 flex flex-wrap `}>
                   <div className="flex items-center gap-4">
@@ -176,7 +175,7 @@ const StockInForm = ({ confirmHandler }) => {
                     <label className="font-bold">Product</label>
                     <div className={`flex justify-center relative`}>
                       <select
-                        className=" appearance-none shadow-shadowTable text-lg min-w-[10vw] min-h-6 p-2 w-full rounded-md border-2"
+                        className="overflow-y-auto appearance-none shadow-shadowTable text-lg min-w-[10vw] min-h-6 p-2 w-full rounded-md border-2"
                         required
                         onChange={(e) =>
                           onChangeHandler(e, "product_name", {

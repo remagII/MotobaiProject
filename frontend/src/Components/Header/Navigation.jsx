@@ -9,18 +9,22 @@ import NavDropDown from "./NavDropDown";
 import DynamicCustomLink from "../DynamicComponents/DynamicCustomLink";
 
 function Navigation() {
-  const [dropDown, setDropDown] = useState(false);
+  const [accountDropDown, setAccountDropDown] = useState(false);
+  const [inventoryDropDown, setInventoryDropDown] = useState(false);
 
-  const onHover = () => {
-    setDropDown((d) => (d = !d));
+  const onHoverAccounts = () => {
+    setAccountDropDown((d) => (d = !d));
+  };
+  const onHoverInventory = () => {
+    setInventoryDropDown((d) => (d = !d));
   };
 
   // DROPWDOWN TEMPLATE
 
-  const navigationArr = [
+  const accountNavigationArr = [
     {
       route: "/accounts",
-      navName: "Accounts",
+      navName: "Companies",
     },
     {
       route: "/walkIn",
@@ -28,23 +32,40 @@ function Navigation() {
     },
   ];
 
+  const inventoryNavigationArr = [
+    {
+      route: "/stockinlogs",
+      navName: "Logs",
+    },
+  ];
+
   return (
     <nav className=" flex ml-6 justify-between max-h-12 gap-4 text-base">
-      <div className={`relative`} onMouseEnter={onHover}>
+      <div className={`relative`} onMouseEnter={onHoverAccounts}>
         <DynamicCustomLink to="/accounts">
           <div>
             <UserGroupIcon className="size-6 " />
           </div>
-          <p>Customers</p>
+          <p>Accounts</p>
         </DynamicCustomLink>
-        <div onMouseEnter={onHover} onMouseLeave={onHover}>
-          {dropDown && (
-            <div className={`absolute mt-2 flex flex-col item-center`}>
-              <NavDropDown navigationArr={navigationArr} />
+        <div
+          className="absolute mt-2"
+          onMouseEnter={onHoverAccounts}
+          onMouseLeave={onHoverAccounts}
+        >
+          {accountDropDown && (
+            <div className={`flex flex-col item-center`}>
+              <NavDropDown navigationArr={accountNavigationArr} />
             </div>
           )}
         </div>
       </div>
+      <DynamicCustomLink to="/employees">
+        <div>
+          <ClipboardDocumentListIcon className="size-6 " />
+        </div>
+        <p>Employees</p>
+      </DynamicCustomLink>
       <DynamicCustomLink to="/products">
         <div>
           <ArchiveBoxIcon className="size-6 " />
@@ -59,12 +80,25 @@ function Navigation() {
         <p>Suppliers</p>
       </DynamicCustomLink>
 
-      <DynamicCustomLink to="/inventory">
-        <div>
-          <ArchiveBoxArrowDownIcon className="size-6 " />
+      <div className={`relative `} onMouseEnter={onHoverInventory}>
+        <DynamicCustomLink to="/inventory">
+          <div>
+            <ArchiveBoxArrowDownIcon className="size-6 " />
+          </div>
+          <p>Inventory</p>
+        </DynamicCustomLink>
+        <div
+          className="absolute mt-2 w-12"
+          onMouseEnter={onHoverInventory}
+          onMouseLeave={onHoverInventory}
+        >
+          {inventoryDropDown && (
+            <div className={`flex flex-col item-center `}>
+              <NavDropDown navigationArr={inventoryNavigationArr} />
+            </div>
+          )}
         </div>
-        <p>Inventory</p>
-      </DynamicCustomLink>
+      </div>
       <DynamicCustomLink to="/orders">
         <div>
           <ShoppingCartIcon className="size-6 " />
@@ -76,18 +110,6 @@ function Navigation() {
           <ClipboardDocumentListIcon className="size-6 " />
         </div>
         <p>Order History</p>
-      </DynamicCustomLink>
-      <DynamicCustomLink to="/stockinlogs">
-        <div>
-          <ClipboardDocumentListIcon className="size-6 " />
-        </div>
-        <p>Stock-in Logs</p>
-      </DynamicCustomLink>
-      <DynamicCustomLink to="/employees">
-        <div>
-          <ClipboardDocumentListIcon className="size-6 " />
-        </div>
-        <p>Employees</p>
       </DynamicCustomLink>
     </nav>
   );

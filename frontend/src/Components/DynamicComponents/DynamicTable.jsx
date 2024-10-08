@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import "../pages.css";
 
-export default function Table({ editRow, columnArr, dataArr }) {
+export default function Table({ editRow, columnArr, dataArr, className }) {
   const getNestedValue = (obj, path) => {
     return (
       path.split(".").reduce((acc, part) => acc && acc[part], obj) || "N/A"
     );
   };
 
-  const filteredDataArr = dataArr.filter(item => !item.is_deleted);
+  const filteredDataArr = dataArr.filter((item) => !item.is_deleted);
 
   return (
     <section className={`h-full`}>
       <div
-        className={`overflow-y-auto shadow-shadowTable max-h-[61vh] mt-4 mr-6 rounded-lg `}
+        className={`overflow-y-auto shadow-shadowTable max-h-[61vh] mt-4 mr-6 rounded-lg ${className}`}
       >
         <div>
           <table className={`border-collapse min-w-full`}>
@@ -36,7 +36,7 @@ export default function Table({ editRow, columnArr, dataArr }) {
                   return (
                     <tr
                       onClick={() => editRow(index, item.id)}
-                      className={` bg-gray-100 hover:bg-red-700 hover:border-red-800 hover:text-white border-b-2 border-gray-200 transition-all duration-75 ease-in cursor-pointer`}
+                      className={` bg-gray-50 hover:bg-red-700 hover:border-red-800 hover:text-white border-b-2 border-gray-200 transition-all duration-75 ease-in cursor-pointer`}
                       key={item.id}
                     >
                       {columnArr.map((header, i) => (
