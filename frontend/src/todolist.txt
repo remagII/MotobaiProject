@@ -1,15 +1,19 @@
 NOTES:
+- Order Module(in progress)
+- Adding order to backend
+- Order Management page to list the order
+
+- double clicking submission issue
+- general useEffect when fetching
 - inventory id -> sku
 - delete function on most fields (in progress)
 - optimize nav bar
 - details modal(see information of a row onclick)
-- StockLogs needs a detail view modal; also place the navigation button inside inventory
+- StockLogs needs a detail view modal
 - Detail View Modal sana for most features like employee, supplier, etc.
-- Order Management System not yet started (very big project)
 - Catch error for EDIT in products
-- Fix editing product price affecting past product orders
 - Revert/Delete row in initial Stock-In
-- Walki-in in progress shit
+- Walk-in in progress shit
 
 Todo Pages:
 - OrderList + Order History -> Order Management

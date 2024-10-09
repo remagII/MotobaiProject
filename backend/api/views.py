@@ -140,7 +140,7 @@ class EmployeeAdd(generics.CreateAPIView):
 class EmployeeListView(generics.ListAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 class EmployeeUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Employee.objects.all()

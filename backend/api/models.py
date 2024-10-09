@@ -39,7 +39,6 @@ class InboundStock(models.Model):
     def __str__(self):
         return 'Stock Entry: {} items on {}'.format(self.inboundStockItems.count(), self.date_created)
     
-
 class Account(models.Model):
     account = models.CharField(max_length=100)
     representative_name = models.CharField(max_length=100)
@@ -54,7 +53,7 @@ class Account(models.Model):
     is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
-        return '{}: {}'.format(self.account_name, self.representative_name)
+        return '{}: {}'.format(self.account, self.representative_name)
     
 class Customer(models.Model):
     customer_name = models.CharField(max_length=100, default='')
@@ -62,29 +61,67 @@ class Customer(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
 
     is_deleted = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return '{}'.format(self.customer_name)
 
-# DISCOUNT NOT YET ADDED 
-# CHOICES NOT COMPLETE
+class Employee(models.Model):
+    first_name = models.CharField(max_length=100)
+    middle_name = models.CharField(max_length=100) 
+    last_name = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    barangay = models.CharField(max_length=100)
+    street = models.CharField(max_length=100)
+    phone_number = models.CharField(max_length=100)
+    email = models.CharField(max_length=100)
+    date_created = models.DateTimeField(auto_now_add=True)
+
 class Order(models.Model): 
     account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True)
-    customer_walk_in_name = models.CharField(max_length=100, null=True, blank=True)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True, blank=True)
+
     order_date = models.DateTimeField(auto_now_add=True)
-    payment_method = models.CharField(max_length=32,
-                              choices=[
-                                  ('gcash', 'GCash'),
-                                  ('cash', 'Cash'),
-                              ], default='cash')
+    # for information integrity
+    account_name = models.CharField(max_length=100, null=True, blank=True)
+    representative_name = models.CharField(max_length=100, null=True, blank=True)
+    customer_name = models.CharField(max_length=100, null=True, blank=True)
+    employee_first_name = models.CharField(max_length=100, null=True, blank=True)
+    employee_middle_name = models.CharField(max_length=100, null=True, blank=True)
+    employee_last_name = models.CharField(max_length=100, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.account:
+            self.account_name = self.account.account
+            self.representative_name = self.account.representative_name
+        else:
+            self.customer_name = self.customer.customer_name
+
+        if self.employee:
+            self.employee_first_name = self.employee.first_name
+            self.employee_middle_name = self.employee.middle_name
+            self.employee_last_name = self.employee.last_name
+        super(OrderDetails, self).save(*args, **kwargs)
+
     def __str__(self):
         if self.account:
-            return f'Order ID: {self.pk}, Account: {self.account.name}'
+            return f'Order ID: {self.pk}, Account Name: {self.account.name}'
         else:
-            return f'Order ID: {self.pk}, Customer Walk-In Name: {self.customer_walk_in_name}'
+            return f'Order ID: {self.pk}, Customer Name: {self.customer.last_name}, {self.customer.last_name}'
 
 class OrderDetails(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, default='0')
-    product = models.ForeignKey(Inventory, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
-    price_total = models.DecimalField(decimal_places=2, max_digits=10)
+    # for information integrity
+    product_price = models.DecimalField(decimal_places=2, max_digits=10)
+    product_name = models.CharField(max_length=100, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.product:
+            self.product_name = self.product.product_name
+            self.product_price = self.product.price
+        super(OrderDetails, self).save(*args, **kwargs)
 
 class OrderTracking(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
@@ -92,7 +129,6 @@ class OrderTracking(models.Model):
                               choices=[
                                   ('unvalidated', 'Unvalidated'),
                                   ('validated', 'Validated'),
-                                  ('packed', 'Packed'),
                                   ('shipped', 'Shipped'),
                                   ('completed', 'Completed'),
                                   ('cancelled', 'Cancelled'),
@@ -106,16 +142,3 @@ class OrderTracking(models.Model):
 
     def __str__(self):
         return f'{self.order} - {self.status}'
-    
-
-    
-class Employee(models.Model):
-    first_name = models.CharField(max_length=100)
-    middle_name = models.CharField(max_length=100) 
-    last_name = models.CharField(max_length=100)
-    city = models.CharField(max_length=100)
-    barangay = models.CharField(max_length=100)
-    street = models.CharField(max_length=100)
-    phone_number = models.CharField(max_length=100)
-    email = models.CharField(max_length=100)
-    date_created = models.DateTimeField(auto_now_add=True)

@@ -14,8 +14,115 @@ import {
 
 const CreateDeliveryOrderForm = ({ confirmHandler }) => {
   const [initialOrder, setInitialOrder] = useState([]);
+  const [accountOptions, setAccountOptions] = useState([]);
+  const [employeeOptions, setEmployeeOptions] = useState([]);
   const [productOptions, setProductOptions] = useState([]);
-  const [company, setCompany] = useState([]);
+  
+  const token = localStorage.getItem(ACCESS_TOKEN);
+
+  useEffect(() => {
+    fetchAccountOptions();
+    fetchEmployeeOptions();
+    fetchProductOptions();
+  }, []);
+
+  const fetchProductOptions = async () => {
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/product/list?format=json",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch products");
+      }
+      const data = await response.json();
+      setProductOptions(data); // ito ung data ng list of Account 
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+
+  const fetchEmployeeOptions = async () => {
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/employee/list?format=json",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch employees");
+      }
+      const data = await response.json();
+      setEmployeeOptions(data); // ito ung data ng list of Account 
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    }
+  };
+
+  const fetchAccountOptions = async () => {
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/account/list?format=json",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch accounts");
+      }
+      const data = await response.json();
+      setAccountOptions(data); // ito ung data ng list of Account 
+    } catch (error) {
+      console.error("Error fetching accounts:", error);
+    }
+  };
+
+
+  const confirmButton = async () => {
+    e.preventDefault();
+    console.log(initialOrder);
+
+    // account, employee only taken once
+    // product and quantity are many
+    const orderItems = initialOrder.map((item) => ({
+      account: item.account_id, 
+      employee: item.employee_id, 
+      product: item.product_id, 
+      quantity: item.quantity || 0, 
+    }));
+
+    // try {
+    //   const res = await api.post("http://127.0.0.1:8000/api/stockin/create", {
+    //     orderItems: orderItems,
+    //   });
+
+    //   console.log("Stocking in successful:", res.data);
+    // } catch (error) {
+    //   console.error("Error stocking in:", error);
+    //   ``;
+    // }
+
+    window.location.reload();
+  };
+
 
   const formArr = [
     {
@@ -68,6 +175,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
       return updatedOrder; // Return updated state
     });
   };
+
   return (
     <section>
       <div>
@@ -89,33 +197,34 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                   Create Order Delivery
                 </h1>
                 <div className={`ml-4 gap-x-6 gap-y-8 flex min-w-[40vw]`}>
+                  {/* ACCOUNT SELECTION */}
                   <div className={`flex justify-center relative min-w-[300px]`}>
                     <select
                       className="overflow-y-auto appearance-none shadow-shadowTable text-lg min-w-[10vw] min-h-6 p-2 w-full rounded-md border-2"
                       required
-                      // onChange={(e) =>
-                      //   onChangeHandler(e, "product_name", {
-                      //     inventory_id:
-                      //       e.target.selectedOptions[0].getAttribute(
-                      //         "data-id"
-                      //       ),
-                      //   })
-                      // }
-                      name="product_name"
+                      onChange={(e) =>
+                        onChangeHandler(e, "account", {
+                          id:
+                            e.target.selectedOptions[0].getAttribute(
+                              "data-id"
+                            ),
+                        })
+                      }
+                      name="account"
                       defaultValue={``}
                     >
                       <option value="" disabled>
-                        Select A Company
+                        Select an Account
                       </option>
-                      {/* {productOptions.map((option) => (
+                      {accountOptions.map((option) => (
                         <option
                         key={option.id}
-                        value={option.product.product_name}
+                        value={option.account}
                         data-id={option.id}
                         >
-                        {`${option.product.product_name}`}
+                        {`${option.account}`}
                         </option>
-                      ))} */}
+                      ))}
                     </select>
                     <div>
                       <ChevronDownIcon
@@ -123,33 +232,34 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                       />
                     </div>
                   </div>
+                  {/* EMPLOYEE SELECTION */}
                   <div className={`flex justify-center relative min-w-[300px]`}>
                     <select
                       className="overflow-y-auto appearance-none shadow-shadowTable text-lg min-w-[10vw] min-h-6 p-2 w-full rounded-md border-2"
                       required
-                      // onChange={(e) =>
-                      //   onChangeHandler(e, "product_name", {
-                      //     inventory_id:
-                      //       e.target.selectedOptions[0].getAttribute(
-                      //         "data-id"
-                      //       ),
-                      //   })
-                      // }
-                      name="product_name"
+                      onChange={(e) =>
+                        onChangeHandler(e, "first_name", {
+                          id:
+                            e.target.selectedOptions[0].getAttribute(
+                              "data-id"
+                            ),
+                        })
+                      }
+                      name="employee_name"
                       defaultValue={``}
                     >
                       <option value="" disabled>
                         Select an Employee
                       </option>
-                      {/* {productOptions.map((option) => (
-                        <option
-                        key={option.id}
-                            value={option.product.product_name}
+                      {employeeOptions.map((option) => (
+                          <option
+                            key={option.id}
+                            value={`${option.first_name} ${option.last_name}`}
                             data-id={option.id}
                             >
-                            {`${option.product.product_name}`}
-                            </option>
-                          ))} */}
+                            {`${option.first_name} ${option.last_name}`}
+                          </option>
+                        ))}
                     </select>
                     <div>
                       <ChevronDownIcon
@@ -175,29 +285,29 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                       <select
                         className="overflow-y-auto appearance-none shadow-shadowTable text-lg min-w-[10vw] min-h-6 p-2 w-full rounded-md border-2"
                         required
-                        // onChange={(e) =>
-                        //   onChangeHandler(e, "product_name", {
-                        //     inventory_id:
-                        //       e.target.selectedOptions[0].getAttribute(
-                        //         "data-id"
-                        //       ),
-                        //   })
-                        // }
+                        onChange={(e) =>
+                          onChangeHandler(e, "product_name", {
+                            id:
+                              e.target.selectedOptions[0].getAttribute(
+                                "data-id"
+                              ),
+                          })
+                        }
                         name="product_name"
                         defaultValue={``}
                       >
                         <option value="" disabled>
                           Select A Product
                         </option>
-                        {/* {productOptions.map((option) => (
+                        {productOptions.map((option) => (
                           <option
                             key={option.id}
-                            value={option.product.product_name}
+                            value={option.product_name}
                             data-id={option.id}
                           >
-                            {`${option.product.product_name}`}
+                            {`${option.product_name}`}
                           </option>
-                        ))} */}
+                        ))}
                       </select>
                       <div>
                         <ChevronDownIcon
