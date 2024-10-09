@@ -228,7 +228,9 @@ export default function Accounts() {
         toggleModal();
         for (const [key, value] of Object.entries(form)) {
           if (!value) {
-            errorFields.push(key);
+            if (key !== "is_deleted") {
+              errorFields.push(key);
+            }
           }
         }
         setErrors((e) => errorFields.join(", "));

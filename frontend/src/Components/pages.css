@@ -2,6 +2,10 @@ input:valid {
   border-color: #2f9e44;
 }
 
+input {
+  box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset !important;
+}
+
 input:focus + .label-line,
 input:valid + .label-line {
   color: #2f9e44;
@@ -36,4 +40,8 @@ tr:first-child th:last-child {
 
 .inactive {
   display: none !important;
+}
+
+select {
+  box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset !important;
 }

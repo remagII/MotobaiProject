@@ -7,10 +7,12 @@ import Table from "../../DynamicComponents/DynamicTable.jsx";
 import Overview from "../../Overview.jsx";
 import StockInForm from "./StockInForm.jsx";
 import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
+import CreateDeliveryOrderForm from "./CreateDeliveryOrderForm.jsx";
 
 export default function Inventory() {
   const [method, setMethod] = useState("");
-  const [modal, setModal] = useState(false);
+  const [stockInModal, setStockInModal] = useState(false);
+  const [createDeliveryModal, setCreateDeliveryModal] = useState(false);
 
   const token = localStorage.getItem(ACCESS_TOKEN);
 
@@ -20,7 +22,11 @@ export default function Inventory() {
   };
 
   const toggleStockInModal = () => {
-    setModal((m) => (m = !m));
+    setStockInModal((m) => (m = !m));
+  };
+
+  const toggleCreateDeliveryModal = () => {
+    setCreateDeliveryModal((m) => (m = !m));
   };
 
   const [errorWindow, setErrorWindow] = useState(false);
@@ -176,7 +182,7 @@ export default function Inventory() {
 
               <div className="flex gap">
                 <button
-                  onClick={toggleModal}
+                  onClick={toggleCreateDeliveryModal}
                   className={`text-gray-100 bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center shadow-md`}
                 >
                   Delivery Order
@@ -201,8 +207,14 @@ export default function Inventory() {
             </div>
 
             {/* STOCK IN FORM */}
-            <DynamicModal modal={modal} toggleModal={toggleStockInModal}>
+            <DynamicModal modal={stockInModal} toggleModal={toggleStockInModal}>
               <StockInForm />
+            </DynamicModal>
+            <DynamicModal
+              modal={createDeliveryModal}
+              toggleModal={toggleCreateDeliveryModal}
+            >
+              <CreateDeliveryOrderForm />
             </DynamicModal>
 
             <div>

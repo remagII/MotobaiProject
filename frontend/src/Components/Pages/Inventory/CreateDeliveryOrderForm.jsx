@@ -12,66 +12,10 @@ import {
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
 
-const StockInForm = ({ confirmHandler }) => {
-  const [initialStockIn, setInitialStockIn] = useState([]);
+const CreateDeliveryOrderForm = ({ confirmHandler }) => {
+  const [initialOrder, setInitialOrder] = useState([]);
   const [productOptions, setProductOptions] = useState([]);
-  const [supplier, setSupplier] = useState([]);
-
-  const token = localStorage.getItem(ACCESS_TOKEN);
-
-  useEffect(() => {
-    fetchProduct();
-  }, []);
-
-  const fetchProduct = async () => {
-    try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/inventory/list?format=json",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch products");
-      }
-      const data = await response.json();
-      setProductOptions(data); // ito ung data ng list of products (product)
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchSupplier();
-  }, []);
-
-  const fetchSupplier = async () => {
-    try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/supplier/list?format=json",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch supplier");
-      }
-      const data = await response.json();
-      setSupplier(data);
-    } catch (error) {
-      console.error("Error fetching supplier:", error);
-    }
-  };
+  const [company, setCompany] = useState([]);
 
   const formArr = [
     {
@@ -81,16 +25,17 @@ const StockInForm = ({ confirmHandler }) => {
   ];
   const tableColumns = [
     {
-      header: "Product Name",
-      row: "product_name",
-    },
-    {
-      header: "Supplier Name",
-      row: "supplier_name",
+      header: "Product ID",
+      row: "id",
     },
 
     {
-      header: "Quantity to add",
+      header: "Product Name",
+      row: "product_name",
+    },
+
+    {
+      header: "Quantity",
       row: "quantity",
     },
   ];
@@ -116,38 +61,13 @@ const StockInForm = ({ confirmHandler }) => {
 
   //SET FORM BACK TO OLD STATE
   const onSubmitHandler = () => {
-    setInitialStockIn((prevStock) => {
-      const updatedStock = [...prevStock, form]; // Update stock
+    setInitialOrder((prevOrder) => {
+      const updatedOrder = [...prevOrder, form]; // Update stock
       setForm(initialForm); // Reset the form
-      console.log(updatedStock); // This will now correctly log the updated stock
-      return updatedStock; // Return updated state
+      console.log(updatedOrder); // This will now correctly log the updated stock
+      return updatedOrder; // Return updated state
     });
   };
-
-  // send data to database
-  const confirmButton = async () => {
-    console.log(initialStockIn);
-
-    const inboundStockItems = initialStockIn.map((stockInItem) => ({
-      inventory: stockInItem.inventory_id, // Assuming this is the inventory ID
-      supplier: stockInItem.supplier_id, // Assuming this is the supplier ID
-      quantity: stockInItem.quantity || 0, // Ensure quantity is not empty
-    }));
-
-    try {
-      const res = await api.post("http://127.0.0.1:8000/api/stockin/create", {
-        inboundStockItems: inboundStockItems,
-      });
-
-      console.log("Stocking in successful:", res.data);
-    } catch (error) {
-      console.error("Error stocking in:", error);
-      ``;
-    }
-
-    window.location.reload();
-  };
-
   return (
     <section>
       <div>
@@ -164,12 +84,84 @@ const StockInForm = ({ confirmHandler }) => {
               />
             </div>
             <form onSubmit={confirmHandler} className={`min-w-[70vw] `}>
-              <div className={`bg-gray-100 py-10 px-8 h-[75vh]  rounded-b-lg`}>
-                <h1 className="font-bold text-2xl mb-10">Stock In</h1>
+              <div className={`bg-gray-100 py-10 px-8 h-[80vh]  rounded-b-lg`}>
+                <h1 className="font-bold text-2xl mb-10">
+                  Create Order Delivery
+                </h1>
+                <div className={`ml-4 gap-x-6 gap-y-8 flex min-w-[40vw]`}>
+                  <div className={`flex justify-center relative min-w-[300px]`}>
+                    <select
+                      className="overflow-y-auto appearance-none shadow-shadowTable text-lg min-w-[10vw] min-h-6 p-2 w-full rounded-md border-2"
+                      required
+                      // onChange={(e) =>
+                      //   onChangeHandler(e, "product_name", {
+                      //     inventory_id:
+                      //       e.target.selectedOptions[0].getAttribute(
+                      //         "data-id"
+                      //       ),
+                      //   })
+                      // }
+                      name="product_name"
+                      defaultValue={``}
+                    >
+                      <option value="" disabled>
+                        Select A Company
+                      </option>
+                      {/* {productOptions.map((option) => (
+                        <option
+                        key={option.id}
+                        value={option.product.product_name}
+                        data-id={option.id}
+                        >
+                        {`${option.product.product_name}`}
+                        </option>
+                      ))} */}
+                    </select>
+                    <div>
+                      <ChevronDownIcon
+                        className={` size-4 h-full mr-2  absolute flex right-0 items-center justify-center`}
+                      />
+                    </div>
+                  </div>
+                  <div className={`flex justify-center relative min-w-[300px]`}>
+                    <select
+                      className="overflow-y-auto appearance-none shadow-shadowTable text-lg min-w-[10vw] min-h-6 p-2 w-full rounded-md border-2"
+                      required
+                      // onChange={(e) =>
+                      //   onChangeHandler(e, "product_name", {
+                      //     inventory_id:
+                      //       e.target.selectedOptions[0].getAttribute(
+                      //         "data-id"
+                      //       ),
+                      //   })
+                      // }
+                      name="product_name"
+                      defaultValue={``}
+                    >
+                      <option value="" disabled>
+                        Select an Employee
+                      </option>
+                      {/* {productOptions.map((option) => (
+                        <option
+                        key={option.id}
+                            value={option.product.product_name}
+                            data-id={option.id}
+                            >
+                            {`${option.product.product_name}`}
+                            </option>
+                          ))} */}
+                    </select>
+                    <div>
+                      <ChevronDownIcon
+                        className={` size-4 h-full mr-2  absolute flex right-0 items-center justify-center`}
+                      />
+                    </div>
+                  </div>
+                </div>
                 <div className="mb-12 ml-4 min-h-[40vh] max-h-[40vh] overflow-y-hidden">
                   <Table
                     columnArr={tableColumns}
-                    dataArr={initialStockIn}
+                    dataArr={initialOrder}
                     className={`!max-h-[40vh]`}
                   />
                 </div>
@@ -183,21 +175,21 @@ const StockInForm = ({ confirmHandler }) => {
                       <select
                         className="overflow-y-auto appearance-none shadow-shadowTable text-lg min-w-[10vw] min-h-6 p-2 w-full rounded-md border-2"
                         required
-                        onChange={(e) =>
-                          onChangeHandler(e, "product_name", {
-                            inventory_id:
-                              e.target.selectedOptions[0].getAttribute(
-                                "data-id"
-                              ),
-                          })
-                        }
+                        // onChange={(e) =>
+                        //   onChangeHandler(e, "product_name", {
+                        //     inventory_id:
+                        //       e.target.selectedOptions[0].getAttribute(
+                        //         "data-id"
+                        //       ),
+                        //   })
+                        // }
                         name="product_name"
                         defaultValue={``}
                       >
                         <option value="" disabled>
                           Select A Product
                         </option>
-                        {productOptions.map((option) => (
+                        {/* {productOptions.map((option) => (
                           <option
                             key={option.id}
                             value={option.product.product_name}
@@ -205,7 +197,7 @@ const StockInForm = ({ confirmHandler }) => {
                           >
                             {`${option.product.product_name}`}
                           </option>
-                        ))}
+                        ))} */}
                       </select>
                       <div>
                         <ChevronDownIcon
@@ -214,37 +206,7 @@ const StockInForm = ({ confirmHandler }) => {
                       </div>
                     </div>
                     {/* SUPPLIER SELECT */}
-                    <label className="font-bold">Supplier</label>
-                    <div
-                      className={`flex justify-center relative min-w-[300px]`}
-                    >
-                      <select
-                        className="appearance-none shadow-shadowTable text-lg min-w-[10vw] min-h-6 p-2 w-full rounded-md border-2"
-                        required
-                        onChange={(e) =>
-                          onChangeHandler(e, "supplier_name", {
-                            supplier_id:
-                              e.target.selectedOptions[0].getAttribute(
-                                "data-id"
-                              ),
-                          })
-                        }
-                        name="supplier_name"
-                        defaultValue={``}
-                      >
-                        <option value="" disabled>
-                          Select A Supplier
-                        </option>
-                        {supplier.map((sup) => (
-                          <option
-                            key={sup.id}
-                            value={sup.supplier_name}
-                            data-id={sup.id}
-                          >
-                            {`${sup.supplier_name}`}
-                          </option>
-                        ))}
-                      </select>
+                    <div className={`flex justify-center relative`}>
                       <div>
                         <ChevronDownIcon
                           className={` size-4 h-full mr-2  absolute flex right-0 items-center justify-center`}
@@ -286,7 +248,7 @@ const StockInForm = ({ confirmHandler }) => {
                     type="submit"
                     className={`shadow-md bg-white border-2 border-red-700 rounded px-4 py-2 hover:bg-red-700 hover:text-white transition-all duration-100 flex gap-4 items-center`}
                   >
-                    Add Product to Stock In
+                    Add Product to Order
                     <PlusCircleIcon className={`size-6`} />
                   </button>
                   <button
@@ -298,7 +260,7 @@ const StockInForm = ({ confirmHandler }) => {
                     }}
                     className={` shadow-md bg-white border-2 border-red-700 rounded px-4 py-2 hover:bg-red-700 hover:text-white transition-all duration-100 flex gap-4 items-center `}
                   >
-                    Confirm Stock-In
+                    Confirm Delivery Order
                     <CheckCircleIcon className={`size-6`} />
                   </button>
                 </div>
@@ -311,4 +273,4 @@ const StockInForm = ({ confirmHandler }) => {
   );
 };
 
-export default StockInForm;
+export default CreateDeliveryOrderForm;
