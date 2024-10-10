@@ -77,18 +77,18 @@ class Employee(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
 
 class Order(models.Model): 
-    account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True, blank=True)
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True, default="")
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True, default="")
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True, blank=True, default="")
 
     order_date = models.DateTimeField(auto_now_add=True)
     # for information integrity
-    account_name = models.CharField(max_length=100, null=True, blank=True)
-    representative_name = models.CharField(max_length=100, null=True, blank=True)
-    customer_name = models.CharField(max_length=100, null=True, blank=True)
-    employee_first_name = models.CharField(max_length=100, null=True, blank=True)
-    employee_middle_name = models.CharField(max_length=100, null=True, blank=True)
-    employee_last_name = models.CharField(max_length=100, null=True, blank=True)
+    account_name = models.CharField(max_length=100, null=True, blank=True, default="")
+    representative_name = models.CharField(max_length=100, null=True, blank=True, default="")
+    customer_name = models.CharField(max_length=100, null=True, blank=True, default="")
+    employee_first_name = models.CharField(max_length=100, null=True, blank=True, default="")
+    employee_middle_name = models.CharField(max_length=100, null=True, blank=True, default="")
+    employee_last_name = models.CharField(max_length=100, null=True, blank=True, default="")
 
     def save(self, *args, **kwargs):
         if self.account:

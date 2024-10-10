@@ -72,3 +72,6 @@ const deleteHandler = async() => {
       console.error("Error deleting Customer:", error);
     } 
   };
+
+dont mind this
+  C:\Users\tyche\AppData\Local\Programs\Python\Python313\python.exe manage.py runserver

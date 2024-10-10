@@ -114,23 +114,21 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
 
     console.log("Order confirmed with details: ", confirmedOrder);
 
-    // account, employee only taken once
-    // product and quantity are many
-    // const orderItems = initialOrder.map((item) => ({
+    // const orderItems = confirmedOrder.map((item) => ({
     //   account: item.account_id,
     //   employee: item.employee_id,
     //   product: item.product_id,
     //   quantity: item.quantity || 0,
     // }));
-    // try {
-    //   const res = await api.post("http://127.0.0.1:8000/api/stockin/create", {
-    //     orderItems: orderItems,
-    //   });
-    //   console.log("Stocking in successful:", res.data);
-    // } catch (error) {
-    //   console.error("Error stocking in:", error);
-    //   ``;
-    // }
+    try {
+      const res = await api.post("http://127.0.0.1:8000/api/order/create", {
+        orderItems: orderItems,
+      });
+      console.log("Stocking in successful:", res.data);
+    } catch (error) {
+      console.error("Error stocking in:", error);
+      ``;
+    }
     // window.location.reload();
   };
 

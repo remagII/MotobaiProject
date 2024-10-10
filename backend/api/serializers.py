@@ -110,7 +110,8 @@ class InventorySerializer(serializers.ModelSerializer):
 class OrderDetailsSerializer(serializers.ModelSerializer):
     order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all())
     product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
-
+    quantity = serializers.IntegerField(required=True)  
+    
     class Meta:
         model = OrderDetails
         fields = '__all__'
