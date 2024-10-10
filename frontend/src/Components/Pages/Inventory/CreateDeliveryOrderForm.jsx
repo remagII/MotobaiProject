@@ -95,31 +95,42 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
     }
   };
 
+  const [names, setNames] = useState([]);
+
+  const [selectedAccount, setSelectedAccount] = useState(null);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+
   const confirmButton = async () => {
-    console.log(initialOrder);
-    console.log(names);
+    if (!selectedAccount || !selectedEmployee) {
+      console.log("Please select an account and employee.");
+      return;
+    }
+
+    const confirmedOrder = {
+      ...initialOrder,
+      account_id: selectedAccount,
+      employee_id: selectedEmployee,
+    };
+
+    console.log("Order confirmed with details: ", confirmedOrder);
 
     // account, employee only taken once
     // product and quantity are many
-
     // const orderItems = initialOrder.map((item) => ({
     //   account: item.account_id,
     //   employee: item.employee_id,
     //   product: item.product_id,
     //   quantity: item.quantity || 0,
     // }));
-
     // try {
     //   const res = await api.post("http://127.0.0.1:8000/api/stockin/create", {
     //     orderItems: orderItems,
     //   });
-
     //   console.log("Stocking in successful:", res.data);
     // } catch (error) {
     //   console.error("Error stocking in:", error);
     //   ``;
     // }
-
     // window.location.reload();
   };
 
@@ -164,21 +175,18 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
       [name]: value,
       ...extraData,
     }));
-  };
 
-  const [names, setNames] = useState([]);
+    if (fieldName === "account") {
+      setSelectedAccount(extraData.account_id);
+    } else if (fieldName === "first_name") {
+      setSelectedEmployee(extraData.employee_id);
+    }
+  };
 
   //SET FORM BACK TO OLD STATE
   const onSubmitHandler = () => {
-    const formCopy = { ...form };
-
-    setNames((n) => [...n, formCopy.account]);
-    setNames((n) => [...n, formCopy.account_id]);
-    setNames((n) => [...n, formCopy.employee_name]);
-    setNames((n) => [...n, formCopy.employee_id]);
-
-    delete form.employee_name;
-    delete form.account;
+    delete form.account_id;
+    delete form.employee_id;
 
     setInitialOrder((prevOrder) => {
       const updatedOrder = [...prevOrder, form]; // Update order
