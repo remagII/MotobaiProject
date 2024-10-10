@@ -117,9 +117,9 @@ class OrderDetailsSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class OrderSerializer(serializers.ModelSerializer):
-    account = serializers.PrimaryKeyRelatedField(queryset=Account.objects.all())
-    customer = serializers.PrimaryKeyRelatedField(queryset=Customer.objects.all())
-    employee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all())
+    account = serializers.PrimaryKeyRelatedField(queryset=Account.objects.all(), required=False)
+    customer = serializers.PrimaryKeyRelatedField(queryset=Customer.objects.all(), required=False)
+    employee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all(), required=True)
     order_details = OrderDetailsSerializer(many=True)
 
     class Meta:

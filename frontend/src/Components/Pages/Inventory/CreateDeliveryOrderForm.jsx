@@ -114,19 +114,21 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
 
     console.log("Order confirmed with details: ", confirmedOrder);
 
-    // const orderItems = confirmedOrder.map((item) => ({
-    //   account: item.account_id,
-    //   employee: item.employee_id,
-    //   product: item.product_id,
-    //   quantity: item.quantity || 0,
-    // }));
+    const orderItems = initialOrder.map((item) => ({
+      product: item.product_id,
+      quantity: item.quantity || 0,
+    }));
+    
     try {
       const res = await api.post("http://127.0.0.1:8000/api/order/create", {
-        orderItems: orderItems,
+        order_details: orderItems,
+        account: selectedAccount,
+        employee: selectedEmployee,
+
       });
-      console.log("Stocking in successful:", res.data);
+      console.log("Order creation successful:", res.data);
     } catch (error) {
-      console.error("Error stocking in:", error);
+      console.error("Error Creating Order:", error);
       ``;
     }
     // window.location.reload();
