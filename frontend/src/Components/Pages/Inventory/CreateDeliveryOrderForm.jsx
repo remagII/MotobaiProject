@@ -17,7 +17,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
   const [accountOptions, setAccountOptions] = useState([]);
   const [employeeOptions, setEmployeeOptions] = useState([]);
   const [productOptions, setProductOptions] = useState([]);
-  
+
   const token = localStorage.getItem(ACCESS_TOKEN);
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
         throw new Error("Failed to fetch products");
       }
       const data = await response.json();
-      setProductOptions(data); // ito ung data ng list of Account 
+      setProductOptions(data); // ito ung data ng list of Account
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -66,7 +66,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
         throw new Error("Failed to fetch employees");
       }
       const data = await response.json();
-      setEmployeeOptions(data); // ito ung data ng list of Account 
+      setEmployeeOptions(data); // ito ung data ng list of Account
     } catch (error) {
       console.error("Error fetching employees:", error);
     }
@@ -89,25 +89,25 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
         throw new Error("Failed to fetch accounts");
       }
       const data = await response.json();
-      setAccountOptions(data); // ito ung data ng list of Account 
+      setAccountOptions(data); // ito ung data ng list of Account
     } catch (error) {
       console.error("Error fetching accounts:", error);
     }
   };
 
-
   const confirmButton = async () => {
-    e.preventDefault();
     console.log(initialOrder);
+    console.log(names);
 
     // account, employee only taken once
     // product and quantity are many
-    const orderItems = initialOrder.map((item) => ({
-      account: item.account_id, 
-      employee: item.employee_id, 
-      product: item.product_id, 
-      quantity: item.quantity || 0, 
-    }));
+
+    // const orderItems = initialOrder.map((item) => ({
+    //   account: item.account_id,
+    //   employee: item.employee_id,
+    //   product: item.product_id,
+    //   quantity: item.quantity || 0,
+    // }));
 
     // try {
     //   const res = await api.post("http://127.0.0.1:8000/api/stockin/create", {
@@ -120,9 +120,8 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
     //   ``;
     // }
 
-    window.location.reload();
+    // window.location.reload();
   };
-
 
   const formArr = [
     {
@@ -159,6 +158,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
     const { name, value } = e.target;
 
     // Update the form state and capture any extra data (like id) in the form
+
     setForm((prevForm) => ({
       ...prevForm,
       [name]: value,
@@ -166,12 +166,24 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
     }));
   };
 
+  const [names, setNames] = useState([]);
+
   //SET FORM BACK TO OLD STATE
   const onSubmitHandler = () => {
+    const formCopy = { ...form };
+
+    setNames((n) => [...n, formCopy.account]);
+    setNames((n) => [...n, formCopy.account_id]);
+    setNames((n) => [...n, formCopy.employee_name]);
+    setNames((n) => [...n, formCopy.employee_id]);
+
+    delete form.employee_name;
+    delete form.account;
+
     setInitialOrder((prevOrder) => {
-      const updatedOrder = [...prevOrder, form]; // Update stock
+      const updatedOrder = [...prevOrder, form]; // Update order
       setForm(initialForm); // Reset the form
-      console.log(updatedOrder); // This will now correctly log the updated stock
+      console.log(updatedOrder); // This will now correctly log the updated order
       return updatedOrder; // Return updated state
     });
   };
@@ -204,10 +216,8 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                       required
                       onChange={(e) =>
                         onChangeHandler(e, "account", {
-                          id:
-                            e.target.selectedOptions[0].getAttribute(
-                              "data-id"
-                            ),
+                          account_id:
+                            e.target.selectedOptions[0].getAttribute("data-id"),
                         })
                       }
                       name="account"
@@ -218,11 +228,11 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                       </option>
                       {accountOptions.map((option) => (
                         <option
-                        key={option.id}
-                        value={option.account}
-                        data-id={option.id}
+                          key={option.id}
+                          value={option.account}
+                          data-id={option.id}
                         >
-                        {`${option.account}`}
+                          {`${option.account}`}
                         </option>
                       ))}
                     </select>
@@ -239,10 +249,8 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                       required
                       onChange={(e) =>
                         onChangeHandler(e, "first_name", {
-                          id:
-                            e.target.selectedOptions[0].getAttribute(
-                              "data-id"
-                            ),
+                          employee_id:
+                            e.target.selectedOptions[0].getAttribute("data-id"),
                         })
                       }
                       name="employee_name"
@@ -252,14 +260,14 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                         Select an Employee
                       </option>
                       {employeeOptions.map((option) => (
-                          <option
-                            key={option.id}
-                            value={`${option.first_name} ${option.last_name}`}
-                            data-id={option.id}
-                            >
-                            {`${option.first_name} ${option.last_name}`}
-                          </option>
-                        ))}
+                        <option
+                          key={option.id}
+                          value={`${option.first_name} ${option.last_name}`}
+                          data-id={option.id}
+                        >
+                          {`${option.first_name} ${option.last_name}`}
+                        </option>
+                      ))}
                     </select>
                     <div>
                       <ChevronDownIcon
@@ -287,10 +295,9 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                         required
                         onChange={(e) =>
                           onChangeHandler(e, "product_name", {
-                            id:
-                              e.target.selectedOptions[0].getAttribute(
-                                "data-id"
-                              ),
+                            id: e.target.selectedOptions[0].getAttribute(
+                              "data-id"
+                            ),
                           })
                         }
                         name="product_name"

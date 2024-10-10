@@ -41,18 +41,18 @@ function Navigation() {
 
   return (
     <nav className=" flex ml-6 justify-between max-h-12 gap-4 text-base">
-      <div className={`relative`} onMouseEnter={onHoverAccounts}>
+      <div
+        className={`flex flex-col relative`}
+        onMouseEnter={onHoverAccounts}
+        onMouseLeave={onHoverAccounts}
+      >
         <DynamicCustomLink to="/accounts">
           <div>
             <UserGroupIcon className="size-6 " />
           </div>
           <p>Accounts</p>
         </DynamicCustomLink>
-        <div
-          className="absolute mt-2"
-          onMouseEnter={onHoverAccounts}
-          onMouseLeave={onHoverAccounts}
-        >
+        <div className="absolute bottom-0">
           {accountDropDown && (
             <div className={`flex flex-col item-center`}>
               <NavDropDown navigationArr={accountNavigationArr} />
@@ -72,7 +72,6 @@ function Navigation() {
         </div>
         <p>Products</p>
       </DynamicCustomLink>
-
       <DynamicCustomLink to="/suppliers">
         <div>
           <BuildingStorefrontIcon className="size-6 " />
@@ -80,18 +79,18 @@ function Navigation() {
         <p>Suppliers</p>
       </DynamicCustomLink>
 
-      <div className={`relative `} onMouseEnter={onHoverInventory}>
+      <div
+        className={`relative `}
+        onMouseEnter={onHoverInventory}
+        onMouseLeave={onHoverInventory}
+      >
         <DynamicCustomLink to="/inventory">
           <div>
             <ArchiveBoxArrowDownIcon className="size-6 " />
           </div>
           <p>Inventory</p>
         </DynamicCustomLink>
-        <div
-          className="absolute mt-2 w-12"
-          onMouseEnter={onHoverInventory}
-          onMouseLeave={onHoverInventory}
-        >
+        <div className=" z-10">
           {inventoryDropDown && (
             <div className={`flex flex-col item-center `}>
               <NavDropDown navigationArr={inventoryNavigationArr} />
