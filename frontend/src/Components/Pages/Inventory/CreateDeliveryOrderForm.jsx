@@ -106,19 +106,11 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
       return;
     }
 
-    const confirmedOrder = {
-      ...initialOrder,
-      account_id: selectedAccount,
-      employee_id: selectedEmployee,
-    };
-
-    console.log("Order confirmed with details: ", confirmedOrder);
-
     const orderItems = initialOrder.map((item) => ({
-      product: item.product_id,
-      quantity: item.quantity || 0,
+      product: parseInt(item.id, 10),
+      quantity: parseInt(item.quantity, 10) || 0,
     }));
-    
+
     try {
       const res = await api.post("http://127.0.0.1:8000/api/order/create", {
         order_details: orderItems,
@@ -131,7 +123,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
       console.error("Error Creating Order:", error);
       ``;
     }
-    // window.location.reload();
+    window.location.reload();
   };
 
   const formArr = [

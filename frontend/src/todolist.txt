@@ -3,11 +3,12 @@ NOTES:
 - Adding order to backend
 - Order Management page to list the order
 
+- notify user that the create/action is complete
 - double clicking submission issue
 - general useEffect when fetching
 - inventory id -> sku
 - delete function on most fields (in progress)
-- optimize nav bar
+- nav bar only select child, categorize correctly(later)
 - details modal(see information of a row onclick)
 - StockLogs needs a detail view modal
 - Detail View Modal sana for most features like employee, supplier, etc.

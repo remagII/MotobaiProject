@@ -31,7 +31,7 @@ class ProductCreate(generics.CreateAPIView):
 class ProductListView(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [IsAuthenticated] 
+    permission_classes = [AllowAny] 
 
 class ProductUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Product.objects.all()
@@ -52,7 +52,7 @@ class AccountAdd(generics.CreateAPIView):
 class AccountListView(generics.ListAPIView):
     queryset = Account.objects.all()
     serializer_class = AccountSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 class AccountUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Account.objects.all()
@@ -72,7 +72,7 @@ class CustomerAdd(generics.CreateAPIView):
 class CustomerListView(generics.ListAPIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 class CustomerUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Customer.objects.all()
@@ -116,7 +116,7 @@ class OrderTrackingListView(generics.ListAPIView):
 class InventoryListView(generics.ListAPIView):
     queryset = Inventory.objects.all()
     serializer_class = InventorySerializer
-    permission_classes = [IsAuthenticated] 
+    permission_classes = [AllowAny] 
 
 class InventoryAdd(generics.CreateAPIView):
     serializer_class = InventorySerializer
@@ -130,7 +130,7 @@ class InventoryUpdateView(generics.RetrieveUpdateAPIView):
 class InventoryDetailView(generics.RetrieveAPIView):
     queryset = Inventory.objects.all()
     serializer_class = InventorySerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 # Employee
 class EmployeeAdd(generics.CreateAPIView):
@@ -160,7 +160,7 @@ class SupplierAdd(generics.CreateAPIView):
 class SupplierListView(generics.ListAPIView):
     queryset = Supplier.objects.all()
     serializer_class = SupplierSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 class SupplierUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Supplier.objects.all()

@@ -41,7 +41,6 @@ export default function Table({ editRow, columnArr, dataArr, className }) {
                     >
                       {columnArr.map((header, i) => (
                         <td key={i} className={`p-4`}>
-                          {/* Check for customRender in columnArr, else render the value normally */}
                           {header.customRender
                             ? header.customRender(item)
                             : header.row.includes(".")

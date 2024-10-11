@@ -47,7 +47,7 @@ export default function Inventory() {
   const tableColumns = [
     {
       header: "Stock-in ID",
-      row: "id", // cant fix how
+      row: "id", 
     },
 
     {

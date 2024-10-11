@@ -70,6 +70,7 @@ class InboundStockItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = InboundStockItem
         fields = ['inventory', 'supplier', 'quantity']
+        depth = 1
     
 class InboundStockSerializer(serializers.ModelSerializer):
     inboundStockItems = InboundStockItemSerializer(many=True)
@@ -108,8 +109,9 @@ class InventorySerializer(serializers.ModelSerializer):
 
 # ORDER MANAGEMENT
 class OrderDetailsSerializer(serializers.ModelSerializer):
-    order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all())
+    order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all(), required=False)
     product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+    product_price = serializers.DecimalField(decimal_places=2, max_digits=10, required=False)
     quantity = serializers.IntegerField(required=True)  
     
     class Meta:
@@ -135,6 +137,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
 class OrderTrackingSerializer(serializers.ModelSerializer):
     order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all())
+    
 
     class Meta:
         model = OrderTracking

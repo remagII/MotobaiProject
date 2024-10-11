@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 class Product(models.Model):
     product_name = models.CharField(max_length=100)
-    price = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True, default=0)
+    price = models.DecimalField(decimal_places=2, max_digits=10, default=0)
     product_type = models.CharField(max_length=100, null=True, blank=True, default='')
     description = models.TextField(max_length=32, null=True, blank=True, default='')
     brand = models.CharField(max_length=32, null=True, blank=True, default='')
@@ -77,9 +77,9 @@ class Employee(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
 
 class Order(models.Model): 
-    account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True, default="")
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True, default="")
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True, blank=True, default="")
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True, blank=True)
 
     order_date = models.DateTimeField(auto_now_add=True)
     # for information integrity
@@ -101,7 +101,7 @@ class Order(models.Model):
             self.employee_first_name = self.employee.first_name
             self.employee_middle_name = self.employee.middle_name
             self.employee_last_name = self.employee.last_name
-        super(OrderDetails, self).save(*args, **kwargs)
+        super(Order, self).save(*args, **kwargs)
 
     def __str__(self):
         if self.account:
@@ -110,7 +110,7 @@ class Order(models.Model):
             return f'Order ID: {self.pk}, Customer Name: {self.customer.last_name}, {self.customer.last_name}'
 
 class OrderDetails(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, default='0')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_details')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     # for information integrity

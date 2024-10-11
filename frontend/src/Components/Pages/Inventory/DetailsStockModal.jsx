@@ -1,22 +1,44 @@
 import React, { useEffect } from "react";
-import { useState } from "react";
 import Logo from "../../../assets/Logo.png";
 import Table from "../../DynamicComponents/DynamicTable";
+
 const DetailsStockModal = ({ logsData }) => {
   const tableColumns = [
     {
       header: "Product Name",
       customRender: (item) => {
-        return <p>{item.inboundStockItems.quantity}</p>;
+        return (
+          <>
+            {item.inboundStockItems.map((inboundItem, index) => (
+              <p key={index}>{inboundItem.inventory?.product.id || 'N/A'}</p>
+            ))}
+          </>
+        )
       },
     },
     {
       header: "Supplier Name",
-      row: "inventory",
+      customRender: (item) => {
+        return (
+          <>
+            {item.inboundStockItems.map((inboundItem, index) => (
+              <p key={index}>{inboundItem.supplier?.supplier_name || 'N/A'}</p>
+            ))}
+          </>
+        )
+      },
     },
     {
       header: "Quantity Added",
-      row: "inboundStockItems.quantity",
+      customRender: (item) => {
+        return (
+          <>
+            {item.inboundStockItems.map((inboundItem, index) => (
+              <p key={index}>{inboundItem.quantity || 'N/A'}</p>
+            ))}
+          </>
+        );
+      },
     },
   ];
 
