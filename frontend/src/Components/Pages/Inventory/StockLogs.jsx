@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { ACCESS_TOKEN } from "../../../constants.js";
-import {
-  UserPlusIcon,
-  ArrowsPointingOutIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
 import Table from "../../DynamicComponents/DynamicTable.jsx";
 import Overview from "../../Overview.jsx";
 import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
@@ -14,6 +9,7 @@ export default function Inventory() {
   const token = localStorage.getItem(ACCESS_TOKEN);
 
   const [logs, setLogs] = useState([]);
+  const [inboundStockItem, setInboundStockItem] = useState([]);
 
   useEffect(() => {
     fetchInboundStock();
@@ -85,6 +81,9 @@ export default function Inventory() {
   };
 
   const handleRowDetails = (index) => {
+    const selectedLog = logs[index]; // Get the log based on the row clicked
+    setInboundStockItem(selectedLog.inboundStockItems); // Set the specific log's items
+
     setDetailsRow(index);
     setMethod("Details");
 
@@ -113,7 +112,7 @@ export default function Inventory() {
         </div>
       </div>
       <DynamicModal modal={modal} toggleModal={toggleModal}>
-        <DetailsStockModal logsData={logs} />
+        <DetailsStockModal logsData={inboundStockItem} />
       </DynamicModal>
     </section>
   );

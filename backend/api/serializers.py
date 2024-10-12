@@ -67,9 +67,14 @@ class CustomerSerializer(serializers.ModelSerializer):
 
 # STOCKIN
 class InboundStockItemSerializer(serializers.ModelSerializer):
+    inventory = serializers.PrimaryKeyRelatedField(queryset=Inventory.objects.all())
+    supplier = serializers.PrimaryKeyRelatedField(queryset=Supplier.objects.all())
+    product = ProductSerializer(source='inventory.product', read_only=True)
+    supplier_name = serializers.ReadOnlyField(source='supplier.supplier_name')
+
     class Meta:
         model = InboundStockItem
-        fields = ['inventory', 'supplier', 'quantity']
+        fields = ['inventory', 'supplier', 'quantity', 'product', 'supplier_name']
         depth = 1
     
 class InboundStockSerializer(serializers.ModelSerializer):

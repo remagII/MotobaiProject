@@ -3,16 +3,13 @@ import Logo from "../../../assets/Logo.png";
 import Table from "../../DynamicComponents/DynamicTable";
 
 const DetailsStockModal = ({ logsData }) => {
+  
   const tableColumns = [
     {
       header: "Product Name",
       customRender: (item) => {
         return (
-          <>
-            {item.inboundStockItems.map((inboundItem, index) => (
-              <p key={index}>{inboundItem.inventory?.product.id || 'N/A'}</p>
-            ))}
-          </>
+          <p>{item.product.product_name}</p>
         )
       },
     },
@@ -20,11 +17,7 @@ const DetailsStockModal = ({ logsData }) => {
       header: "Supplier Name",
       customRender: (item) => {
         return (
-          <>
-            {item.inboundStockItems.map((inboundItem, index) => (
-              <p key={index}>{inboundItem.supplier?.supplier_name || 'N/A'}</p>
-            ))}
-          </>
+          <p>{item.supplier_name}</p>
         )
       },
     },
@@ -32,14 +25,10 @@ const DetailsStockModal = ({ logsData }) => {
       header: "Quantity Added",
       customRender: (item) => {
         return (
-          <>
-            {item.inboundStockItems.map((inboundItem, index) => (
-              <p key={index}>{inboundItem.quantity || 'N/A'}</p>
-            ))}
-          </>
-        );
+          <p>{item.quantity}</p>
+        )
       },
-    },
+    }
   ];
 
   return (

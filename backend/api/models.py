@@ -2,12 +2,12 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Product(models.Model):
-    product_name = models.CharField(max_length=100)
-    price = models.DecimalField(decimal_places=2, max_digits=10, default=0)
-    product_type = models.CharField(max_length=100, null=True, blank=True, default='')
-    description = models.TextField(max_length=32, null=True, blank=True, default='')
-    brand = models.CharField(max_length=32, null=True, blank=True, default='')
-    vehicle_type = models.CharField(max_length=32, null=True, blank=True, default='')
+    product_name = models.CharField(max_length=50)
+    price = models.DecimalField(decimal_places=2, max_digits=9, default=0)
+    product_type = models.CharField(max_length=50, null=True, blank=True, default='')
+    description = models.TextField(max_length=250, null=True, blank=True, default='')
+    brand = models.CharField(max_length=50, null=True, blank=True, default='')
+    vehicle_type = models.CharField(max_length=50, null=True, blank=True, default='')
     
     def __str__(self):
         return '{}: {}'.format(self.product_name, self.product_type)

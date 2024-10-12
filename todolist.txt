@@ -1,8 +1,9 @@
 NOTES:
 - Order Module(in progress)
-- Adding order to backend
+- Order minus inventory stock
 - Order Management page to list the order
 
+- backend cleanup
 - notify user that the create/action is complete
 - double clicking submission issue
 - general useEffect when fetching
@@ -20,10 +21,6 @@ Todo Pages:
 - OrderList + Order History -> Order Management
 - Dashboard/Landing Page
 - Authentication
-
-
-Extra Interview Questions:
-- Tama ba ung values na gina keep natin, ishow ung current lahat
 
 
 import { ACCESS_TOKEN } from "../../../constants.js"; 
