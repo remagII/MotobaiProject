@@ -2,7 +2,9 @@ NOTES:
 - Order Module(in progress)
 - Order minus inventory stock
 - Order Management page to list the order
+- Order Walk-in create
 
+- product page button inside inventory
 - stock logs modal lacks some information maybe
 - backend cleanup
 - notify user that the create/action is complete
@@ -22,30 +24,6 @@ Todo Pages:
 - OrderList + Order History -> Order Management
 - Dashboard/Landing Page
 - Authentication
-
-
-import { useFetchData } from "../../Hooks/useFetchData.js";
-import { useDeleteData } from "../../Hooks/useDeleteData.js";
-
-const { data: customer } = useFetchData('customer');
-const { deleteData, error } = useDeleteData(); // add error field here later
-
-const deleteHandler = () => {
-  deleteData('customer', rowIdEdit);
-};
-
-
-const filteredData = data.filter(customer => !customer.is_deleted);
-setCustomer(filteredData);
-
-const handleEditRow = (index, id) => {
-    console.log("Editing row:", index); // just for troubleshoot
-    console.log("ID:", id); // just for troubleshoot
-    toggleModal();
-    setRowIdEdit(id); // need to make null after this is done
-    setRowToEdit(index);
-    setMethod("edit");
-
 
 dont mind this
   C:\Users\tyche\AppData\Local\Programs\Python\Python313\python.exe manage.py runserver
