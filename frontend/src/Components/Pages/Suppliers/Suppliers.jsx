@@ -1,7 +1,4 @@
-import React, { useState, useEffect } from "react";
-
-import { ACCESS_TOKEN } from "../../../constants.js"; 
-
+import React, { useState } from "react";
 import {
   UserPlusIcon,
   ArrowDownTrayIcon,
@@ -12,12 +9,12 @@ import Overview from "../../Overview.jsx";
 import DynamicForm from "../../DynamicComponents/DynamicForm.jsx";
 import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
 import api from "../../../api";
+import { useFetchData } from "../../Hooks/useFetchData.js";
+import { useDeleteData } from "../../Hooks/useDeleteData.js";
 
 const Suppliers = () => {
   const [method, setMethod] = useState("");
   const [modal, setModal] = useState(false);
-
-  const token = localStorage.getItem(ACCESS_TOKEN); 
 
   // MODAL TOGGLE
   const toggleModal = () => {
@@ -39,34 +36,6 @@ const Suppliers = () => {
 
   const [errors, setErrors] = useState("");
   var errorFields = [];
-
-  const [supplier, setSupplier] = useState([]);
-
-  useEffect(() => {
-    fetchSupplier();
-  }, []);
-
-  const fetchSupplier = async () => {
-    try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/supplier/list?format=json", {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${token}`, 
-            "Content-Type": "application/json" 
-          }
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch supplier");
-      }
-      const data = await response.json();
-      setSupplier(data);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
 
   //PROPS FOR <INPUT>
   const formArr = [
@@ -103,6 +72,13 @@ const Suppliers = () => {
     },
   ];
 
+  const { data: supplier } = useFetchData('supplier');
+  const { deleteData, error } = useDeleteData(); // add error field here later
+
+  const deleteHandler = () => {
+    deleteData('supplier', rowIdEdit);
+  };
+
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
   const overviewArr = [{ title: "Suppliers", quantity: `${supplier.length}` }];
 
@@ -118,7 +94,7 @@ const Suppliers = () => {
       if (rowToEdit === null) {
         try {
           const res = await api.post(
-            "http://127.0.0.1:8000/api/supplier/create",
+            "http://127.0.0.1:8000/api/supplier/create/",
             {
               supplier_name: form.supplier_name,
               phone_number: form.phone_number,
@@ -155,7 +131,7 @@ const Suppliers = () => {
       ////////////////////////////////////////// CODE FOR EDITING DATA
       try {
         const res = await api.put(
-          `http://127.0.0.1:8000/api/supplier/update/${rowIdEdit}`,
+          `http://127.0.0.1:8000/api/supplier/update/${rowIdEdit}/`,
           {
             supplier_name: form.supplier_name,
             phone_number: form.phone_number,
@@ -207,17 +183,13 @@ const Suppliers = () => {
   const [rowToEdit, setRowToEdit] = useState(null);
   const [rowIdEdit, setRowIdEdit] = useState(null);
   const [btnTitle, setBtnTitle] = useState("Create Supplier");
-  const handleEditRow = (index) => {
+  const handleEditRow = (index, id) => {
     toggleModal();
-    setRowIdEdit(supplier[index]?.id);
+    setRowIdEdit(id);
     setRowToEdit(index);
     setMethod("edit");
     setBtnTitle("Edit Supplier");
     setDeleteBtn("active");
-  };
-
-  const deleteHandler = () => {
-    setMethod("delete");
   };
 
   return (

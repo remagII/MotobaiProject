@@ -26,7 +26,7 @@ class CreateUserView(generics.CreateAPIView):
 class ProductCreate(generics.CreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 class ProductListView(generics.ListAPIView):
     queryset = Product.objects.all()
@@ -36,18 +36,18 @@ class ProductListView(generics.ListAPIView):
 class ProductUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 class ProductDeleteView(generics.DestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 
 # Account
 class AccountAdd(generics.CreateAPIView):
     serializer_class = AccountSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 class AccountListView(generics.ListAPIView):
     queryset = Account.objects.all()
@@ -67,7 +67,7 @@ class AccountDeleteView(generics.DestroyAPIView):
 # Customer
 class CustomerAdd(generics.CreateAPIView):
     serializer_class = CustomerSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 class CustomerListView(generics.ListAPIView):
     queryset = Customer.objects.all()
@@ -120,7 +120,7 @@ class InventoryListView(generics.ListAPIView):
 
 class InventoryAdd(generics.CreateAPIView):
     serializer_class = InventorySerializer
-    permission_classes = [IsAuthenticated] 
+    permission_classes = [AllowAny] 
 
 class InventoryUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Inventory.objects.all()
@@ -135,7 +135,7 @@ class InventoryDetailView(generics.RetrieveAPIView):
 # Employee
 class EmployeeAdd(generics.CreateAPIView):
     serializer_class = EmployeeSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 class EmployeeListView(generics.ListAPIView):
     queryset = Employee.objects.all()
@@ -145,17 +145,17 @@ class EmployeeListView(generics.ListAPIView):
 class EmployeeUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 class EmployeeDeleteView(generics.DestroyAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 # Supplier
 class SupplierAdd(generics.CreateAPIView):
     serializer_class = SupplierSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 class SupplierListView(generics.ListAPIView):
     queryset = Supplier.objects.all()
@@ -165,18 +165,18 @@ class SupplierListView(generics.ListAPIView):
 class SupplierUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Supplier.objects.all()
     serializer_class = SupplierSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 class SupplierDeleteView(generics.DestroyAPIView):
     queryset = Supplier.objects.all()
     serializer_class = SupplierSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 # InboundStock
 class InboundStockCreateView(generics.CreateAPIView):
     queryset = InboundStock.objects.all()
     serializer_class = InboundStockSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 class InboundStockListView(generics.ListAPIView):
     queryset = InboundStock.objects.all()

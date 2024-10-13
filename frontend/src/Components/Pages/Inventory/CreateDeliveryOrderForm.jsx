@@ -112,7 +112,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
     }));
 
     try {
-      const res = await api.post("http://127.0.0.1:8000/api/order/create", {
+      const res = await api.post("http://127.0.0.1:8000/api/order/create/", {
         order_details: orderItems,
         account: selectedAccount,
         employee: selectedEmployee,

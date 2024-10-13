@@ -1,7 +1,4 @@
-import React, { useEffect, useState } from "react";
-
-import { ACCESS_TOKEN } from "../../../constants.js";
-
+import React, { useState } from "react";
 import Logo from "../../../assets/Logo.png";
 import "../../pages.css";
 import Table from "../../DynamicComponents/DynamicTable";
@@ -11,67 +8,13 @@ import {
   PlusCircleIcon,
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
+import { useFetchData } from "../../Hooks/useFetchData.js";
 
 const StockInForm = ({ confirmHandler }) => {
   const [initialStockIn, setInitialStockIn] = useState([]);
-  const [productOptions, setProductOptions] = useState([]);
-  const [supplier, setSupplier] = useState([]);
 
-  const token = localStorage.getItem(ACCESS_TOKEN);
-
-  useEffect(() => {
-    fetchProduct();
-  }, []);
-
-  const fetchProduct = async () => {
-    try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/inventory/list?format=json",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch products");
-      }
-      const data = await response.json();
-      setProductOptions(data); // ito ung data ng list of products (product)
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchSupplier();
-  }, []);
-
-  const fetchSupplier = async () => {
-    try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/supplier/list?format=json",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch supplier");
-      }
-      const data = await response.json();
-      setSupplier(data);
-    } catch (error) {
-      console.error("Error fetching supplier:", error);
-    }
-  };
+  const { data: productOptions } = useFetchData('inventory');
+  const { data: supplierOptions } = useFetchData('supplier');
 
   const formArr = [
     {
@@ -135,7 +78,7 @@ const StockInForm = ({ confirmHandler }) => {
     }));
 
     try {
-      const res = await api.post("http://127.0.0.1:8000/api/stockin/create", {
+      const res = await api.post("http://127.0.0.1:8000/api/stockin/create/", {
         inboundStockItems: inboundStockItems,
       });
 
@@ -199,9 +142,9 @@ const StockInForm = ({ confirmHandler }) => {
                         </option>
                         {productOptions.map((option) => (
                           <option
-                            key={option.id}
+                            key={option.product.id}
                             value={option.product.product_name}
-                            data-id={option.id}
+                            data-id={option.product.id}
                           >
                             {`${option.product.product_name}`}
                           </option>
@@ -235,13 +178,13 @@ const StockInForm = ({ confirmHandler }) => {
                         <option value="" disabled>
                           Select A Supplier
                         </option>
-                        {supplier.map((sup) => (
+                        {supplierOptions.map((option) => (
                           <option
-                            key={sup.id}
-                            value={sup.supplier_name}
-                            data-id={sup.id}
+                            key={option.id}
+                            value={option.supplier_name}
+                            data-id={option.id}
                           >
-                            {`${sup.supplier_name}`}
+                            {`${option.supplier_name}`}
                           </option>
                         ))}
                       </select>

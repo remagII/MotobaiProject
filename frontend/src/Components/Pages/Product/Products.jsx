@@ -128,7 +128,7 @@ export default function Products() {
       if (rowToEdit === null) {
         try {
           const res = await api.post(
-            "http://127.0.0.1:8000/api/product/create",
+            "http://127.0.0.1:8000/api/product/create/",
             {
               product_name: form.product.product_name,
               product_type: form.product.product_type,
@@ -171,7 +171,7 @@ export default function Products() {
       console.log(`edit method, id: ` + rowIdEdit);
       try {
         const res = await api.put(
-          `http://127.0.0.1:8000/api/product/update/${rowIdEdit}`,
+          `http://127.0.0.1:8000/api/product/update/${rowIdEdit}/`,
           {
             product_name: form.product.product_name,
             product_type: form.product.product_type,
@@ -209,19 +209,6 @@ export default function Products() {
       }
 
       callback();
-    } else if (method === "delete") {
-      try {
-        const res = await api.delete(
-          `http://127.0.0.1:8000/api/product/delete/${rowIdEdit}`
-        );
-        console.log("product deleted.");
-      } catch (error) {
-        // feel free to change here
-        console.log(error);
-      } finally {
-        setLoading(false);
-        setRowIdEdit(null); // ito ung delete id
-      }
     }
   };
   const [deleteBtn, setDeleteBtn] = useState(""); // HANDLES DELETE BUTTON STATE
