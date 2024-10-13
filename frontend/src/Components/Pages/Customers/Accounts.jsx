@@ -137,7 +137,7 @@ export default function Accounts() {
       if (rowToEdit === null) {
         try {
           const res = await api.post(
-            "http://127.0.0.1:8000/api/account/create",
+            "http://127.0.0.1:8000/api/account/create/",
             {
               account: form.account,
               representative_name: form.representative_name,
@@ -179,7 +179,7 @@ export default function Accounts() {
       ////////////////////////////////////////// CODE FOR EDITING DATA
       try {
         const res = await api.put(
-          `http://127.0.0.1:8000/api/account/update/${rowIdEdit}`,
+          `http://127.0.0.1:8000/api/account/update/${rowIdEdit}/`,
           {
             account: form.account,
             representative_name: form.representative_name,

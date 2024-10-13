@@ -1,43 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { ACCESS_TOKEN } from "../../../constants.js";
+import React, { useState } from "react";
 import Table from "../../DynamicComponents/DynamicTable.jsx";
 import Overview from "../../Overview.jsx";
 import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
 import DetailsStockModal from "./DetailsStockModal.jsx";
+import { useFetchData } from "../../Hooks/useFetchData.js";
 
 export default function Inventory() {
-  const token = localStorage.getItem(ACCESS_TOKEN);
-
-  const [logs, setLogs] = useState([]);
   const [inboundStockItem, setInboundStockItem] = useState([]);
-
-  useEffect(() => {
-    fetchInboundStock();
-  }, []);
-
-  const fetchInboundStock = async () => {
-    try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/stockin/list?format=json",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch logs");
-      }
-      const data = await response.json();
-      setLogs(data);
-      console.log(data);
-    } catch (error) {
-      console.error("Error fetching logs:", error);
-    }
-  };
+  const { data: logs } = useFetchData('stockin');
 
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
   const tableColumns = [

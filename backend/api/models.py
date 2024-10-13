@@ -9,6 +9,8 @@ class Product(models.Model):
     brand = models.CharField(max_length=50, null=True, blank=True, default='')
     vehicle_type = models.CharField(max_length=50, null=True, blank=True, default='')
 
+    is_deleted = models.BooleanField(default=False)
+
     def __str__(self):
         return '{}: {}'.format(self.product_name, self.product_type)
 
@@ -28,6 +30,8 @@ class Supplier(models.Model):
     supplier_name = models.CharField(max_length=100, default='')
     phone_number = models.CharField(max_length=100, default='')
     description = models.CharField(max_length=100, default='')
+
+    is_deleted = models.BooleanField(default=False)
 
 class InboundStockItem(models.Model):
     inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE)

@@ -77,7 +77,7 @@ const WalkIn = () => {
     deleteData('customer', rowIdEdit);
   };
 
-  const overviewArr = [
+  const overviewArr = [  
     { title: "Walk-in Customers", quantity: `${customer.length}` },
   ];
 
@@ -90,7 +90,7 @@ const WalkIn = () => {
       if (rowToEdit === null) {
         try {
           const res = await api.post(
-            "http://127.0.0.1:8000/api/customer/create",
+            "http://127.0.0.1:8000/api/customer/create/",
             {
               customer_name: form.customer_name,
               phone_number: form.phone_number,
@@ -124,7 +124,7 @@ const WalkIn = () => {
       console.log(`edit method, id: ` + rowIdEdit);
       try {
         const res = await api.put(
-          `http://127.0.0.1:8000/api/customer/update/${rowIdEdit}`,
+          `http://127.0.0.1:8000/api/customer/update/${rowIdEdit}/`,
           {
             customer_name: form.customer_name,
             phone_number: form.phone_number,

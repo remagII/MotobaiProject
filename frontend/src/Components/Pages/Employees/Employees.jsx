@@ -129,7 +129,7 @@ const Employees = () => {
       if (rowToEdit === null) {
         try {
           const res = await api.post(
-            "http://127.0.0.1:8000/api/employee/create",
+            "http://127.0.0.1:8000/api/employee/create/",
             {
               first_name : form.first_name,
               middle_name : form.middle_name,
@@ -169,7 +169,7 @@ const Employees = () => {
     } else if (method === "edit") {
       try {
         const res = await api.put(
-          `http://127.0.0.1:8000/api/employee/update/${rowIdEdit}`,
+          `http://127.0.0.1:8000/api/employee/update/${rowIdEdit}/`,
           {
             first_name : form.first_name,
             middle_name : form.middle_name,

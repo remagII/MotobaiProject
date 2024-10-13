@@ -36,3 +36,4 @@ ENV/
 env.bak/
 venv/
 backend/api/migrations/0030_alter_orderdetails_order.py
+/backend/api/migrations

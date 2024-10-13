@@ -1,20 +1,16 @@
-import React, { useState, useEffect } from "react";
-
-import { ACCESS_TOKEN } from "../../../constants.js";
-
+import React, { useState } from "react";
 import { GiftIcon, TruckIcon, CubeIcon } from "@heroicons/react/24/outline";
 import Table from "../../DynamicComponents/DynamicTable.jsx";
 import Overview from "../../Overview.jsx";
 import StockInForm from "./StockInForm.jsx";
 import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
 import CreateDeliveryOrderForm from "./CreateDeliveryOrderForm.jsx";
+import { useFetchData } from "../../Hooks/useFetchData.js";
 
 export default function Inventory() {
   const [method, setMethod] = useState("");
   const [stockInModal, setStockInModal] = useState(false);
   const [createDeliveryModal, setCreateDeliveryModal] = useState(false);
-
-  const token = localStorage.getItem(ACCESS_TOKEN);
 
   // MODAL TOGGLE
   const toggleModal = () => {
@@ -39,36 +35,6 @@ export default function Inventory() {
   // ERROR TEXT
   const [errors, setErrors] = useState("");
   var errorFields = [];
-
-  // fetch inventory
-  const [inventory, setInventory] = useState([]);
-
-  useEffect(() => {
-    fetchInventory();
-  }, []);
-
-  const fetchInventory = async () => {
-    try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/inventory/list?format=json",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch inventory");
-      }
-      const data = await response.json();
-      setInventory(data);
-    } catch (error) {
-      console.error("Error fetching inventory:", error);
-    }
-  };
 
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
   const tableColumns = [
@@ -120,7 +86,8 @@ export default function Inventory() {
     },
   ];
 
-  // backend :))))))))))
+  const { data: inventory } = useFetchData('inventory');
+
   const [loading, setLoading] = useState(false);
 
   const onSubmitHandler = async (form, callback) => {
@@ -131,18 +98,14 @@ export default function Inventory() {
   const [rowToEdit, setRowToEdit] = useState(null);
   const [rowIdEdit, setRowIdEdit] = useState(null);
   const [btnTitle, setBtnTitle] = useState("Create Order");
-  const handleEditRow = (index) => {
+  const handleEditRow = (index,id) => {
     console.log("Editing row:", index); // just for troubleshoot
     toggleModal();
-    setRowIdEdit(inventory[index]?.id);
+    setRowIdEdit(id);
     setRowToEdit(index);
     setMethod("edit");
     setBtnTitle("Edit Inventory");
     setDeleteBtn("active");
-  };
-
-  const deleteHandler = () => {
-    setMethod("delete");
   };
 
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
