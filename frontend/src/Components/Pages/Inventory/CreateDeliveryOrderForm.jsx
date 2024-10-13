@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from "react";
-
-import { ACCESS_TOKEN } from "../../../constants.js";
-
 import Logo from "../../../assets/Logo.png";
 import "../../pages.css";
 import Table from "../../DynamicComponents/DynamicTable";
@@ -12,90 +9,14 @@ import {
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
 
+import { useFetchData } from "../../Hooks/useFetchData.js";
+
 const CreateDeliveryOrderForm = ({ confirmHandler }) => {
   const [initialOrder, setInitialOrder] = useState([]);
-  const [accountOptions, setAccountOptions] = useState([]);
-  const [employeeOptions, setEmployeeOptions] = useState([]);
-  const [productOptions, setProductOptions] = useState([]);
 
-  const token = localStorage.getItem(ACCESS_TOKEN);
-
-  useEffect(() => {
-    fetchAccountOptions();
-    fetchEmployeeOptions();
-    fetchProductOptions();
-  }, []);
-
-  const fetchProductOptions = async () => {
-    try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/product/list?format=json",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch products");
-      }
-      const data = await response.json();
-      setProductOptions(data); // ito ung data ng list of Account
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
-
-  const fetchEmployeeOptions = async () => {
-    try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/employee/list?format=json",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch employees");
-      }
-      const data = await response.json();
-      setEmployeeOptions(data); // ito ung data ng list of Account
-    } catch (error) {
-      console.error("Error fetching employees:", error);
-    }
-  };
-
-  const fetchAccountOptions = async () => {
-    try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/account/list?format=json",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch accounts");
-      }
-      const data = await response.json();
-      setAccountOptions(data); // ito ung data ng list of Account
-    } catch (error) {
-      console.error("Error fetching accounts:", error);
-    }
-  };
-
-  const [names, setNames] = useState([]);
+  const { data: productOptions } = useFetchData('inventory');
+  const { data: employeeOptions } = useFetchData('employee');
+  const { data: accountOptions } = useFetchData('account');
 
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
@@ -308,11 +229,11 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                         </option>
                         {productOptions.map((option) => (
                           <option
-                            key={option.id}
-                            value={option.product_name}
-                            data-id={option.id}
+                            key={option.product.id}
+                            value={option.product.product_name}
+                            data-id={option.product.id}
                           >
-                            {`${option.product_name}`}
+                            {`${option.product.product_name}`}
                           </option>
                         ))}
                       </select>
