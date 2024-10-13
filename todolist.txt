@@ -3,6 +3,7 @@ NOTES:
 - Order minus inventory stock
 - Order Management page to list the order
 
+- stock logs modal lacks some information maybe
 - backend cleanup
 - notify user that the create/action is complete
 - double clicking submission issue
