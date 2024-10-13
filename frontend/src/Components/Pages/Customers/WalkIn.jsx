@@ -1,7 +1,4 @@
-import React, { useState, useEffect } from "react";
-
-import { ACCESS_TOKEN } from "../../../constants.js";
-
+import React, { useState } from "react";
 import { UserPlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Table from "../../DynamicComponents/DynamicTable.jsx";
 import Overview from "../../Overview.jsx";
@@ -9,11 +6,12 @@ import DynamicForm from "../../DynamicComponents/DynamicForm.jsx";
 import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
 import api from "../../../api";
 import DynamicCustomLink from "../../DynamicComponents/DynamicCustomLink.jsx";
+import { useFetchData } from "../../Hooks/useFetchData.js";
+import { useDeleteData } from "../../Hooks/useDeleteData.js";
+
 const WalkIn = () => {
   const [method, setMethod] = useState("");
   const [modal, setModal] = useState(false);
-
-  const token = localStorage.getItem(ACCESS_TOKEN);
 
   // MODAL TOGGLE
   const toggleModal = () => {
@@ -36,35 +34,7 @@ const WalkIn = () => {
   const [errors, setErrors] = useState("");
   var errorFields = [];
 
-  const [customer, setCustomer] = useState([]);
-
-  useEffect(() => {
-    fetchCustomer();
-  }, []);
-
-  const fetchCustomer = async () => {
-    try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/customer/list?format=json",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch customers");
-      }
-      const data = await response.json();
-      const filteredData = data.filter((customer) => !customer.is_deleted);
-      setCustomer(filteredData); // Set filtered customers
-    } catch (error) {
-      console.error("Error fetching customers:", error);
-    }
-  };
+  
 
   //PROPS FOR <INPUT>
   const formArr = [
@@ -99,6 +69,13 @@ const WalkIn = () => {
       },
     },
   ];
+
+  const { data: customer } = useFetchData('customer');
+  const { deleteData, error } = useDeleteData(); // add error field here later
+
+  const deleteHandler = () => {
+    deleteData('customer', rowIdEdit);
+  };
 
   const overviewArr = [
     { title: "Walk-in Customers", quantity: `${customer.length}` },
@@ -193,24 +170,6 @@ const WalkIn = () => {
     setDeleteBtn("active");
   };
 
-  const deleteHandler = async () => {
-    console.log(rowIdEdit);
-    try {
-      const res = await api.put(
-        `http://127.0.0.1:8000/api/customer/update/${rowIdEdit}`,
-        {
-          is_deleted: "True",
-        }
-      );
-      window.location.reload();
-      {
-        errorWindow ? toggleErrorWindow() : "";
-      }
-    } catch (error) {
-      console.error("Error deleting Customer:", error);
-    }
-  };
-
   return (
     <section className={`font-main h-full overflow-hidden`}>
       <div className={`bg-normalGray box-border flex h-full `}>
@@ -278,7 +237,7 @@ const WalkIn = () => {
           </div>
           <Table
             columnArr={tableColumns}
-            dataArr={customer} // changed from customerArr
+            dataArr={customer} 
             editRow={handleEditRow}
           />
         </div>

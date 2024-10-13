@@ -1,7 +1,4 @@
-import React, { useState, useEffect } from "react";
-
-import { ACCESS_TOKEN } from "../../../constants.js";
-
+import React, { useState } from "react";
 import { UserPlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Table from "../../DynamicComponents/DynamicTable.jsx";
 import Overview from "../../Overview.jsx";
@@ -9,13 +6,12 @@ import DynamicForm from "../../DynamicComponents/DynamicForm.jsx";
 import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
 import api from "../../../api.js";
 import DynamicCustomLink from "../../DynamicComponents/DynamicCustomLink.jsx";
+import { useFetchData } from "../../Hooks/useFetchData.js";
+import { useDeleteData } from "../../Hooks/useDeleteData.js";
 
-// WHOLE PAGE
 export default function Accounts() {
   const [method, setMethod] = useState("");
   const [modal, setModal] = useState(false);
-
-  const token = localStorage.getItem(ACCESS_TOKEN);
 
   // MODAL TOGGLE
   const toggleModal = () => {
@@ -41,36 +37,7 @@ export default function Accounts() {
   var errorFields = [];
 
   /////////////////////////// BACKEND
-  // fetch accounts
-  const [account, setAccount] = useState([]);
-
-  useEffect(() => {
-    fetchAccount();
-  }, []);
-
-  const fetchAccount = async () => {
-    try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/account/list?format=json",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch account");
-      }
-      const data = await response.json();
-      const filteredData = data.filter((account) => !account.is_deleted);
-      setAccount(filteredData);
-    } catch (error) {
-      console.error("Error fetching accounts:", error);
-    }
-  };
+  
 
   //PROPS FOR <INPUT>
   const formArr = [
@@ -149,17 +116,23 @@ export default function Accounts() {
       },
     },
   ];
+
+  // fetch and delete accounts
+  const { data: account } = useFetchData('account');
+  const { deleteData, error } = useDeleteData(); // add error field here later
+
+  const deleteHandler = () => {
+    deleteData('account', rowIdEdit);
+  };
+
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
   const overviewArr = [{ title: "Accounts", quantity: `${account.length}` }];
-
-  /////////////////////////////////////////////////////////// BACKEND
 
   const [loading, setLoading] = useState(false);
 
   const onSubmitHandler = async (form, callback) => {
     setLoading(true);
     if (method === "create") {
-      console.log("create method");
       ////////////////////////////////////////// CODE FOR SAVING DATA
       if (rowToEdit === null) {
         try {
@@ -259,26 +232,6 @@ export default function Accounts() {
     setMethod("edit");
     setBtnTitle("Edit Account");
     setDeleteBtn("active");
-  };
-
-  const deleteHandler = async () => {
-    console.log(rowIdEdit);
-    const accountToDelete = account.find((account) => account.id === rowIdEdit);
-    try {
-      const res = await api.put(
-        `http://127.0.0.1:8000/api/account/update/${rowIdEdit}`,
-        {
-          ...accountToDelete,
-          is_deleted: true,
-        }
-      );
-      window.location.reload();
-      {
-        errorWindow ? toggleErrorWindow() : "";
-      }
-    } catch (error) {
-      console.error("Error deleting Account:", error.response.data);
-    }
   };
 
   return (

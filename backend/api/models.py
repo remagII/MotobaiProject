@@ -2,13 +2,13 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Product(models.Model):
-    product_name = models.CharField(max_length=50)
+    product_name = models.CharField(max_length=50, default='')
     price = models.DecimalField(decimal_places=2, max_digits=9, default=0)
     product_type = models.CharField(max_length=50, null=True, blank=True, default='')
     description = models.TextField(max_length=250, null=True, blank=True, default='')
     brand = models.CharField(max_length=50, null=True, blank=True, default='')
     vehicle_type = models.CharField(max_length=50, null=True, blank=True, default='')
-    
+
     def __str__(self):
         return '{}: {}'.format(self.product_name, self.product_type)
 
@@ -18,6 +18,8 @@ class Inventory(models.Model):
     stock_minimum_threshold = models.PositiveIntegerField(null=True, blank=True, default=0)
     date_added = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
+
+    is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return '{}: {}'.format(self.product, self.stock)
@@ -40,14 +42,14 @@ class InboundStock(models.Model):
         return 'Stock Entry: {} items on {}'.format(self.inboundStockItems.count(), self.date_created)
     
 class Account(models.Model):
-    account = models.CharField(max_length=100)
-    representative_name = models.CharField(max_length=100)
-    representative_position = models.CharField(max_length=100)
-    city = models.CharField(max_length=100)
-    barangay = models.CharField(max_length=100)
-    street = models.CharField(max_length=100)
-    phone_number = models.CharField(max_length=100)
-    email = models.CharField(max_length=100)
+    account = models.CharField(max_length=100, null=True, blank=True)
+    representative_name = models.CharField(max_length=100, null=True, blank=True)
+    representative_position = models.CharField(max_length=100, null=True, blank=True)
+    city = models.CharField(max_length=100, null=True, blank=True)
+    barangay = models.CharField(max_length=100, null=True, blank=True)
+    street = models.CharField(max_length=100, null=True, blank=True)
+    phone_number = models.CharField(max_length=100, null=True, blank=True)
+    email = models.CharField(max_length=100, null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     
     is_deleted = models.BooleanField(default=False)
@@ -66,15 +68,16 @@ class Customer(models.Model):
         return '{}'.format(self.customer_name)
 
 class Employee(models.Model):
-    first_name = models.CharField(max_length=100)
-    middle_name = models.CharField(max_length=100) 
-    last_name = models.CharField(max_length=100)
-    city = models.CharField(max_length=100)
-    barangay = models.CharField(max_length=100)
-    street = models.CharField(max_length=100)
-    phone_number = models.CharField(max_length=100)
-    email = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=100, default='')
+    middle_name = models.CharField(max_length=100, default='') 
+    last_name = models.CharField(max_length=100, default='')
+    city = models.CharField(max_length=100, default='')
+    barangay = models.CharField(max_length=100, default='')
+    street = models.CharField(max_length=100, default='')
+    phone_number = models.CharField(max_length=100, default='')
+    email = models.CharField(max_length=100, default='')
     date_created = models.DateTimeField(auto_now_add=True)
+    is_deleted = models.BooleanField(default=False)
 
 class Order(models.Model): 
     account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True)

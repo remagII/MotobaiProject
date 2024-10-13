@@ -1,7 +1,4 @@
-import React, { useState, useEffect } from "react";
-
-import { ACCESS_TOKEN } from "../../../constants.js"; 
-
+import React, { useState } from "react";
 import {
   UserPlusIcon,
   ArrowDownTrayIcon,
@@ -12,12 +9,12 @@ import Overview from "../../Overview.jsx";
 import DynamicForm from "../../DynamicComponents/DynamicForm.jsx";
 import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
 import api from "../../../api";
+import { useFetchData } from "../../Hooks/useFetchData.js";
+import { useDeleteData } from "../../Hooks/useDeleteData.js";
 
 const Employees = () => {
   const [method, setMethod] = useState("");
   const [modal, setModal] = useState(false);
-
-  const token = localStorage.getItem(ACCESS_TOKEN); 
 
   // MODAL TOGGLE
   const toggleModal = () => {
@@ -39,34 +36,6 @@ const Employees = () => {
 
   const [errors, setErrors] = useState("");
   var errorFields = [];
-
-  const [employee, setEmployee] = useState([]);
-
-  useEffect(() => {
-    fetchEmployee();
-  }, []);
-
-  const fetchEmployee = async () => {
-    try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/employee/list?format=json", {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${token}`, 
-            "Content-Type": "application/json" 
-          }
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch employee");
-      }
-      const data = await response.json();
-      setEmployee(data);
-    } catch (error) {
-      console.error("Error fetching employee:", error);
-    }
-  };
 
   //PROPS FOR <INPUT>
   const formArr = [
@@ -139,6 +108,12 @@ const Employees = () => {
     },
   ];
 
+  const { data: employee } = useFetchData('employee');
+  const { deleteData, error } = useDeleteData(); // add error field here later
+
+  const deleteHandler = () => {
+    deleteData('employee', rowIdEdit);
+  };
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
   const overviewArr = [{ title: "Employees", quantity: `${employee.length}` }];
 
@@ -192,8 +167,6 @@ const Employees = () => {
         }
       }
     } else if (method === "edit") {
-      console.log(`edit method, id: ` + rowIdEdit);
-      ////////////////////////////////////////// CODE FOR EDITING DATA
       try {
         const res = await api.put(
           `http://127.0.0.1:8000/api/employee/update/${rowIdEdit}`,
@@ -232,38 +205,20 @@ const Employees = () => {
       }
 
       callback();
-    } else if (method === "delete") {
-      // rename rowIdEdit to rowIdSelected or smth similar
-      try {
-        const res = await api.delete(
-          `http://127.0.0.1:8000/api/employee/delete/${rowIdEdit}`
-        );
-        console.log("product deleted.");
-      } catch (error) {
-        // feel free to change here
-        console.log(error);
-      } finally {
-        setLoading(false);
-        setRowIdEdit(null); // ito ung delete id
-      }
-    }
+    } 
   };
 
   const [deleteBtn, setDeleteBtn] = useState(""); // HANDLES DELETE BUTTON STATE
   const [rowToEdit, setRowToEdit] = useState(null);
   const [rowIdEdit, setRowIdEdit] = useState(null);
   const [btnTitle, setBtnTitle] = useState("Create Employee");
-  const handleEditRow = (index) => {
+  const handleEditRow = (index, id) => {
     toggleModal();
-    setRowIdEdit(employee[index]?.id);
+    setRowIdEdit(id);
     setRowToEdit(index);
     setMethod("edit");
     setBtnTitle("Edit Employee");
     setDeleteBtn("active");
-  };
-
-  const deleteHandler = () => {
-    setMethod("delete");
   };
 
   return (

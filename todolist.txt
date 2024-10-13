@@ -23,22 +23,15 @@ Todo Pages:
 - Authentication
 
 
-import { ACCESS_TOKEN } from "../../../constants.js"; 
+import { useFetchData } from "../../Hooks/useFetchData.js";
+import { useDeleteData } from "../../Hooks/useDeleteData.js";
 
-const token = localStorage.getItem(ACCESS_TOKEN); 
+const { data: customer } = useFetchData('customer');
+const { deleteData, error } = useDeleteData(); // add error field here later
 
-const response = await fetch(
-        "http://127.0.0.1:8000/api/product/list?format=json", {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${token}`, 
-            "Content-Type": "application/json" 
-          }
-        }
-      );
-
-
-
+const deleteHandler = () => {
+  deleteData('customer', rowIdEdit);
+};
 
 
 const filteredData = data.filter(customer => !customer.is_deleted);
@@ -52,24 +45,6 @@ const handleEditRow = (index, id) => {
     setRowToEdit(index);
     setMethod("edit");
 
-
-const deleteHandler = async() => {
-    console.log(rowIdEdit);
-    try {
-      const res = await api.put(
-        `http://127.0.0.1:8000/api/customer/update/${rowIdEdit}`,
-        {
-          is_deleted : "True",
-        }
-      );
-      window.location.reload();
-      {
-        errorWindow ? toggleErrorWindow() : "";
-      }
-    } catch (error) {
-      console.error("Error deleting Customer:", error);
-    } 
-  };
 
 dont mind this
   C:\Users\tyche\AppData\Local\Programs\Python\Python313\python.exe manage.py runserver

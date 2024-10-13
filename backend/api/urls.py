@@ -33,8 +33,8 @@ urlpatterns = [
 
     path("supplier/list", views.SupplierListView.as_view(), name="supplier-list"),
     path("supplier/create", views.SupplierAdd.as_view(), name="supplier-add"),
-    path("supplier/update/<int:pk>", views.SupplierUpdateView.as_view(), name="supplier-update"),
-    path("supplier/delete/<int:pk>", views.SupplierDeleteView.as_view(), name="supplier-delete"),
+    path("supplier/update/<int:pk>/", views.SupplierUpdateView.as_view(), name="supplier-update"),
+    path("supplier/delete/<int:pk>/", views.SupplierDeleteView.as_view(), name="supplier-delete"),
 
     path("employee/list", views.EmployeeListView.as_view(), name="employee-list"),
     path("employee/create", views.EmployeeAdd.as_view(), name="employee-add"),

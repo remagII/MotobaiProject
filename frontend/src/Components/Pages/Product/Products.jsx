@@ -1,7 +1,4 @@
-import React, { useState, useEffect } from "react";
-
-import { ACCESS_TOKEN } from "../../../constants.js";
-
+import React, { useState } from "react";
 import {
   UserPlusIcon,
   ArrowDownTrayIcon,
@@ -12,12 +9,12 @@ import Overview from "../../Overview.jsx";
 import DynamicForm from "../../DynamicComponents/DynamicForm.jsx";
 import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
 import api from "../../../api";
+import { useFetchData } from "../../Hooks/useFetchData.js";
+import { useDeleteData } from "../../Hooks/useDeleteData.js";
 
 export default function Products() {
   const [method, setMethod] = useState("");
   const [modal, setModal] = useState(false);
-
-  const token = localStorage.getItem(ACCESS_TOKEN);
 
   // MODAL TOGGLE
   const toggleModal = () => {
@@ -41,39 +38,6 @@ export default function Products() {
   // ERROR TEXT
   const [errors, setErrors] = useState("");
   var errorFields = [];
-
-  /////////////////////////// BACKEND
-  // fetch products
-  const [product, setProduct] = useState([]);
-
-  useEffect(() => {
-    fetchProduct();
-  }, []);
-
-  useEffect(() => {}, []);
-
-  const fetchProduct = async () => {
-    try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/inventory/list?format=json",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch products");
-      }
-      const data = await response.json();
-      setProduct(data); // ito ung data ng list of products (product)
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
 
   //PROPS FOR <INPUT>
   const formArr = [
@@ -109,7 +73,6 @@ export default function Products() {
   ];
 
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
-
   const tableColumns = [
     {
       header: "Product ID",
@@ -144,10 +107,15 @@ export default function Products() {
     },
   ];
 
+  const { data: product } = useFetchData('inventory');
+  const { deleteData, error } = useDeleteData(); // add error field here later
+
+  const deleteHandler = () => {
+    deleteData('inventory', rowIdEdit);
+  };
+
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
   const overviewArr = [{ title: "Products", quantity: `${product.length}` }];
-
-  /////////////////////////////////////////////////////////// BACKEND
 
   const [loading, setLoading] = useState(false);
 
@@ -256,24 +224,17 @@ export default function Products() {
       }
     }
   };
-
   const [deleteBtn, setDeleteBtn] = useState(""); // HANDLES DELETE BUTTON STATE
   const [rowToEdit, setRowToEdit] = useState(null);
   const [rowIdEdit, setRowIdEdit] = useState(null);
   const [btnTitle, setBtnTitle] = useState("Create Product");
-  const handleEditRow = (index) => {
-    console.log("Editing row:", index); // just for troubleshoot
-    console.log("Product ID:", product[index]?.id); // just for troubleshoot
+  const handleEditRow = (index, id) => {
     toggleModal();
-    setRowIdEdit(product[index]?.id); // need to make null after this is done
+    setRowIdEdit(id); // need to make null after this is done
     setRowToEdit(index);
     setMethod("edit");
     setBtnTitle("Edit Product");
     setDeleteBtn("active");
-  };
-
-  const deleteHandler = () => {
-    setMethod("delete");
   };
 
   return (
