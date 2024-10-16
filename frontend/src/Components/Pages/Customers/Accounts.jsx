@@ -37,7 +37,6 @@ export default function Accounts() {
   var errorFields = [];
 
   /////////////////////////// BACKEND
-  
 
   //PROPS FOR <INPUT>
   const formArr = [
@@ -118,11 +117,11 @@ export default function Accounts() {
   ];
 
   // fetch and delete accounts
-  const { data: account } = useFetchData('account');
+  const { data: account } = useFetchData("account");
   const { deleteData, error } = useDeleteData(); // add error field here later
 
   const deleteHandler = () => {
-    deleteData('account', rowIdEdit);
+    deleteData("account", rowIdEdit);
   };
 
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>

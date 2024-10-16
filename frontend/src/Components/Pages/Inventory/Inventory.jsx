@@ -6,6 +6,7 @@ import StockInForm from "./StockInForm.jsx";
 import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
 import CreateDeliveryOrderForm from "./CreateDeliveryOrderForm.jsx";
 import { useFetchData } from "../../Hooks/useFetchData.js";
+import { useEffect } from "react";
 
 export default function Inventory() {
   const [method, setMethod] = useState("");
@@ -37,6 +38,7 @@ export default function Inventory() {
   var errorFields = [];
 
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
+
   const tableColumns = [
     {
       header: "Inventory ID",
@@ -86,7 +88,7 @@ export default function Inventory() {
     },
   ];
 
-  const { data: inventory } = useFetchData('inventory');
+  const { data: inventory } = useFetchData("inventory");
 
   const [loading, setLoading] = useState(false);
 
@@ -98,7 +100,7 @@ export default function Inventory() {
   const [rowToEdit, setRowToEdit] = useState(null);
   const [rowIdEdit, setRowIdEdit] = useState(null);
   const [btnTitle, setBtnTitle] = useState("Create Order");
-  const handleEditRow = (index,id) => {
+  const handleEditRow = (index, id) => {
     console.log("Editing row:", index); // just for troubleshoot
     toggleModal();
     setRowIdEdit(id);
@@ -106,10 +108,40 @@ export default function Inventory() {
     setMethod("edit");
     setBtnTitle("Edit Inventory");
     setDeleteBtn("active");
+    console.log(statusCount);
   };
 
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
-  const overviewArr = [{ title: "Products", quantity: `${inventory.length}` }];
+  let inactiveCount = 0;
+  let lowStockCount = 0;
+  let activeCount = 0;
+
+  const statusCount = inventory;
+
+  statusCount.forEach((item) => {
+    if (item.stock === 0) {
+      inactiveCount++;
+    } else if (item.stock < item.stock_minimum_threshold) {
+      lowStockCount++;
+    } else {
+      activeCount++;
+    }
+  });
+  const overviewArr = [
+    { title: "Products", quantity: `${inventory.length}` },
+    {
+      title: "Active",
+      quantity: `${activeCount}`,
+    },
+    {
+      title: "Inactive",
+      quantity: `${inactiveCount}`,
+    },
+    {
+      title: "Low-Stock",
+      quantity: `${lowStockCount}`,
+    },
+  ];
 
   return (
     <section className={`font-main h-full overflow-hidden`}>

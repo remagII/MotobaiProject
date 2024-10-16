@@ -2,15 +2,13 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Product(models.Model):
-    product_name = models.CharField(max_length=50, default='')
-    price = models.DecimalField(decimal_places=2, max_digits=9, default=0)
-    product_type = models.CharField(max_length=50, null=True, blank=True, default='')
-    description = models.TextField(max_length=250, null=True, blank=True, default='')
-    brand = models.CharField(max_length=50, null=True, blank=True, default='')
-    vehicle_type = models.CharField(max_length=50, null=True, blank=True, default='')
-
-    is_deleted = models.BooleanField(default=False)
-
+    product_name = models.CharField(max_length=64)
+    price = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True, default=0)
+    product_type = models.CharField(max_length=100, null=True, blank=True, default='')
+    description = models.TextField(max_length=100, null=True, blank=True, default='')
+    brand = models.CharField(max_length=32, null=True, blank=True, default='')
+    vehicle_type = models.CharField(max_length=32, null=True, blank=True, default='')
+    
     def __str__(self):
         return '{}: {}'.format(self.product_name, self.product_type)
 
@@ -21,17 +19,13 @@ class Inventory(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
 
-    is_deleted = models.BooleanField(default=False)
-
     def __str__(self):
         return '{}: {}'.format(self.product, self.stock)
     
 class Supplier(models.Model):
-    supplier_name = models.CharField(max_length=100, default='')
-    phone_number = models.CharField(max_length=100, default='')
+    supplier_name = models.CharField(max_length=64, default='')
+    phone_number = models.CharField(max_length=11, default='')
     description = models.CharField(max_length=100, default='')
-
-    is_deleted = models.BooleanField(default=False)
 
 class InboundStockItem(models.Model):
     inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE)
@@ -46,14 +40,14 @@ class InboundStock(models.Model):
         return 'Stock Entry: {} items on {}'.format(self.inboundStockItems.count(), self.date_created)
     
 class Account(models.Model):
-    account = models.CharField(max_length=100, null=True, blank=True)
-    representative_name = models.CharField(max_length=100, null=True, blank=True)
-    representative_position = models.CharField(max_length=100, null=True, blank=True)
-    city = models.CharField(max_length=100, null=True, blank=True)
-    barangay = models.CharField(max_length=100, null=True, blank=True)
-    street = models.CharField(max_length=100, null=True, blank=True)
-    phone_number = models.CharField(max_length=100, null=True, blank=True)
-    email = models.CharField(max_length=100, null=True, blank=True)
+    account = models.CharField(max_length=64)
+    representative_name = models.CharField(max_length=64)
+    representative_position = models.CharField(max_length=64)
+    city = models.CharField(max_length=100)
+    barangay = models.CharField(max_length=100)
+    street = models.CharField(max_length=100)
+    phone_number = models.CharField(max_length=11)
+    email = models.CharField(max_length=64)
     date_created = models.DateTimeField(auto_now_add=True)
     
     is_deleted = models.BooleanField(default=False)
@@ -62,8 +56,8 @@ class Account(models.Model):
         return '{}: {}'.format(self.account, self.representative_name)
     
 class Customer(models.Model):
-    customer_name = models.CharField(max_length=100, default='')
-    phone_number = models.CharField(max_length=100, default='')
+    customer_name = models.CharField(max_length=64, default='')
+    phone_number = models.CharField(max_length=11, default='')
     date_created = models.DateTimeField(auto_now_add=True)
 
     is_deleted = models.BooleanField(default=False)
@@ -72,30 +66,29 @@ class Customer(models.Model):
         return '{}'.format(self.customer_name)
 
 class Employee(models.Model):
-    first_name = models.CharField(max_length=100, default='')
-    middle_name = models.CharField(max_length=100, default='') 
-    last_name = models.CharField(max_length=100, default='')
-    city = models.CharField(max_length=100, default='')
-    barangay = models.CharField(max_length=100, default='')
-    street = models.CharField(max_length=100, default='')
-    phone_number = models.CharField(max_length=100, default='')
-    email = models.CharField(max_length=100, default='')
+    first_name = models.CharField(max_length=34)
+    middle_name = models.CharField(max_length=34) 
+    last_name = models.CharField(max_length=34)
+    city = models.CharField(max_length=100)
+    barangay = models.CharField(max_length=100)
+    street = models.CharField(max_length=100)
+    phone_number = models.CharField(max_length=100)
+    email = models.CharField(max_length=64)
     date_created = models.DateTimeField(auto_now_add=True)
-    is_deleted = models.BooleanField(default=False)
 
 class Order(models.Model): 
-    account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True, blank=True)
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True, default="")
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True, default="")
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True, blank=True, default="")
 
     order_date = models.DateTimeField(auto_now_add=True)
     # for information integrity
-    account_name = models.CharField(max_length=100, null=True, blank=True, default="")
-    representative_name = models.CharField(max_length=100, null=True, blank=True, default="")
-    customer_name = models.CharField(max_length=100, null=True, blank=True, default="")
-    employee_first_name = models.CharField(max_length=100, null=True, blank=True, default="")
-    employee_middle_name = models.CharField(max_length=100, null=True, blank=True, default="")
-    employee_last_name = models.CharField(max_length=100, null=True, blank=True, default="")
+    account_name = models.CharField(max_length=64, null=True, blank=True, default="")
+    representative_name = models.CharField(max_length=64, null=True, blank=True, default="")
+    customer_name = models.CharField(max_length=64, null=True, blank=True, default="")
+    employee_first_name = models.CharField(max_length=34, null=True, blank=True, default="")
+    employee_middle_name = models.CharField(max_length=34, null=True, blank=True, default="")
+    employee_last_name = models.CharField(max_length=34, null=True, blank=True, default="")
 
     def save(self, *args, **kwargs):
         if self.account:
@@ -108,7 +101,7 @@ class Order(models.Model):
             self.employee_first_name = self.employee.first_name
             self.employee_middle_name = self.employee.middle_name
             self.employee_last_name = self.employee.last_name
-        super(Order, self).save(*args, **kwargs)
+        super(OrderDetails, self).save(*args, **kwargs)
 
     def __str__(self):
         if self.account:
@@ -117,12 +110,12 @@ class Order(models.Model):
             return f'Order ID: {self.pk}, Customer Name: {self.customer.last_name}, {self.customer.last_name}'
 
 class OrderDetails(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_details')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, default='0')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     # for information integrity
     product_price = models.DecimalField(decimal_places=2, max_digits=10)
-    product_name = models.CharField(max_length=100, null=True, blank=True)
+    product_name = models.CharField(max_length=64, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if self.product:
