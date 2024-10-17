@@ -63,11 +63,22 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
       header: "Product Name",
       row: "product_name",
     },
-
     {
       header: "Quantity",
       row: "quantity",
     },
+    {
+      header: "Unit Price",
+      row: "product_price",
+    },
+    {
+      header: "Total Price",
+      customRender: (item) => {
+        return (
+          <p>{item.quantity*item.product_price}</p>
+        )
+      },
+    }
   ];
 
   //Makes array to OBJECT
@@ -170,8 +181,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                       required
                       onChange={(e) =>
                         onChangeHandler(e, "first_name", {
-                          employee_id:
-                            e.target.selectedOptions[0].getAttribute("data-id"),
+                          employee_id: e.target.selectedOptions[0].getAttribute("data-id"),
                         })
                       }
                       name="employee_name"
@@ -216,9 +226,8 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                         required
                         onChange={(e) =>
                           onChangeHandler(e, "product_name", {
-                            id: e.target.selectedOptions[0].getAttribute(
-                              "data-id"
-                            ),
+                            id: e.target.selectedOptions[0].getAttribute("data-id"),
+                            product_price: e.target.selectedOptions[0].getAttribute("product_price"),
                           })
                         }
                         name="product_name"
@@ -232,6 +241,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                             key={option.product.id}
                             value={option.product.product_name}
                             data-id={option.product.id}
+                            product_price={option.product.price}
                           >
                             {`${option.product.product_name}`}
                           </option>

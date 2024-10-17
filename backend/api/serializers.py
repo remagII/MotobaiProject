@@ -21,6 +21,7 @@ class UserSerializer(serializers.ModelSerializer):
 # PRODUCT
 class ProductSerializer(serializers.ModelSerializer):
     stock_minimum_threshold = serializers.IntegerField(write_only=True, required=False, default=0)
+    product_price = serializers.DecimalField(decimal_places=2, max_digits=10, required=False)
 
     class Meta:
         model = Product

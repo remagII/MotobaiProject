@@ -9,15 +9,7 @@ const DetailsStockModal = ({ logsData }) => {
       header: "Product Name",
       customRender: (item) => {
         return (
-          <p>{item.product.product_name}</p>
-        )
-      },
-    },
-    {
-      header: "Supplier Name",
-      customRender: (item) => {
-        return (
-          <p>{item.supplier_name}</p>
+          <p>{item.product_name}</p>
         )
       },
     },
@@ -26,6 +18,22 @@ const DetailsStockModal = ({ logsData }) => {
       customRender: (item) => {
         return (
           <p>{item.quantity}</p>
+        )
+      },
+    },
+    {
+      header: "Item Price",
+      customRender: (item) => {
+        return (
+          <p>{item.product_price}</p>
+        )
+      },
+    },
+    {
+      header: "Total Price",
+      customRender: (item) => {
+        return (
+          <p>{item.quantity*item.product_price}</p>
         )
       },
     }
