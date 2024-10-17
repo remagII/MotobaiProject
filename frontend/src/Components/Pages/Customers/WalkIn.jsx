@@ -34,8 +34,6 @@ const WalkIn = () => {
   const [errors, setErrors] = useState("");
   var errorFields = [];
 
-  
-
   //PROPS FOR <INPUT>
   const formArr = [
     { label: "Customer Name", name: "customer_name" },
@@ -70,14 +68,14 @@ const WalkIn = () => {
     },
   ];
 
-  const { data: customer } = useFetchData('customer');
+  const { data: customer } = useFetchData("customer");
   const { deleteData, error } = useDeleteData(); // add error field here later
 
   const deleteHandler = () => {
-    deleteData('customer', rowIdEdit);
+    deleteData("customer", rowIdEdit);
   };
 
-  const overviewArr = [  
+  const overviewArr = [
     { title: "Walk-in Customers", quantity: `${customer.length}` },
   ];
 
@@ -184,7 +182,7 @@ const WalkIn = () => {
                   <div>
                     <UserPlusIcon className="size-6 " />
                   </div>
-                  <p>Walk In</p>
+                  <p>Accounts</p>
                 </DynamicCustomLink>
                 <button
                   onClick={toggleModal}
@@ -237,7 +235,7 @@ const WalkIn = () => {
           </div>
           <Table
             columnArr={tableColumns}
-            dataArr={customer} 
+            dataArr={customer}
             editRow={handleEditRow}
           />
         </div>

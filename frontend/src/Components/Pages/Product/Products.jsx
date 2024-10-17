@@ -107,11 +107,11 @@ export default function Products() {
     },
   ];
 
-  const { data: product } = useFetchData('inventory');
+  const { data: product } = useFetchData("inventory");
   const { deleteData, error } = useDeleteData(); // add error field here later
 
   const deleteHandler = () => {
-    deleteData('inventory', rowIdEdit);
+    deleteData("inventory", rowIdEdit);
   };
 
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
