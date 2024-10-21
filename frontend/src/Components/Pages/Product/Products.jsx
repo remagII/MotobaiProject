@@ -263,10 +263,10 @@ export default function Products() {
               />
             </DynamicModal>
 
-            <div>
+            <div className="absolute top-50 z-10 shadow-2xl">
               {errorWindow && (
                 <div
-                  className={`rounded mt-8 p-4 text-lg font-bold text-red-600  shadow-shadowTable bg-red-200 flex justify-between transition-all`}
+                  className={`rounded mt-8 p-4 text-lg font-bold text-red-600  shadow-shadowTable bg-red-200 flex justify-between transition-all w-[70vw]`}
                 >
                   <h1>
                     <span className="text-red-700">Please fill in the: </span>

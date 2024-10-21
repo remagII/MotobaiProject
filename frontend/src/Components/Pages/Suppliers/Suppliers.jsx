@@ -72,11 +72,11 @@ const Suppliers = () => {
     },
   ];
 
-  const { data: supplier } = useFetchData('supplier');
+  const { data: supplier } = useFetchData("supplier");
   const { deleteData, error } = useDeleteData(); // add error field here later
 
   const deleteHandler = () => {
-    deleteData('supplier', rowIdEdit);
+    deleteData("supplier", rowIdEdit);
   };
 
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
@@ -232,10 +232,10 @@ const Suppliers = () => {
               />
             </DynamicModal>
 
-            <div>
+            <div className="absolute top-50 z-10 shadow-2xl">
               {errorWindow && (
                 <div
-                  className={`rounded mt-8 p-4 text-lg font-bold text-red-600  shadow-shadowTable bg-red-200 flex justify-between transition-all`}
+                  className={`rounded mt-8 p-4 text-lg font-bold text-red-600  shadow-shadowTable bg-red-200 flex justify-between transition-all w-[70vw]`}
                 >
                   <h1>
                     <span className="text-red-700">Please fill in the: </span>

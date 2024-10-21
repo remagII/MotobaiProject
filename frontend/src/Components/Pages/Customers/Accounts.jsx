@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { UserPlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Table from "../../DynamicComponents/DynamicTable.jsx";
 import Overview from "../../Overview.jsx";
@@ -25,16 +25,43 @@ export default function Accounts() {
     }
   };
 
-  const [errorWindow, setErrorWindow] = useState(false);
-
   // ERROR WINDOW TOGGLE
+
+  const [errorWindow, setErrorWindow] = useState(false);
   const toggleErrorWindow = () => {
     setErrorWindow((e) => (e = !e));
   };
 
+  useEffect(() => {
+    if (errorWindow) {
+      const timer = setTimeout(() => {
+        setErrorWindow(false);
+      }, 5000); // Closes the error window after 5 seconds
+
+      return () => clearTimeout(timer); // Cleanup if component unmounts
+    }
+  }, [errorWindow]);
+
   // ERROR TEXT
   const [errors, setErrors] = useState("");
   var errorFields = [];
+
+  // SUCCESS WINDOW TOGGLE
+  const [successWindow, setSuccessWindow] = useState(false);
+
+  const toggleSuccessWindow = () => {
+    setSuccessWindow((e) => (e = !e));
+  };
+
+  useEffect(() => {
+    if (successWindow) {
+      const timer = setTimeout(() => {
+        setSuccessWindow(false);
+      }, 5000); // Closes the error window after 5 seconds
+
+      return () => clearTimeout(timer); // Cleanup if component unmounts
+    }
+  }, [successWindow]);
 
   /////////////////////////// BACKEND
 
@@ -44,22 +71,27 @@ export default function Accounts() {
     {
       label: "Representative Name",
       name: "representative_name",
+      pattern: "[A-Za-z .]*",
     },
     {
       label: "Representative Position",
       name: "representative_position",
+      pattern: "[A-Za-z .]*",
     },
     {
       label: "Phone Number",
       name: "phone_number",
+      type: "number",
     },
     {
       label: "Email",
       name: "email",
+      type: "email",
     },
     {
       label: "City",
       name: "city",
+      pattern: "[A-Za-z .]*",
     },
     {
       label: "Barangay",
@@ -84,7 +116,7 @@ export default function Accounts() {
       row: "account",
     },
     {
-      header: "Name",
+      header: "Representative Name",
       row: "representative_name",
     },
     {
@@ -150,9 +182,7 @@ export default function Accounts() {
           );
 
           window.location.reload();
-          {
-            errorWindow ? toggleErrorWindow() : "";
-          }
+
           callback();
           toggleModal();
         } catch (error) {
@@ -191,9 +221,6 @@ export default function Accounts() {
           }
         );
         window.location.reload();
-        {
-          errorWindow ? toggleErrorWindow() : "";
-        }
       } catch (error) {
         setRowToEdit(null);
         errorFields = [];
@@ -205,6 +232,7 @@ export default function Accounts() {
             }
           }
         }
+
         setErrors((e) => errorFields.join(", "));
         {
           !errorWindow ? toggleErrorWindow() : "";
@@ -278,18 +306,35 @@ export default function Accounts() {
               />
             </DynamicModal>
 
-            <div>
+            <div className="absolute top-50 z-10 shadow-2xl">
               {errorWindow && (
                 <div
-                  className={`rounded mt-8 p-4 text-lg font-bold text-red-600  shadow-shadowTable bg-red-200 flex justify-between transition-all`}
+                  className={`rounded mt-8 p-4 text-lg font-bold text-red-600  shadow-shadowTable bg-red-200 flex justify-between transition-all w-[70vw]`}
                 >
                   <h1>
-                    <span className="text-red-700">Please fill in the: </span>
+                    <span className="text-red-700">
+                      Please fill in properly the:{" "}
+                    </span>
                     {errors}
                   </h1>
                   <button
                     onClick={toggleErrorWindow}
                     className={`p-2 hover:text-red-700 text-xl`}
+                  >
+                    Close
+                  </button>
+                </div>
+              )}
+              {successWindow && (
+                <div
+                  className={`rounded mt-8 p-4 text-lg font-bold text-green-600  shadow-shadowTable bg-green-200 flex justify-between transition-all`}
+                >
+                  <h1>
+                    <span className="text-green-700">Successfully Added</span>
+                  </h1>
+                  <button
+                    onClick={toggleSuccessWindow}
+                    className={`p-2 hover:text-green-700 text-xl`}
                   >
                     Close
                   </button>

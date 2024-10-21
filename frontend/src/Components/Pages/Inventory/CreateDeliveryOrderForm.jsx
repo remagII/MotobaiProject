@@ -14,16 +14,16 @@ import { useFetchData } from "../../Hooks/useFetchData.js";
 const CreateDeliveryOrderForm = ({ confirmHandler }) => {
   const [initialOrder, setInitialOrder] = useState([]);
 
-  const { data: productOptions } = useFetchData('inventory');
-  const { data: employeeOptions } = useFetchData('employee');
-  const { data: accountOptions } = useFetchData('account');
+  const { data: productOptions } = useFetchData("inventory");
+  const { data: employeeOptions } = useFetchData("employee");
+  const { data: accountOptions } = useFetchData("account");
 
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   const confirmButton = async () => {
     if (!selectedAccount || !selectedEmployee) {
-      console.log("Please select an account and employee.");
+      alert("Please select an account and employee.");
       return;
     }
 
@@ -37,7 +37,6 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
         order_details: orderItems,
         account: selectedAccount,
         employee: selectedEmployee,
-
       });
       console.log("Order creation successful:", res.data);
     } catch (error) {
@@ -51,8 +50,10 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
     {
       label: "Quantity",
       name: "quantity",
+      type: "number",
     },
   ];
+
   const tableColumns = [
     {
       header: "Product ID",
@@ -74,11 +75,9 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
     {
       header: "Total Price",
       customRender: (item) => {
-        return (
-          <p>{item.quantity*item.product_price}</p>
-        )
+        return <p>{(item.quantity * item.product_price).toFixed(2)}</p>;
       },
-    }
+    },
   ];
 
   //Makes array to OBJECT
@@ -107,17 +106,26 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
     }
   };
 
+  let totalPrice = 0;
+  const allPrices = initialOrder;
+
+  allPrices.forEach((item) => {
+    totalPrice += item.product_price * item.quantity;
+  });
+
   //SET FORM BACK TO OLD STATE
   const onSubmitHandler = () => {
     delete form.account_id;
     delete form.employee_id;
 
-    setInitialOrder((prevOrder) => {
-      const updatedOrder = [...prevOrder, form]; // Update order
-      setForm(initialForm); // Reset the form
-      console.log(updatedOrder); // This will now correctly log the updated order
-      return updatedOrder; // Return updated state
-    });
+    if (form && form.quantity && form && form.product_name) {
+      setInitialOrder((prevOrder) => {
+        const updatedOrder = [...prevOrder, form]; // Update order
+        setForm(initialForm); // Reset the form
+        console.log(updatedOrder); // This will now correctly log the updated order
+        return updatedOrder; // Return updated state
+      });
+    }
   };
 
   return (
@@ -155,7 +163,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                       name="account"
                       defaultValue={``}
                     >
-                      <option value="" disabled>
+                      <option value={form.account || ""} disabled>
                         Select an Account
                       </option>
                       {accountOptions.map((option) => (
@@ -181,13 +189,14 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                       required
                       onChange={(e) =>
                         onChangeHandler(e, "first_name", {
-                          employee_id: e.target.selectedOptions[0].getAttribute("data-id"),
+                          employee_id:
+                            e.target.selectedOptions[0].getAttribute("data-id"),
                         })
                       }
                       name="employee_name"
                       defaultValue={``}
                     >
-                      <option value="" disabled>
+                      <option value={form.employee_name || ""} disabled>
                         Select an Employee
                       </option>
                       {employeeOptions.map((option) => (
@@ -226,12 +235,17 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                         required
                         onChange={(e) =>
                           onChangeHandler(e, "product_name", {
-                            id: e.target.selectedOptions[0].getAttribute("data-id"),
-                            product_price: e.target.selectedOptions[0].getAttribute("product_price"),
+                            id: e.target.selectedOptions[0].getAttribute(
+                              "data-id"
+                            ),
+                            product_price:
+                              e.target.selectedOptions[0].getAttribute(
+                                "product_price"
+                              ),
                           })
                         }
                         name="product_name"
-                        defaultValue={``}
+                        value={form.product_name || ""}
                       >
                         <option value="" disabled>
                           Select A Product
@@ -286,6 +300,12 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                       </label>
                     </div>
                   ))}
+                  <div className="ml-44 mt-2">
+                    <span className=" text-xl">{`TOTAL PRICE: `}</span>
+                    <span className="text-2xl font-bold">{`${totalPrice.toFixed(
+                      2
+                    )}`}</span>
+                  </div>
                 </div>
                 <div className={`flex justify-end gap-4 mt-12`}>
                   {/* CREATE ROW BUTTON */}

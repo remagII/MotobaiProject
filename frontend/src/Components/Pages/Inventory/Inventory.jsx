@@ -132,14 +132,17 @@ export default function Inventory() {
     {
       title: "Active",
       quantity: `${activeCount}`,
-    },
-    {
-      title: "Inactive",
-      quantity: `${inactiveCount}`,
+      className: "!text-green-500",
     },
     {
       title: "Low-Stock",
       quantity: `${lowStockCount}`,
+      className: "!text-yellow-400",
+    },
+    {
+      title: "Inactive",
+      quantity: `${inactiveCount}`,
+      className: "!text-orange-500",
     },
   ];
 
@@ -212,7 +215,7 @@ export default function Inventory() {
               <CreateDeliveryOrderForm />
             </DynamicModal>
 
-            <div>
+            <div className="absolute top-50 z-10 shadow-xl">
               {errorWindow && (
                 <div
                   className={`rounded mt-8 p-4 text-lg font-bold text-red-600  shadow-shadowTable bg-red-200 flex justify-between transition-all`}

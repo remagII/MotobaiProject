@@ -83,7 +83,11 @@ const Employees = () => {
     {
       header: "Employee Name",
       customRender: (item) => {
-        return <p>{item.first_name} {item.middle_name} {item.last_name}</p>
+        return (
+          <p>
+            {item.first_name} {item.middle_name} {item.last_name}
+          </p>
+        );
       },
     },
     {
@@ -108,11 +112,11 @@ const Employees = () => {
     },
   ];
 
-  const { data: employee } = useFetchData('employee');
+  const { data: employee } = useFetchData("employee");
   const { deleteData, error } = useDeleteData(); // add error field here later
 
   const deleteHandler = () => {
-    deleteData('employee', rowIdEdit);
+    deleteData("employee", rowIdEdit);
   };
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
   const overviewArr = [{ title: "Employees", quantity: `${employee.length}` }];
@@ -131,14 +135,14 @@ const Employees = () => {
           const res = await api.post(
             "http://127.0.0.1:8000/api/employee/create/",
             {
-              first_name : form.first_name,
-              middle_name : form.middle_name,
-              last_name : form.last_name,
-              city : form.city,
-              barangay : form.barangay,
-              street : form.street, 
-              phone_number : form.phone_number,
-              email : form.email,
+              first_name: form.first_name,
+              middle_name: form.middle_name,
+              last_name: form.last_name,
+              city: form.city,
+              barangay: form.barangay,
+              street: form.street,
+              phone_number: form.phone_number,
+              email: form.email,
             }
           );
 
@@ -171,14 +175,14 @@ const Employees = () => {
         const res = await api.put(
           `http://127.0.0.1:8000/api/employee/update/${rowIdEdit}/`,
           {
-            first_name : form.first_name,
-            middle_name : form.middle_name,
-            last_name : form.last_name,
-            city : form.city,
-            barangay : form.barangay,
-            street : form.street, 
-            phone_number : form.phone_number,
-            email : form.email,
+            first_name: form.first_name,
+            middle_name: form.middle_name,
+            last_name: form.last_name,
+            city: form.city,
+            barangay: form.barangay,
+            street: form.street,
+            phone_number: form.phone_number,
+            email: form.email,
           }
         );
         window.location.reload();
@@ -205,7 +209,7 @@ const Employees = () => {
       }
 
       callback();
-    } 
+    }
   };
 
   const [deleteBtn, setDeleteBtn] = useState(""); // HANDLES DELETE BUTTON STATE
@@ -261,10 +265,10 @@ const Employees = () => {
               />
             </DynamicModal>
 
-            <div>
+            <div className="absolute top-50 z-10 shadow-2xl">
               {errorWindow && (
                 <div
-                  className={`rounded mt-8 p-4 text-lg font-bold text-red-600  shadow-shadowTable bg-red-200 flex justify-between transition-all`}
+                  className={`rounded mt-8 p-4 text-lg font-bold text-red-600  shadow-shadowTable bg-red-200 flex justify-between transition-all w-[70vw]`}
                 >
                   <h1>
                     <span className="text-red-700">Please fill in the: </span>
