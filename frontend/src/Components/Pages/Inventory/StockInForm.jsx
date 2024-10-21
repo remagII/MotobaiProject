@@ -13,8 +13,8 @@ import { useFetchData } from "../../Hooks/useFetchData.js";
 const StockInForm = ({ confirmHandler }) => {
   const [initialStockIn, setInitialStockIn] = useState([]);
 
-  const { data: productOptions } = useFetchData('inventory');
-  const { data: supplierOptions } = useFetchData('supplier');
+  const { data: productOptions } = useFetchData("inventory");
+  const { data: supplierOptions } = useFetchData("supplier");
 
   const formArr = [
     {
@@ -59,12 +59,21 @@ const StockInForm = ({ confirmHandler }) => {
 
   //SET FORM BACK TO OLD STATE
   const onSubmitHandler = () => {
-    setInitialStockIn((prevStock) => {
-      const updatedStock = [...prevStock, form]; // Update stock
-      setForm(initialForm); // Reset the form
-      console.log(updatedStock); // This will now correctly log the updated stock
-      return updatedStock; // Return updated state
-    });
+    if (
+      form &&
+      form.quantity &&
+      form &&
+      form.product_name &&
+      form &&
+      form.supplier_name
+    ) {
+      setInitialStockIn((prevStock) => {
+        const updatedStock = [...prevStock, form]; // Update stock
+        setForm(initialForm); // Reset the form
+        console.log(updatedStock); // This will now correctly log the updated stock
+        return updatedStock; // Return updated state
+      });
+    }
   };
 
   // send data to database
@@ -135,7 +144,7 @@ const StockInForm = ({ confirmHandler }) => {
                           })
                         }
                         name="product_name"
-                        defaultValue={``}
+                        value={form.product_name || ""}
                       >
                         <option value="" disabled>
                           Select A Product
@@ -173,7 +182,7 @@ const StockInForm = ({ confirmHandler }) => {
                           })
                         }
                         name="supplier_name"
-                        defaultValue={``}
+                        value={form.supplier_name || ""}
                       >
                         <option value="" disabled>
                           Select A Supplier

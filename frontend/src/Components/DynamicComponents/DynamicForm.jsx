@@ -74,35 +74,51 @@ export default function DynamicForm({
               <div className={`bg-gray-100 py-10 px-8 rounded-b-lg`}>
                 <h1 className="font-bold text-2xl mb-10">{title}</h1>
                 <div className={`   gap-x-6 gap-y-8 grid grid-cols-3 `}>
-                  {formArr.map(({ label, name, type, readOnly }, index) => (
-                    <div
-                      className={`flex flex-col justify-between`}
-                      key={index}
-                    >
-                      <input
-                        className={`shadow-inner text-base border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none`}
-                        readOnly={readOnly}
-                        label={label}
-                        id={name}
-                        name={name}
-                        type={type}
-                        value={
-                          form[name] ||
-                          (name.includes(".")
-                            ? form[name.split(".")[0]][name.split(".")[1]]
-                            : "")
-                        }
-                        onChange={(e) => onChangeHandler(e)}
-                        required
-                      ></input>
-                      <label
-                        className={`absolute transition-all duration-100 ease-in  px-4 py-2 label-line text-gray-600 label-line`}
-                        htmlFor={name}
+                  {formArr.map(
+                    (
+                      {
+                        label,
+                        name,
+                        type,
+                        readOnly,
+                        maxLength,
+                        pattern,
+                        minLength,
+                      },
+                      index
+                    ) => (
+                      <div
+                        className={`flex flex-col justify-between`}
+                        key={index}
                       >
-                        {label}
-                      </label>
-                    </div>
-                  ))}
+                        <input
+                          className={`shadow-inner text-base border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none`}
+                          readOnly={readOnly}
+                          label={label}
+                          id={name}
+                          name={name}
+                          type={type}
+                          maxLength={maxLength}
+                          pattern={pattern}
+                          minLength={minLength}
+                          value={
+                            form[name] ||
+                            (name.includes(".")
+                              ? form[name.split(".")[0]][name.split(".")[1]]
+                              : "")
+                          }
+                          onChange={(e) => onChangeHandler(e)}
+                          required
+                        ></input>
+                        <label
+                          className={`absolute transition-all duration-100 ease-in  px-4 py-2 label-line text-gray-600 label-line`}
+                          htmlFor={name}
+                        >
+                          {label}
+                        </label>
+                      </div>
+                    )
+                  )}
                 </div>
                 <div className={`flex justify-end gap-4 mt-12 `}>
                   <button

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MinLengthValidator
 
 class Product(models.Model):
     product_name = models.CharField(max_length=64)
@@ -46,7 +47,7 @@ class Account(models.Model):
     city = models.CharField(max_length=100)
     barangay = models.CharField(max_length=100)
     street = models.CharField(max_length=100)
-    phone_number = models.CharField(max_length=11)
+    phone_number = models.CharField(max_length=11, validators=[MinLengthValidator(11)])
     email = models.CharField(max_length=64)
     date_created = models.DateTimeField(auto_now_add=True)
     
@@ -72,7 +73,7 @@ class Employee(models.Model):
     city = models.CharField(max_length=100)
     barangay = models.CharField(max_length=100)
     street = models.CharField(max_length=100)
-    phone_number = models.CharField(max_length=100)
+    phone_number = models.CharField(max_length=11, validators=[MinLengthValidator(11)])
     email = models.CharField(max_length=64)
     date_created = models.DateTimeField(auto_now_add=True)
 
