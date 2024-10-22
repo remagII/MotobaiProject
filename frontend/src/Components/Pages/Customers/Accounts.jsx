@@ -60,11 +60,13 @@ export default function Accounts() {
     if (successWindow) {
       const timer = setTimeout(() => {
         setSuccessWindow(false);
-      }, 5000); // Closes the error window after 5 seconds
+      }, 2000); // Closes the error window after 2.5 seconds
 
       return () => clearTimeout(timer); // Cleanup if component unmounts
     }
   }, [successWindow]);
+
+  const [successMethod, setSuccessMethod] = useState("");
 
   //PROPS FOR <INPUT>
   const formArr = [
@@ -161,8 +163,6 @@ export default function Accounts() {
   const overviewArr = [{ title: "Accounts", quantity: `${account.length}` }];
 
   const [loading, setLoading] = useState(false);
-
-  const [successMethod, setSuccessMethod] = useState("");
 
   const onSubmitHandler = async (form, callback) => {
     setLoading(true);
@@ -334,7 +334,7 @@ export default function Accounts() {
             <div className="absolute z-20 top-20  left-1/2 transform -translate-x-1/2">
               {successWindow && (
                 <div
-                  className={`rounded mt-8 p-4 text-lg font-bold text-green-600   bg-green-200 flex justify-between transition-all w-[50vw] shadow-2xl`}
+                  className={`rounded p-4 text-lg font-bold text-green-600 bg-green-200 flex justify-between  transition-all w-[30vw] shadow-2xl`}
                 >
                   <h1>
                     <span className="text-green-700">

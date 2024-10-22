@@ -58,7 +58,7 @@ const WalkIn = () => {
     if (successWindow) {
       const timer = setTimeout(() => {
         setSuccessWindow(false);
-      }, 5000); // Closes the error window after 5 seconds
+      }, 2000); // Closes the error window after 5 seconds
 
       return () => clearTimeout(timer); // Cleanup if component unmounts
     }
@@ -265,6 +265,25 @@ const WalkIn = () => {
                 icon={<UserPlusIcon className="size-5" />}
               />
             </DynamicModal>
+            <div className="absolute z-20 top-20  left-1/2 transform -translate-x-1/2">
+              {successWindow && (
+                <div
+                  className={`rounded mt-8 p-4 text-lg font-bold text-green-600   bg-green-200 flex justify-between transition-all w-[30vw] shadow-2xl`}
+                >
+                  <h1>
+                    <span className="text-green-700">
+                      Successfully {successMethod}!
+                    </span>
+                  </h1>
+                  <button
+                    onClick={toggleSuccessWindow}
+                    className={`p-2 hover:text-green-700 text-xl`}
+                  >
+                    Close
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
           <Table
             columnArr={tableColumns}
