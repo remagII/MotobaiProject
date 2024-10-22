@@ -47,6 +47,7 @@ const Suppliers = () => {
     {
       label: "Phone Number",
       name: "phone_number",
+      type: "number",
     },
     {
       label: "Description",
@@ -88,10 +89,10 @@ const Suppliers = () => {
 
   const onSubmitHandler = async (form, callback) => {
     setLoading(true);
+
     if (method === "create") {
-      console.log("create method");
-      ////////////////////////////////////////// CODE FOR SAVING DATA
       if (rowToEdit === null) {
+        ////////////////////////////////////////// CODE FOR SAVING DATA
         try {
           const res = await api.post(
             "http://127.0.0.1:8000/api/supplier/create/",

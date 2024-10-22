@@ -23,6 +23,10 @@ export default function Accounts() {
     if (method === "edit") {
       setRowToEdit(null);
     }
+
+    {
+      errorWindow ? toggleErrorWindow() : "";
+    }
   };
 
   // ERROR WINDOW TOGGLE
@@ -48,7 +52,6 @@ export default function Accounts() {
 
   // SUCCESS WINDOW TOGGLE
   const [successWindow, setSuccessWindow] = useState(false);
-
   const toggleSuccessWindow = () => {
     setSuccessWindow((e) => (e = !e));
   };
@@ -62,8 +65,6 @@ export default function Accounts() {
       return () => clearTimeout(timer); // Cleanup if component unmounts
     }
   }, [successWindow]);
-
-  /////////////////////////// BACKEND
 
   //PROPS FOR <INPUT>
   const formArr = [
@@ -149,7 +150,7 @@ export default function Accounts() {
   ];
 
   // fetch and delete accounts
-  const { data: account } = useFetchData("account");
+  const { data: account, triggerRefresh } = useFetchData("account");
   const { deleteData, error } = useDeleteData(); // add error field here later
 
   const deleteHandler = () => {
@@ -160,6 +161,8 @@ export default function Accounts() {
   const overviewArr = [{ title: "Accounts", quantity: `${account.length}` }];
 
   const [loading, setLoading] = useState(false);
+
+  const [successMethod, setSuccessMethod] = useState("");
 
   const onSubmitHandler = async (form, callback) => {
     setLoading(true);
@@ -180,15 +183,17 @@ export default function Accounts() {
               email: form.email,
             }
           );
-
-          window.location.reload();
-
-          callback();
+          {
+            errorWindow ? toggleErrorWindow() : "";
+          }
+          triggerRefresh();
           toggleModal();
-        } catch (error) {
+          callback();
+          setSuccessMethod("Added");
+          toggleSuccessWindow();
           setRowToEdit(null);
           errorFields = [];
-          toggleModal();
+        } catch (error) {
           for (const [key, value] of Object.entries(form)) {
             if (!value) {
               errorFields.push(key);
@@ -198,7 +203,6 @@ export default function Accounts() {
           {
             !errorWindow ? toggleErrorWindow() : "";
           }
-          callback();
         } finally {
           setLoading(false);
         }
@@ -220,11 +224,17 @@ export default function Accounts() {
             email: form.email,
           }
         );
-        window.location.reload();
-      } catch (error) {
+        {
+          errorWindow ? toggleErrorWindow() : "";
+        }
+        triggerRefresh();
+        toggleModal();
+        callback();
+        setSuccessMethod("Edited");
+        toggleSuccessWindow();
         setRowToEdit(null);
         errorFields = [];
-        toggleModal();
+      } catch (error) {
         for (const [key, value] of Object.entries(form)) {
           if (!value) {
             if (key !== "is_deleted") {
@@ -237,13 +247,9 @@ export default function Accounts() {
         {
           !errorWindow ? toggleErrorWindow() : "";
         }
-        callback();
       } finally {
         setLoading(false);
-        setRowIdEdit(null); // ito ung Account id
       }
-
-      callback();
     }
   };
   const [deleteBtn, setDeleteBtn] = useState(""); // HANDLES DELETE BUTTON STATE
@@ -292,6 +298,26 @@ export default function Accounts() {
             </div>
 
             <DynamicModal modal={modal} toggleModal={toggleModal}>
+              <div className="absolute z-20 top-20  left-1/2 transform -translate-x-1/2  ">
+                {errorWindow && (
+                  <div
+                    className={`rounded mt-8 p-4 text-lg font-bold text-red-600   bg-red-200 flex justify-between transition-all w-[70vw] shadow-2xl`}
+                  >
+                    <h1>
+                      <span className="text-red-700">
+                        Please fill in properly the:{" "}
+                      </span>
+                      {errors}
+                    </h1>
+                    <button
+                      onClick={toggleErrorWindow}
+                      className={`p-2 hover:text-red-700 text-xl`}
+                    >
+                      Close
+                    </button>
+                  </div>
+                )}
+              </div>
               <DynamicForm
                 btnTitle={btnTitle}
                 title={"Account"}
@@ -305,32 +331,15 @@ export default function Accounts() {
                 icon={<UserPlusIcon className="size-5" />}
               />
             </DynamicModal>
-
-            <div className="absolute top-50 z-10 shadow-2xl">
-              {errorWindow && (
-                <div
-                  className={`rounded mt-8 p-4 text-lg font-bold text-red-600  shadow-shadowTable bg-red-200 flex justify-between transition-all w-[70vw]`}
-                >
-                  <h1>
-                    <span className="text-red-700">
-                      Please fill in properly the:{" "}
-                    </span>
-                    {errors}
-                  </h1>
-                  <button
-                    onClick={toggleErrorWindow}
-                    className={`p-2 hover:text-red-700 text-xl`}
-                  >
-                    Close
-                  </button>
-                </div>
-              )}
+            <div className="absolute z-20 top-20  left-1/2 transform -translate-x-1/2">
               {successWindow && (
                 <div
-                  className={`rounded mt-8 p-4 text-lg font-bold text-green-600  shadow-shadowTable bg-green-200 flex justify-between transition-all`}
+                  className={`rounded mt-8 p-4 text-lg font-bold text-green-600   bg-green-200 flex justify-between transition-all w-[50vw] shadow-2xl`}
                 >
                   <h1>
-                    <span className="text-green-700">Successfully Added</span>
+                    <span className="text-green-700">
+                      Successfully {successMethod}!
+                    </span>
                   </h1>
                   <button
                     onClick={toggleSuccessWindow}
