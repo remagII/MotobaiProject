@@ -4,12 +4,18 @@ NOTES:
 - Order Management page to list the order
 - Order Walk-in create
 
-- product page button inside inventory
+- delete/hide order and stock in logs?
+- peso sign for all prices
+- filter active/inactive/etc. when clicking on sidepanel
+- sorting function maybe at click of row at top
+- add label identifier on create order (employee, account)
+- INVENTORY auto sort active top
+- product description,brand increase characters
+- description box too small
+- package products as batch
 - stock logs modal lacks some information maybe
-- backend cleanup
 - notify user that the create/action is complete
 - double clicking submission issue
-- general useEffect when fetching
 - inventory id -> sku
 - delete function on most fields (in progress)
 - nav bar only select child, categorize correctly(later)
@@ -19,6 +25,7 @@ NOTES:
 - Catch error for EDIT in products
 - Revert/Delete row in initial Stock-In
 - Walk-in in progress shit
+- backend cleanup
 
 Todo Pages:
 - OrderList + Order History -> Order Management

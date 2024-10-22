@@ -43,7 +43,6 @@ class ProductDeleteView(generics.DestroyAPIView):
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
 
-
 # Account
 class AccountAdd(generics.CreateAPIView):
     serializer_class = AccountSerializer
@@ -64,6 +63,23 @@ class AccountDeleteView(generics.DestroyAPIView):
     serializer_class = AccountSerializer
     permission_classes = [AllowAny]
 
+class AccountSoftDeleteView(generics.UpdateAPIView):
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
+    permission_classes = [AllowAny]
+
+    def update(self, request, *args, **kwargs):
+        # Get the instance of the account
+        instance = self.get_object()
+
+        # Set the 'is_deleted' field to True
+        instance.is_deleted = True
+        instance.save()
+
+        # You can optionally return the updated instance
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
 # Customer
 class CustomerAdd(generics.CreateAPIView):
     serializer_class = CustomerSerializer
@@ -83,6 +99,23 @@ class CustomerDeleteView(generics.DestroyAPIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
     permission_classes = [IsAuthenticated]
+
+class CustomerSoftDeleteView(generics.UpdateAPIView):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
+    permission_classes = [AllowAny]
+
+    def update(self, request, *args, **kwargs):
+        # Get the instance of the account
+        instance = self.get_object()
+
+        # Set the 'is_deleted' field to True
+        instance.is_deleted = True
+        instance.save()
+
+        # You can optionally return the updated instance
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 # ORDER
 class OrderAdd(generics.CreateAPIView):
@@ -132,6 +165,23 @@ class InventoryDetailView(generics.RetrieveAPIView):
     serializer_class = InventorySerializer
     permission_classes = [AllowAny]
 
+class InventorySoftDeleteView(generics.UpdateAPIView):
+    queryset = Inventory.objects.all()
+    serializer_class = InventorySerializer
+    permission_classes = [AllowAny]
+
+    def update(self, request, *args, **kwargs):
+        # Get the instance of the account
+        instance = self.get_object()
+
+        # Set the 'is_deleted' field to True
+        instance.is_deleted = True
+        instance.save()
+
+        # You can optionally return the updated instance
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
 # Employee
 class EmployeeAdd(generics.CreateAPIView):
     serializer_class = EmployeeSerializer
@@ -152,6 +202,22 @@ class EmployeeDeleteView(generics.DestroyAPIView):
     serializer_class = EmployeeSerializer
     permission_classes = [AllowAny]
 
+class EmployeeSoftDeleteView(generics.UpdateAPIView):
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeSerializer
+    permission_classes = [AllowAny]
+
+    def update(self, request, *args, **kwargs):
+        # Get the instance of the account
+        instance = self.get_object()
+
+        # Set the 'is_deleted' field to True
+        instance.is_deleted = True
+        instance.save()
+
+        # You can optionally return the updated instance
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 # Supplier
 class SupplierAdd(generics.CreateAPIView):
     serializer_class = SupplierSerializer
@@ -172,6 +238,23 @@ class SupplierDeleteView(generics.DestroyAPIView):
     serializer_class = SupplierSerializer
     permission_classes = [AllowAny]
 
+class SupplierSoftDeleteView(generics.UpdateAPIView):
+    queryset = Supplier.objects.all()
+    serializer_class = SupplierSerializer
+    permission_classes = [AllowAny]
+
+    def update(self, request, *args, **kwargs):
+        # Get the instance of the account
+        instance = self.get_object()
+
+        # Set the 'is_deleted' field to True
+        instance.is_deleted = True
+        instance.save()
+
+        # You can optionally return the updated instance
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+    
 # InboundStock
 class InboundStockCreateView(generics.CreateAPIView):
     queryset = InboundStock.objects.all()

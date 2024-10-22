@@ -20,6 +20,8 @@ class Inventory(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
 
+    is_deleted = models.BooleanField(default=False)
+
     def __str__(self):
         return '{}: {}'.format(self.product, self.stock)
     
@@ -27,6 +29,8 @@ class Supplier(models.Model):
     supplier_name = models.CharField(max_length=64, default='')
     phone_number = models.CharField(max_length=11, default='')
     description = models.CharField(max_length=100, default='')
+
+    is_deleted = models.BooleanField(default=False)
 
 class InboundStockItem(models.Model):
     inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE)
@@ -77,6 +81,8 @@ class Employee(models.Model):
     email = models.CharField(max_length=64)
     date_created = models.DateTimeField(auto_now_add=True)
 
+    is_deleted = models.BooleanField(default=False)
+
 class Order(models.Model): 
     account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True, default="")
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True, default="")
@@ -102,7 +108,7 @@ class Order(models.Model):
             self.employee_first_name = self.employee.first_name
             self.employee_middle_name = self.employee.middle_name
             self.employee_last_name = self.employee.last_name
-        super(OrderDetails, self).save(*args, **kwargs)
+        super(Order, self).save(*args, **kwargs)
 
     def __str__(self):
         if self.account:
@@ -111,7 +117,7 @@ class Order(models.Model):
             return f'Order ID: {self.pk}, Customer Name: {self.customer.last_name}, {self.customer.last_name}'
 
 class OrderDetails(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, default='0')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_details')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     # for information integrity
