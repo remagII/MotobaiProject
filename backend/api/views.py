@@ -16,6 +16,7 @@ from .models import (
         InboundStock
     )
 
+
 # USER
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -141,6 +142,11 @@ class OrderTrackingCreate(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
 class OrderTrackingListView(generics.ListAPIView):
+    queryset = OrderTracking.objects.all()
+    serializer_class = OrderTrackingSerializer
+    permission_classes = [AllowAny]
+
+class OrderTrackingUpdateView(generics.RetrieveUpdateAPIView):
     queryset = OrderTracking.objects.all()
     serializer_class = OrderTrackingSerializer
     permission_classes = [AllowAny]

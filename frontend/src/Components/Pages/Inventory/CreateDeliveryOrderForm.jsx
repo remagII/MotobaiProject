@@ -28,7 +28,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
     }
 
     const orderItems = initialOrder.map((item) => ({
-      product: parseInt(item.id, 10),
+      inventory: parseInt(item.id, 10),
       quantity: parseInt(item.quantity, 10) || 0,
     }));
 
@@ -90,8 +90,6 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
 
   const onChangeHandler = (e, fieldName, extraData = {}) => {
     const { name, value } = e.target;
-
-    // Update the form state and capture any extra data (like id) in the form
 
     setForm((prevForm) => ({
       ...prevForm,
