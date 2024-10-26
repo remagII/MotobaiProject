@@ -22,9 +22,16 @@ export function useFetchData(info) {
           },
         });
 
+        if (response.status === 401) {
+          console.log("Login first!") // add prompt here that need to login
+          window.location.href = '/login'; 
+          return;
+        }
+
         if (!response.ok) {
           throw new Error(`Failed to fetch ${info}s`);
         }
+
         const dataThings = await response.json();
         const filteredData = dataThings.filter((item) => !item.is_deleted);
         setData(filteredData);

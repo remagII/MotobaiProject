@@ -41,7 +41,7 @@ export default function Inventory() {
 
   const tableColumns = [
     {
-      header: "Inventory ID",
+      header: "SKU",
       row: "id",
     },
 
