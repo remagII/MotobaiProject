@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import Table from "../../DynamicComponents/DynamicTable.jsx";
 import Overview from "../../Overview.jsx";
 import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
-import DetailsStockModal from "./DetailsStockModal.jsx"
+import DetailsOrderModal from "./DetailsOrderModal.jsx"
 import { useFetchData } from "../../Hooks/useFetchData.js";
 
 export default function Orders() {
   const [orderDetails, setOrderDetails] = useState([]);
+  const [orderId, setOrderId] = useState();
   const { data: order } = useFetchData('order');
 
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
@@ -53,6 +54,7 @@ export default function Orders() {
   const handleRowDetails = (index) => {
     const selectedItem = order[index]; // Get the log based on the row clicked
     setOrderDetails(selectedItem.order_details); // Set the specific log's items
+    setOrderId(selectedItem.id);
 
     setDetailsRow(index);
     setMethod("Details");
@@ -82,7 +84,7 @@ export default function Orders() {
         </div>
       </div>
       <DynamicModal modal={modal} toggleModal={toggleModal}>
-        <DetailsStockModal logsData={orderDetails} />
+        <DetailsOrderModal logsData={orderDetails} orderId={orderId} />
       </DynamicModal>
     </section>
   );

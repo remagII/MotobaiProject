@@ -33,6 +33,7 @@ urlpatterns = [
 
     path('ordertracking/create/', views.OrderTrackingCreate.as_view(), name='ordertracking-add'),
     path('ordertracking/list/', views.OrderTrackingListView.as_view(), name='ordertracking-list'),
+    path('ordertracking/update/<int:pk>/', views.OrderTrackingUpdateView.as_view(), name='ordertracking-update'),
 
     path("supplier/list/", views.SupplierListView.as_view(), name="supplier-list"),
     path("supplier/create/", views.SupplierAdd.as_view(), name="supplier-add"),
