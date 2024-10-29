@@ -4,7 +4,7 @@ from rest_framework.exceptions import ValidationError
 from .models import (
         Product, Inventory, Account, Order, OrderDetails,
         OrderTracking, Customer, Employee, Supplier, 
-        InboundStock, InboundStockItem
+        InboundStock, InboundStockItem, Invoice
     )
 
 # USER
@@ -112,6 +112,20 @@ class InventorySerializer(serializers.ModelSerializer):
         depth = 1
 
 # ORDER MANAGEMENT
+class InvoiceSerializer(serializers.ModelSerializer):
+    order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all(), required=False)
+
+    class Meta:
+        model = Invoice
+        fields = '__all__'
+
+class OrderTrackingSerializer(serializers.ModelSerializer):
+    order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all(), required=False)
+
+    class Meta:
+        model = OrderTracking
+        fields = '__all__'
+
 class OrderDetailsSerializer(serializers.ModelSerializer):
     order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all(), required=False)
     inventory = serializers.PrimaryKeyRelatedField(queryset=Inventory.objects.all())
@@ -122,21 +136,13 @@ class OrderDetailsSerializer(serializers.ModelSerializer):
         model = OrderDetails
         fields = '__all__'
 
-class OrderTrackingSerializer(serializers.ModelSerializer):
-    order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all(), required=False)
-
-    class Meta:
-        model = OrderTracking
-        fields = '__all__'
-
 class OrderSerializer(serializers.ModelSerializer):
     account = serializers.PrimaryKeyRelatedField(queryset=Account.objects.all(), required=False)
     customer = serializers.PrimaryKeyRelatedField(queryset=Customer.objects.all(), required=False)
     employee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all(), required=True)
     order_details = OrderDetailsSerializer(many=True)
     order_tracking = OrderTrackingSerializer(read_only=True)
-
-    state = serializers.ReadOnlyField(source='order_tracking.state')
+    invoice = InvoiceSerializer(read_only=True)
 
     class Meta:
         model = Order
@@ -165,6 +171,7 @@ class OrderSerializer(serializers.ModelSerializer):
             OrderDetails.objects.create(order=order, **order_detail_data)
         
         order_tracking_instance = OrderTracking.objects.create(order=order, status="unvalidated")
+        invoice_instance = Invoice.objects.create(order=order, payment_method="test")
 
         return order
 

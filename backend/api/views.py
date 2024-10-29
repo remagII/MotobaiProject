@@ -6,14 +6,14 @@ from .serializers import (
         UserSerializer, ProductSerializer, InventorySerializer, 
         AccountSerializer, OrderDetailsSerializer, OrderSerializer, 
         OrderTrackingSerializer, CustomerSerializer, EmployeeSerializer, 
-        SupplierSerializer, InboundStockSerializer
+        SupplierSerializer, InboundStockSerializer, InvoiceSerializer
     )
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import (
         Product, Inventory, Account, 
         Order, OrderDetails, OrderTracking, 
         Customer, Employee, Supplier, 
-        InboundStock
+        InboundStock, Invoice
     )
 
 
@@ -149,6 +149,15 @@ class OrderTrackingListView(generics.ListAPIView):
 class OrderTrackingUpdateView(generics.RetrieveUpdateAPIView):
     queryset = OrderTracking.objects.all()
     serializer_class = OrderTrackingSerializer
+    permission_classes = [AllowAny]
+
+class InvoiceCreate(generics.CreateAPIView):
+    serializer_class = InvoiceSerializer
+    permission_classes = [AllowAny]
+
+class InvoiceListView(generics.ListAPIView):
+    queryset = Invoice.objects.all()
+    serializer_class = InvoiceSerializer
     permission_classes = [AllowAny]
 
 # INVENTORY

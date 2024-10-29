@@ -89,6 +89,8 @@ class Order(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=False, blank=False, default="")
 
     order_date = models.DateTimeField(auto_now_add=True)
+
+    gross_price = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
     # for information integrity
     account_name = models.CharField(max_length=64, null=True, blank=True, default="")
     representative_name = models.CharField(max_length=64, null=True, blank=True, default="")
@@ -115,20 +117,7 @@ class Order(models.Model):
             return f'Order ID: {self.pk}, Account Name: {self.account.account}'
         else:
             return f'Order ID: {self.pk}, Customer Name: {self.customer.last_name}, {self.customer.last_name}'
-
-class OrderTracking(models.Model):
-    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='order_tracking', null=True, blank=True)
-    status = models.CharField(max_length=32, default='unvalidated')
-
-    date_created = models.DateTimeField(auto_now_add=True)
-    date_validated = models.DateTimeField(null=True, blank=True)
-    date_shipped = models.DateTimeField(null=True, blank=True)
-    date_completed = models.DateTimeField(null=True, blank=True)
-    date_cancelled = models.DateTimeField(null=True, blank=True)
-
-    def __str__(self):
-        return f'{self.status}'
-
+    
 class OrderDetails(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_details', null=False, blank=False)
     inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE, null=False, blank=False)
@@ -149,4 +138,28 @@ class OrderDetails(models.Model):
         else:
             raise ValueError("Not enough stock available")
         super(OrderDetails, self).save(*args, **kwargs)
+
+class OrderTracking(models.Model):
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='order_tracking', null=True, blank=True)
+    status = models.CharField(max_length=32, default='unvalidated')
+
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_validated = models.DateTimeField(null=True, blank=True)
+    date_shipped = models.DateTimeField(null=True, blank=True)
+    date_completed = models.DateTimeField(null=True, blank=True)
+    date_cancelled = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.status}'
+
+class Invoice(models.Model):
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='invoice', null=True, blank=True)
+    
+    total_balance = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
+    discounted_amount = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True) 
+    payment_method = models.CharField(max_length=64, null=True, blank=True)
+    total_amount_paid = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_due = models.DateTimeField(null=True, blank=True)
+    date_paid = models.DateTimeField(null=True, blank=True)
 
