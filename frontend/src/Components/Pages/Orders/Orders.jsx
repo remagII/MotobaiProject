@@ -89,6 +89,7 @@ export default function Orders() {
   const handleRowDetails = (index) => {
     const selectedItem = order[index]; // Get the log based on the row clicked
     setOrderDetails(selectedItem.order_details); // Set the specific log's items
+    setOrderId(selectedItem.id);
 
     setDetailsRow(index);
     setMethod("Details");
@@ -118,7 +119,7 @@ export default function Orders() {
         </div>
       </div>
       <DynamicModal modal={modal} toggleModal={toggleModal}>
-        <DetailsStockModal logsData={orderDetails} />
+        <DetailsOrderModal logsData={orderDetails} orderId={orderId} />
       </DynamicModal>
     </section>
   );

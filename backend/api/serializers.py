@@ -1,9 +1,10 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 from .models import (
         Product, Inventory, Account, Order, OrderDetails,
         OrderTracking, Customer, Employee, Supplier, 
-        InboundStock, InboundStockItem
+        InboundStock, InboundStockItem, Invoice
     )
 
 # USER
@@ -39,15 +40,12 @@ class ProductSerializer(serializers.ModelSerializer):
         return product
     
     def update(self, instance, validated_data):
-        # Update the product instance
         instance = super().update(instance, validated_data)
 
-         # Update the stock_minimum_threshold if provided
         stock_minimum_threshold = validated_data.get('stock_minimum_threshold', None)
         
         if stock_minimum_threshold is not None:
-            # Access the related inventory object using the reverse relationship
-            inventory_instance = instance.inventory_set.first()  # Get the first related inventory
+            inventory_instance = instance.inventory_set.first()  
             
             if inventory_instance:
                 inventory_instance.stock_minimum_threshold = stock_minimum_threshold
@@ -114,9 +112,23 @@ class InventorySerializer(serializers.ModelSerializer):
         depth = 1
 
 # ORDER MANAGEMENT
+class InvoiceSerializer(serializers.ModelSerializer):
+    order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all(), required=False)
+
+    class Meta:
+        model = Invoice
+        fields = '__all__'
+
+class OrderTrackingSerializer(serializers.ModelSerializer):
+    order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all(), required=False)
+
+    class Meta:
+        model = OrderTracking
+        fields = '__all__'
+
 class OrderDetailsSerializer(serializers.ModelSerializer):
     order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all(), required=False)
-    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+    inventory = serializers.PrimaryKeyRelatedField(queryset=Inventory.objects.all())
     product_price = serializers.DecimalField(decimal_places=2, max_digits=10, required=False)
     quantity = serializers.IntegerField(required=True)  
     
@@ -129,6 +141,8 @@ class OrderSerializer(serializers.ModelSerializer):
     customer = serializers.PrimaryKeyRelatedField(queryset=Customer.objects.all(), required=False)
     employee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all(), required=True)
     order_details = OrderDetailsSerializer(many=True)
+    order_tracking = OrderTrackingSerializer(read_only=True)
+    invoice = InvoiceSerializer(read_only=True)
 
     class Meta:
         model = Order
@@ -137,17 +151,29 @@ class OrderSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         order_details_data = validated_data.pop('order_details')
         order = Order.objects.create(**validated_data)
+
         for order_detail_data in order_details_data:
+            inventory_item = order_detail_data['inventory']
+            quantity = order_detail_data['quantity']
+
+            if inventory_item.stock < quantity:
+                raise ValidationError(f"Not enough stock for {inventory_item.product.product_name}. Available: {inventory_item.stock}, Requested: {quantity}")
+        
+        for order_detail_data in order_details_data:
+            inventory_item = order_detail_data['inventory']
+            quantity = order_detail_data['quantity']
+            
+            
+            inventory_item.stock -= quantity
+            inventory_item.save()
+
+            
             OrderDetails.objects.create(order=order, **order_detail_data)
+        
+        order_tracking_instance = OrderTracking.objects.create(order=order, status="unvalidated")
+        invoice_instance = Invoice.objects.create(order=order, payment_method="test")
+
         return order
-
-class OrderTrackingSerializer(serializers.ModelSerializer):
-    order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all())
-    
-
-    class Meta:
-        model = OrderTracking
-        fields = '__all__'
 
 # MISC
 class SupplierSerializer(serializers.ModelSerializer):
