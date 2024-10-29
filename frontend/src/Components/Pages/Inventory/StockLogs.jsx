@@ -7,13 +7,17 @@ import { useFetchData } from "../../Hooks/useFetchData.js";
 
 export default function Inventory() {
   const [inboundStockItem, setInboundStockItem] = useState([]);
-  const { data: logs } = useFetchData('stockin');
+  const { data: logs } = useFetchData("stockin");
 
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
   const tableColumns = [
     {
       header: "Stock-in ID",
-      row: "id", 
+      row: "id",
+    },
+    {
+      header: "Employee Name",
+      row: "",
     },
 
     {

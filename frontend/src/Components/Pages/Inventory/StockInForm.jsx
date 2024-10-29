@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Logo from "../../../assets/Logo.png";
 import "../../pages.css";
 import Table from "../../DynamicComponents/DynamicTable";
@@ -11,6 +11,23 @@ import {
 import { useFetchData } from "../../Hooks/useFetchData.js";
 
 const StockInForm = ({ confirmHandler }) => {
+  const [successWindow, setSuccessWindow] = useState(false);
+  const toggleSuccessWindow = () => {
+    setSuccessWindow((e) => (e = !e));
+  };
+
+  const [successMethod, setSuccessMethod] = useState("");
+
+  useEffect(() => {
+    if (successWindow) {
+      const timer = setTimeout(() => {
+        setSuccessWindow(false);
+      }, 2000); // Closes the error window after 2.5 seconds
+
+      return () => clearTimeout(timer); // Cleanup if component unmounts
+    }
+  }, [successWindow]);
+
   const [initialStockIn, setInitialStockIn] = useState([]);
 
   const { data: productOptions } = useFetchData("inventory");
@@ -79,25 +96,35 @@ const StockInForm = ({ confirmHandler }) => {
   // send data to database
   const confirmButton = async () => {
     console.log(initialStockIn);
+    console.log(initialStockIn.length);
 
-    const inboundStockItems = initialStockIn.map((stockInItem) => ({
-      inventory: stockInItem.inventory_id, // Assuming this is the inventory ID
-      supplier: stockInItem.supplier_id, // Assuming this is the supplier ID
-      quantity: stockInItem.quantity || 0, // Ensure quantity is not empty
-    }));
+    if (initialStockIn.length > 0) {
+      const inboundStockItems = initialStockIn.map((stockInItem) => ({
+        inventory: stockInItem.inventory_id, // Assuming this is the inventory ID
+        supplier: stockInItem.supplier_id, // Assuming this is the supplier ID
+        quantity: stockInItem.quantity || 0, // Ensure quantity is not empty
+      }));
 
-    try {
-      const res = await api.post("http://127.0.0.1:8000/api/stockin/create/", {
-        inboundStockItems: inboundStockItems,
-      });
+      try {
+        const res = await api.post(
+          "http://127.0.0.1:8000/api/stockin/create/",
+          {
+            inboundStockItems: inboundStockItems,
+          }
+        );
 
-      console.log("Stocking in successful:", res.data);
-    } catch (error) {
-      console.error("Error stocking in:", error);
-      ``;
+        console.log("Stocking in successful:", res.data);
+        setSuccessMethod("Added");
+        toggleSuccessWindow();
+        setInitialStockIn([]);
+        console.log(initialStockIn);
+      } catch (error) {
+        console.error("Error stocking in:", error);
+        ``;
+      }
+    } else {
+      alert("Please add atleast one(1) item");
     }
-
-    window.location.reload();
   };
 
   return (
@@ -258,6 +285,25 @@ const StockInForm = ({ confirmHandler }) => {
             </form>
           </div>
         </div>
+      </div>
+      <div className="absolute z-20 top-20  left-1/2 transform -translate-x-1/2">
+        {successWindow && (
+          <div
+            className={`rounded p-4 text-lg font-bold text-green-600 bg-green-200 flex justify-between  transition-all w-[30vw] shadow-2xl`}
+          >
+            <h1>
+              <span className="text-green-700">
+                Successfully {successMethod}!
+              </span>
+            </h1>
+            <button
+              onClick={toggleSuccessWindow}
+              className={`p-2 hover:text-green-700 text-xl`}
+            >
+              Close
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

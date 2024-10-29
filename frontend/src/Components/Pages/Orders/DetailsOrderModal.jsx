@@ -92,11 +92,46 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
             alt="Motobai-Logo"
           />
         </div>
+
         <div
-          className={`flex flex-col justify-between bg-gray-100 p-12 pr-6 h-[75vh] w-[65vw] rounded-b-lg`}
+          className={`flex flex-col gap-12 bg-gray-100 p-12 pr-6 h-[80vh] w-[75vw] rounded-b-lg`}
         >
+          <div className="flex gap-12">
+            <h1 className="font-bold text-2xl">ORDER TYPE</h1>
+            <div>
+              <h1 className="text-md">Account Name</h1>
+              <h1 className="font-bold text-lg">Ram Christian D. Nacar</h1>
+            </div>
+            <div>
+              <h1 className=" text-md">Address</h1>
+              <div className="flex gap-6">
+                <div>
+                  <h1 className="font-semibold text-md">City</h1>
+                  <h1 className="font-bold text-lg">Davao City</h1>
+                </div>
+                <div>
+                  <h1 className="font-semibold text-md">Barangay</h1>
+                  <h1 className="font-bold text-lg">Sto. Nino</h1>
+                </div>
+                <div>
+                  <h1 className="font-semibold text-md">Street</h1>
+                  <h1 className="font-bold text-lg">
+                    Camella blk 5 Lot 13 Ph 2
+                  </h1>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h1 className="text-md">Employee Name</h1>
+              <h1 className="font-bold text-lg">Ram Christian D. Nacar</h1>
+            </div>
+          </div>
           <div>
-            <Table columnArr={tableColumns} dataArr={logsData}></Table>
+            <Table
+              columnArr={tableColumns}
+              dataArr={logsData}
+              className={`!h-[45vh]`}
+            ></Table>
           </div>
           <div className="flex justify-end gap-4">
             <OrderModalButton

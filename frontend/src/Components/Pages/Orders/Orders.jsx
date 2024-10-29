@@ -2,21 +2,13 @@ import React, { useState } from "react";
 import Table from "../../DynamicComponents/DynamicTable.jsx";
 import Overview from "../../Overview.jsx";
 import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
-<<<<<<< Updated upstream
-import DetailsStockModal from "./DetailsStockModal.jsx"
-=======
 import DetailsOrderModal from "./DetailsOrderModal.jsx";
->>>>>>> Stashed changes
 import { useFetchData } from "../../Hooks/useFetchData.js";
 
 export default function Orders() {
   const [orderDetails, setOrderDetails] = useState([]);
-<<<<<<< Updated upstream
-  const { data: order } = useFetchData('order');
-=======
   const [orderId, setOrderId] = useState();
   const { data: order } = useFetchData("order");
->>>>>>> Stashed changes
 
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
   const tableColumns = [
@@ -34,7 +26,9 @@ export default function Orders() {
 
     {
       header: "Total Price",
-      row: "status",
+      customRender: (item) => {
+        return <p>{item.total_balance}</p>;
+      },
     },
 
     {
@@ -46,7 +40,7 @@ export default function Orders() {
       customRender: (item) => {
         return (
           <p>
-            {item.employee_last_name}, {item.employee_first_name},{" "}
+            {item.employee_last_name}, {item.employee_first_name},
             {item.employee_middle_name}
           </p>
         );
@@ -69,7 +63,7 @@ export default function Orders() {
 
     {
       header: "Status",
-      row: "status",
+      row: "order_tracking.status",
     },
   ];
 

@@ -20,6 +20,7 @@ export default function Inventory() {
 
   const toggleStockInModal = () => {
     setStockInModal((m) => (m = !m));
+    triggerRefresh();
   };
 
   const toggleCreateDeliveryModal = () => {
@@ -88,13 +89,9 @@ export default function Inventory() {
     },
   ];
 
-  const { data: inventory } = useFetchData("inventory");
+  const { data: inventory, triggerRefresh } = useFetchData("inventory");
 
   const [loading, setLoading] = useState(false);
-
-  const onSubmitHandler = async (form, callback) => {
-    setLoading(true);
-  };
 
   const [deleteBtn, setDeleteBtn] = useState(""); // HANDLES DELETE BUTTON STATE
   const [rowToEdit, setRowToEdit] = useState(null);

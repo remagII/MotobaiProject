@@ -22,28 +22,31 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   const confirmButton = async () => {
-    if (!selectedAccount || !selectedEmployee) {
-      alert("Please select an account and employee.");
-      return;
-    }
+    if (!initialOrder) {
+      if (!selectedAccount || !selectedEmployee) {
+        alert("Please select an account and employee.");
+        return;
+      }
 
-    const orderItems = initialOrder.map((item) => ({
-      inventory: parseInt(item.id, 10),
-      quantity: parseInt(item.quantity, 10) || 0,
-    }));
+      const orderItems = initialOrder.map((item) => ({
+        inventory: parseInt(item.id, 10),
+        quantity: parseInt(item.quantity, 10) || 0,
+      }));
 
-    try {
-      const res = await api.post("http://127.0.0.1:8000/api/order/create/", {
-        order_details: orderItems,
-        account: selectedAccount,
-        employee: selectedEmployee,
-      });
-      console.log("Order creation successful:", res.data);
-    } catch (error) {
-      console.error("Error Creating Order:", error);
-      ``;
+      try {
+        const res = await api.post("http://127.0.0.1:8000/api/order/create/", {
+          order_details: orderItems,
+          account: selectedAccount,
+          employee: selectedEmployee,
+        });
+        console.log("Order creation successful:", res.data);
+      } catch (error) {
+        console.error("Error Creating Order:", error);
+        ``;
+      }
+    } else {
+      alert("Please add atlesast one(1) product");
     }
-    window.location.reload();
   };
 
   const formArr = [
