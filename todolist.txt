@@ -47,3 +47,10 @@ if orderid != trackingi != invoiceid is not the same then most functions will no
 
 dont mind this
   C:\Users\tyche\AppData\Local\Programs\Python\Python313\python.exe manage.py runserver
+
+
+  customRender: (item) => {
+        return <p>{item.order_tracking.status}</p>;
+      },
+
+  employee -> stock in

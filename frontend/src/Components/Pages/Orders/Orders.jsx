@@ -2,27 +2,51 @@ import React, { useState } from "react";
 import Table from "../../DynamicComponents/DynamicTable.jsx";
 import Overview from "../../Overview.jsx";
 import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
-import DetailsOrderModal from "./DetailsOrderModal.jsx"
+import DetailsOrderModal from "./DetailsOrderModal.jsx";
 import { useFetchData } from "../../Hooks/useFetchData.js";
 
 export default function Orders() {
   const [orderDetails, setOrderDetails] = useState([]);
   const [orderId, setOrderId] = useState();
-  const { data: order } = useFetchData('order');
+  const { data: order } = useFetchData("order");
 
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
   const tableColumns = [
     {
       header: "Order ID",
-      row: "id", 
+      row: "id",
     },
 
     {
-      header: "Number of Items",
+      header: "Number of Products",
       customRender: (item) => {
         return <p>{item.order_details.length}</p>;
       },
     },
+
+    {
+      header: "Total Price",
+      customRender: (item) => {
+        return <p>{item.total_balance}</p>;
+      },
+    },
+
+    {
+      header: "Customer",
+      row: "account_name",
+    },
+    {
+      header: "Employee",
+      customRender: (item) => {
+        return (
+          <p>
+            {item.employee_last_name}, {item.employee_first_name},
+            {item.employee_middle_name}
+          </p>
+        );
+      },
+    },
+
     {
       header: "Date and Time Created",
       customRender: (item) => {
@@ -35,6 +59,11 @@ export default function Orders() {
 
         return <p>{formattedDate}</p>;
       },
+    },
+
+    {
+      header: "Status",
+      row: "order_tracking.status",
     },
   ];
 

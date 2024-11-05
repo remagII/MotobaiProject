@@ -22,28 +22,32 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   const confirmButton = async () => {
-    if (!selectedAccount || !selectedEmployee) {
-      alert("Please select an account and employee.");
-      return;
-    }
+    if (initialOrder.length > 0) {
+      if (!selectedAccount || !selectedEmployee) {
+        alert("Please select an account and employee.");
+        return;
+      }
 
-    const orderItems = initialOrder.map((item) => ({
-      inventory: parseInt(item.id, 10),
-      quantity: parseInt(item.quantity, 10) || 0,
-    }));
+      const orderItems = initialOrder.map((item) => ({
+        inventory: parseInt(item.id, 10),
+        quantity: parseInt(item.quantity, 10) || 0,
+      }));
 
-    try {
-      const res = await api.post("http://127.0.0.1:8000/api/order/create/", {
-        order_details: orderItems,
-        account: selectedAccount,
-        employee: selectedEmployee,
-      });
-      console.log("Order creation successful:", res.data);
-    } catch (error) {
-      console.error("Error Creating Order:", error);
-      ``;
+      try {
+        const res = await api.post("http://127.0.0.1:8000/api/order/create/", {
+          order_details: orderItems,
+          account: selectedAccount,
+          employee: selectedEmployee,
+        });
+        console.log("Order creation successful:", res.data);
+        setInitialOrder([]);
+      } catch (error) {
+        console.error("Error Creating Order:", error);
+        ``;
+      }
+    } else {
+      alert("Please add atlesast one(1) product");
     }
-    window.location.reload();
   };
 
   const formArr = [
@@ -141,7 +145,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                 alt="Motobai-Logo"
               />
             </div>
-            <form onSubmit={confirmHandler} className={`min-w-[70vw] `}>
+            <form onSubmit={confirmHandler} className={`min-w-[80vw] `}>
               <div className={`bg-gray-100 py-10 px-8 h-[80vh]  rounded-b-lg`}>
                 <h1 className="font-bold text-2xl mb-10">
                   Create Order Delivery

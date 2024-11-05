@@ -4,7 +4,7 @@ from rest_framework.exceptions import ValidationError
 from .models import (
         Product, Inventory, Account, Order, OrderDetails,
         OrderTracking, Customer, Employee, Supplier, 
-        InboundStock, InboundStockItem, Invoice
+        InboundStock, InboundStockItem, 
     )
 
 # USER
@@ -112,12 +112,12 @@ class InventorySerializer(serializers.ModelSerializer):
         depth = 1
 
 # ORDER MANAGEMENT
-class InvoiceSerializer(serializers.ModelSerializer):
-    order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all(), required=False)
+# class InvoiceSerializer(serializers.ModelSerializer):
+#     order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all(), required=False)
 
-    class Meta:
-        model = Invoice
-        fields = '__all__'
+#     class Meta:
+#         model = Invoice
+#         fields = '__all__'
 
 class OrderTrackingSerializer(serializers.ModelSerializer):
     order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all(), required=False)
@@ -142,7 +142,7 @@ class OrderSerializer(serializers.ModelSerializer):
     employee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all(), required=True)
     order_details = OrderDetailsSerializer(many=True)
     order_tracking = OrderTrackingSerializer(read_only=True)
-    invoice = InvoiceSerializer(read_only=True)
+    # invoice = InvoiceSerializer(read_only=True)
 
     class Meta:
         model = Order
@@ -171,7 +171,7 @@ class OrderSerializer(serializers.ModelSerializer):
             OrderDetails.objects.create(order=order, **order_detail_data)
         
         order_tracking_instance = OrderTracking.objects.create(order=order, status="unvalidated")
-        invoice_instance = Invoice.objects.create(order=order, payment_method="test")
+        # invoice_instance = Invoice.objects.create(order=order, payment_method="test")
 
         return order
 
