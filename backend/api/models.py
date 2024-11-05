@@ -32,14 +32,29 @@ class Supplier(models.Model):
 
     is_deleted = models.BooleanField(default=False, null=False, blank=False)
 
+class Employee(models.Model):
+    first_name = models.CharField(max_length=64, null=False, blank=False)
+    middle_name = models.CharField(max_length=34, null=False, blank=False) 
+    last_name = models.CharField(max_length=34, null=False, blank=False)
+    city = models.CharField(max_length=100, null=False, blank=False)
+    barangay = models.CharField(max_length=100, null=False, blank=False)
+    street = models.CharField(max_length=100, null=False, blank=False)
+    phone_number = models.CharField(max_length=11, validators=[MinLengthValidator(11)], null=False, blank=False)
+    email = models.CharField(max_length=64, null=False, blank=False)
+    date_created = models.DateTimeField(auto_now_add=True)
+
+    is_deleted = models.BooleanField(default=False, null=False, blank=False)
+
 class InboundStockItem(models.Model):
     inventory = models.ForeignKey(Inventory,null=False, blank=False, on_delete=models.CASCADE)
-    supplier = models.ForeignKey(Supplier,null=False, blank=False, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(null=False, blank=False, default=0)
 
 class InboundStock(models.Model):
     inboundStockItems = models.ManyToManyField(InboundStockItem, related_name='inbound_stocks', blank=False)
+    supplier = models.ForeignKey(Supplier,null=False, blank=False, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee,null=False, blank=False, on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
+    
 
     def __str__(self):
         return 'Stock Entry: {} items on {}'.format(self.inboundStockItems.count(), self.date_created)
@@ -70,39 +85,35 @@ class Customer(models.Model):
     def __str__(self):
         return '{}'.format(self.customer_name)
 
-class Employee(models.Model):
-    first_name = models.CharField(max_length=64, null=False, blank=False)
-    middle_name = models.CharField(max_length=34, null=False, blank=False) 
-    last_name = models.CharField(max_length=34, null=False, blank=False)
-    city = models.CharField(max_length=100, null=False, blank=False)
-    barangay = models.CharField(max_length=100, null=False, blank=False)
-    street = models.CharField(max_length=100, null=False, blank=False)
-    phone_number = models.CharField(max_length=11, validators=[MinLengthValidator(11)], null=False, blank=False)
-    email = models.CharField(max_length=64, null=False, blank=False)
-    date_created = models.DateTimeField(auto_now_add=True)
-
-    is_deleted = models.BooleanField(default=False, null=False, blank=False)
-
 class Order(models.Model): 
     account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True, default="")  # one of only nullable fields in the system
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True, default="") # one of only nullable fields in the system
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=False, blank=False, default="")
-
+    order_type = models.CharField(max_length=64, null=False, blank=False, default="Delivery")
     order_date = models.DateTimeField(auto_now_add=True)
 
     # gross_price = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
     # for information integrity
-    account_name = models.CharField(max_length=64, null=True, blank=True, default="")
-    representative_name = models.CharField(max_length=64, null=True, blank=True, default="")
+    account_name = models.CharField(max_length=64, null=True, blank=True)
+    representative_name = models.CharField(max_length=64, null=True, blank=True)
+    city = models.CharField(max_length=64, null=True, blank=True)
+    barangay = models.CharField(max_length=64, null=True, blank=True)
+    street = models.CharField(max_length=64, null=True, blank=True)
+    phone_number = models.CharField(max_length=11, validators=[MinLengthValidator(11)], null=True, blank=True)
+    
     customer_name = models.CharField(max_length=64, null=True, blank=True, default="")
-    employee_first_name = models.CharField(max_length=34, null=False, blank=False, default="")
-    employee_middle_name = models.CharField(max_length=34, null=False, blank=False, default="")
-    employee_last_name = models.CharField(max_length=34, null=False, blank=False, default="")
+    employee_first_name = models.CharField(max_length=34, null=True, blank=True, default="")
+    employee_middle_name = models.CharField(max_length=34, null=True, blank=True, default="")
+    employee_last_name = models.CharField(max_length=34, null=True, blank=True, default="")
 
     def save(self, *args, **kwargs):
         if self.account:
             self.account_name = self.account.account
             self.representative_name = self.account.representative_name
+            self.city = self.account.city
+            self.barangay = self.account.barangay
+            self.street = self.account.street
+            self.phone_number = self.account.phone_number
         else:
             self.customer_name = self.customer.customer_name
 
@@ -152,14 +163,14 @@ class OrderTracking(models.Model):
     def __str__(self):
         return f'{self.status}'
 
-# class Invoice(models.Model):
-#     order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='invoice', null=True, blank=True)
+class Invoice(models.Model):
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='invoice', null=True, blank=True)
     
-#     total_balance = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
-#     discounted_amount = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True) 
-#     payment_method = models.CharField(max_length=64, null=True, blank=True)
-#     total_amount_paid = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
-#     date_created = models.DateTimeField(auto_now_add=True)
-#     date_due = models.DateTimeField(null=True, blank=True)
-#     date_paid = models.DateTimeField(null=True, blank=True)
+    total_balance = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
+    discounted_amount = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True) 
+    payment_method = models.CharField(max_length=64, null=True, blank=True)
+    total_amount_paid = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_due = models.DateTimeField(null=True, blank=True)
+    date_paid = models.DateTimeField(null=True, blank=True)
 

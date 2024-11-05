@@ -25,7 +25,11 @@ NOTES:
 - Walk-in in progress shit
 
 Added stuff:
-- added invoice
+- fixed stockin, 1 supplier per stockin, 1 employee per stockin
+- fixed stocklogs can now get employee
+- order details now fetchable
+- order, has own account information for integrity
+- started walk-in order modal
 
 Todo Pages:
 - OrderList + Order History -> Order Management
@@ -38,7 +42,7 @@ Extra stuff that may or may not be implemented:
 
 MY QUESTIONS:
 - for backend when checking, what are the common questions or tasks that the panelists do to check the backend?
-- 
+- may tax pa ba?
 
 Current Issues:
 - when an order is created, so does invoice, tracking; the way it is set up is so that orderid = 1, then invoiceid, trackingid = 1; even though invoice and tacking cannot be made without an order, 

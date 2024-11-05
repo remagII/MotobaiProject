@@ -5,13 +5,14 @@ import Overview from "../../Overview.jsx";
 import StockInForm from "./StockInForm.jsx";
 import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
 import CreateDeliveryOrderForm from "./CreateDeliveryOrderForm.jsx";
+import CreateWalkinOrderForm from "./CreateWalkinOrderForm.jsx";
 import { useFetchData } from "../../Hooks/useFetchData.js";
-import { useEffect } from "react";
 
 export default function Inventory() {
   const [method, setMethod] = useState("");
   const [stockInModal, setStockInModal] = useState(false);
   const [createDeliveryModal, setCreateDeliveryModal] = useState(false);
+  const [createWalkinModal, setCreateWalkinModal] = useState(false);
 
   // MODAL TOGGLE
   const toggleModal = () => {
@@ -25,6 +26,10 @@ export default function Inventory() {
 
   const toggleCreateDeliveryModal = () => {
     setCreateDeliveryModal((m) => (m = !m));
+  };
+
+  const toggleCreateWalkinModal = () => {
+    setCreateWalkinModal((m) => (m = !m));
   };
 
   const [errorWindow, setErrorWindow] = useState(false);
@@ -188,7 +193,7 @@ export default function Inventory() {
                   </div>
                 </button>
                 <button
-                  onClick={toggleModal}
+                  onClick={toggleCreateWalkinModal}
                   className={`text-gray-100 bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center shadow-md`}
                 >
                   Walk-In Order
@@ -205,11 +210,11 @@ export default function Inventory() {
             <DynamicModal modal={stockInModal} toggleModal={toggleStockInModal}>
               <StockInForm />
             </DynamicModal>
-            <DynamicModal
-              modal={createDeliveryModal}
-              toggleModal={toggleCreateDeliveryModal}
-            >
+            <DynamicModal modal={createDeliveryModal} toggleModal={toggleCreateDeliveryModal}>
               <CreateDeliveryOrderForm />
+            </DynamicModal>
+            <DynamicModal modal={createWalkinModal} toggleModal={toggleCreateWalkinModal}>
+              <CreateWalkinOrderForm />
             </DynamicModal>
 
             <div className="absolute top-50 z-10 shadow-xl">

@@ -4,7 +4,7 @@ from rest_framework.exceptions import ValidationError
 from .models import (
         Product, Inventory, Account, Order, OrderDetails,
         OrderTracking, Customer, Employee, Supplier, 
-        InboundStock, InboundStockItem, 
+        InboundStock, InboundStockItem, Invoice
     )
 
 # USER
@@ -64,24 +64,35 @@ class CustomerSerializer(serializers.ModelSerializer):
         model = Customer
         fields = '__all__'
 
+# EMPLOYEE
+class EmployeeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Employee
+        fields = '__all__'
+
+
 # STOCKIN
 class InboundStockItemSerializer(serializers.ModelSerializer):
     inventory = serializers.PrimaryKeyRelatedField(queryset=Inventory.objects.all())
-    supplier = serializers.PrimaryKeyRelatedField(queryset=Supplier.objects.all())
     product = ProductSerializer(source='inventory.product', read_only=True)
-    supplier_name = serializers.ReadOnlyField(source='supplier.supplier_name')
 
     class Meta:
         model = InboundStockItem
-        fields = ['inventory', 'supplier', 'quantity', 'product', 'supplier_name']
+        fields = '__all__'
         depth = 1
     
 class InboundStockSerializer(serializers.ModelSerializer):
     inboundStockItems = InboundStockItemSerializer(many=True)
+    supplier = serializers.PrimaryKeyRelatedField(queryset=Supplier.objects.all())
+    employee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all())
+    supplier_name = serializers.ReadOnlyField(source='supplier.supplier_name')
+    employee_fname = serializers.ReadOnlyField(source='employee.first_name')
+    employee_mname = serializers.ReadOnlyField(source='employee.middle_name')
+    employee_lname = serializers.ReadOnlyField(source='employee.last_name')
 
     class Meta:
         model = InboundStock
-        fields = ['id', 'inboundStockItems', 'date_created']
+        fields = '__all__'
 
     def create(self, validated_data):
         inbound_stock_items_data = validated_data.pop('inboundStockItems')
@@ -112,12 +123,12 @@ class InventorySerializer(serializers.ModelSerializer):
         depth = 1
 
 # ORDER MANAGEMENT
-# class InvoiceSerializer(serializers.ModelSerializer):
-#     order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all(), required=False)
+class InvoiceSerializer(serializers.ModelSerializer):
+    order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all(), required=False)
 
-#     class Meta:
-#         model = Invoice
-#         fields = '__all__'
+    class Meta:
+        model = Invoice
+        fields = '__all__'
 
 class OrderTrackingSerializer(serializers.ModelSerializer):
     order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all(), required=False)
@@ -142,7 +153,7 @@ class OrderSerializer(serializers.ModelSerializer):
     employee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all(), required=True)
     order_details = OrderDetailsSerializer(many=True)
     order_tracking = OrderTrackingSerializer(read_only=True)
-    # invoice = InvoiceSerializer(read_only=True)
+    invoice = InvoiceSerializer(read_only=True)
 
     class Meta:
         model = Order
@@ -171,7 +182,7 @@ class OrderSerializer(serializers.ModelSerializer):
             OrderDetails.objects.create(order=order, **order_detail_data)
         
         order_tracking_instance = OrderTracking.objects.create(order=order, status="unvalidated")
-        # invoice_instance = Invoice.objects.create(order=order, payment_method="test")
+        invoice_instance = Invoice.objects.create(order=order, payment_method="test")
 
         return order
 
@@ -181,7 +192,3 @@ class SupplierSerializer(serializers.ModelSerializer):
         model = Supplier
         fields = '__all__'
 
-class EmployeeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Employee
-        fields = '__all__'

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Logo from "../../../assets/Logo.png";
 import "../../pages.css";
-import Table from "../../DynamicComponents/DynamicTable";
-import api from "../../../api";
+import Table from "../../DynamicComponents/DynamicTable.jsx";
+import api from "../../../api.js";
 import {
   ChevronDownIcon,
   PlusCircleIcon,
@@ -11,22 +11,22 @@ import {
 
 import { useFetchData } from "../../Hooks/useFetchData.js";
 
-const CreateDeliveryOrderForm = ({ confirmHandler }) => {
+const CreateWalkinOrderForm = ({ confirmHandler }) => {
   const [initialOrder, setInitialOrder] = useState([]);
 
   const { data: productOptions } = useFetchData("inventory");
   const { data: employeeOptions } = useFetchData("employee");
-  const { data: accountOptions } = useFetchData("account");
+  // const { data: accountOptions } = useFetchData("account");
 
-  const [selectedAccount, setSelectedAccount] = useState(null);
+  // const [selectedAccount, setSelectedAccount] = useState(null);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   const confirmButton = async () => {
     if (initialOrder.length > 0) {
-      if (!selectedAccount || !selectedEmployee) {
-        alert("Please select an account and employee.");
-        return;
-      }
+      // if (!selectedAccount || !selectedEmployee) {
+      //   alert("Please select an account and employee.");
+      //   return;
+      // }
 
       const orderItems = initialOrder.map((item) => ({
         inventory: parseInt(item.id, 10),
@@ -36,8 +36,8 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
       try {
         const res = await api.post("http://127.0.0.1:8000/api/order/create/", {
           order_details: orderItems,
-          order_type: "Delivery",
-          account: selectedAccount,
+          order_type: "Walkin",
+          // account: selectedAccount,
           employee: selectedEmployee,
         });
         console.log("Order creation successful:", res.data);
@@ -103,7 +103,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
     }));
 
     if (fieldName === "account") {
-      setSelectedAccount(extraData.account_id);
+      // setSelectedAccount(extraData.account_id);
     } else if (fieldName === "first_name") {
       setSelectedEmployee(extraData.employee_id);
     }
@@ -153,7 +153,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                 </h1>
                 <div className={`ml-4 gap-x-6 gap-y-8 flex min-w-[40vw]`}>
                   {/* ACCOUNT SELECTION */}
-                  <div className={`flex justify-center relative min-w-[300px]`}>
+                  {/* <div className={`flex justify-center relative min-w-[300px]`}>
                     <select
                       className="overflow-y-auto appearance-none shadow-shadowTable text-lg min-w-[10vw] min-h-6 p-2 w-full rounded-md border-2"
                       required
@@ -184,7 +184,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                         className={` size-4 h-full mr-2  absolute flex right-0 items-center justify-center`}
                       />
                     </div>
-                  </div>
+                  </div> */}
                   {/* EMPLOYEE SELECTION */}
                   <div className={`flex justify-center relative min-w-[300px]`}>
                     <select
@@ -344,4 +344,4 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
   );
 };
 
-export default CreateDeliveryOrderForm;
+export default CreateWalkinOrderForm;

@@ -4,8 +4,23 @@ import Table from "../../DynamicComponents/DynamicTable";
 import api from "../../../api";
 
 const DetailsOrderModal = ({ logsData, orderId }) => {
+  const [orderDetails, setOrderDetails] = useState({});
+  const fetchOrderDetail = async (orderId) => {
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/api/order/view/${orderId}/`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch orders');
+        }
+        const data = await response.json();
+        setOrderDetails(data);
+    } catch (error) {
+        console.error('Error fetching orders:', error);
+    }
+  };
+
   useEffect(() => {
     console.log("Order ID in modal:", orderId); // Log Order ID when modal is opened
+    fetchOrderDetail(orderId);
   }, [orderId]);
 
   const [buttonValidationState, setButtonValidationState] = useState("");
@@ -97,32 +112,34 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
           className={`flex flex-col gap-12 bg-gray-100 p-12 pr-6 h-[80vh] w-[75vw] rounded-b-lg`}
         >
           <div className="flex gap-12">
-            <h1 className="font-bold text-2xl">ORDER TYPE</h1>
+            <h1 className="font-bold text-2xl">{orderDetails.order_type}</h1>
             <div>
               <h1 className="text-md">Account Name</h1>
-              <h1 className="font-bold text-lg">Ram Christian D. Nacar</h1>
+              <h1 className="font-bold text-lg">{orderDetails.account_name}</h1>
             </div>
             <div>
               <div className="flex gap-6">
                 <div>
                   <h1 className=" text-md">City</h1>
-                  <h1 className="font-bold text-lg">Davao City</h1>
+                  <h1 className="font-bold text-lg">{orderDetails.city}</h1>
                 </div>
                 <div>
                   <h1 className=" text-md">Barangay</h1>
-                  <h1 className="font-bold text-lg">Sto. Nino</h1>
+                  <h1 className="font-bold text-lg">{orderDetails.barangay}</h1>
                 </div>
                 <div>
                   <h1 className=" text-md">Street</h1>
-                  <h1 className="font-bold text-lg">
-                    Camella blk 5 Lot 13 Ph 2
-                  </h1>
+                  <h1 className="font-bold text-lg">{orderDetails.street}</h1>
+                </div>
+                <div>
+                  <h1 className=" text-md">Phone num</h1>
+                  <h1 className="font-bold text-lg">{orderDetails.phone_number}</h1>
                 </div>
               </div>
             </div>
             <div>
               <h1 className="text-md">Employee Name</h1>
-              <h1 className="font-bold text-lg">Ram Christian D. Nacar</h1>
+              <h1 className="font-bold text-lg">{orderDetails.employee_first_name} {orderDetails.employee_last_name}</h1>
             </div>
           </div>
           <div>

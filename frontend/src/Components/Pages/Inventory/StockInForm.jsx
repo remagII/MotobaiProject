@@ -29,6 +29,8 @@ const StockInForm = ({ confirmHandler }) => {
   }, [successWindow]);
 
   const [initialStockIn, setInitialStockIn] = useState([]);
+  const [supplier, setSupplier] = useState([]);
+  const [employee, setEmployee] = useState([]);
 
   const { data: productOptions } = useFetchData("inventory");
   const { data: supplierOptions } = useFetchData("supplier");
@@ -91,12 +93,15 @@ const StockInForm = ({ confirmHandler }) => {
   // send data to database
   const confirmButton = async () => {
     console.log(initialStockIn);
+    setSupplier(1); // test
+    setEmployee(1); // test
+
+
 
     if (initialStockIn.length > 0) {
       const inboundStockItems = initialStockIn.map((stockInItem) => ({
-        inventory: stockInItem.inventory_id, // Assuming this is the inventory ID
-        supplier: stockInItem.supplier_id, // Assuming this is the supplier ID
-        quantity: stockInItem.quantity || 0, // Ensure quantity is not empty
+        inventory: stockInItem.inventory_id, 
+        quantity: stockInItem.quantity || 0, 
       }));
 
       try {
@@ -104,6 +109,8 @@ const StockInForm = ({ confirmHandler }) => {
           "http://127.0.0.1:8000/api/stockin/create/",
           {
             inboundStockItems: inboundStockItems,
+            supplier: supplier,
+            employee: employee,
           }
         );
 

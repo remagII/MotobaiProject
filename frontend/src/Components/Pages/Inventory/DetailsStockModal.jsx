@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Logo from "../../../assets/Logo.png";
 import Table from "../../DynamicComponents/DynamicTable";
 
-const DetailsStockModal = ({ logsData }) => {
-  
+const DetailsStockModal = ({ logsData, supplierData }) => {
   const tableColumns = [
     {
       header: "Product Name",
@@ -15,10 +14,10 @@ const DetailsStockModal = ({ logsData }) => {
     },
     {
       header: "Supplier Name",
-      customRender: (item) => {
+      customRender: () => {
         return (
-          <p>{item.supplier_name}</p>
-        )
+          <p>{supplierData}</p>
+        );
       },
     },
     {
@@ -44,6 +43,7 @@ const DetailsStockModal = ({ logsData }) => {
             alt="Motobai-Logo"
           />
         </div>
+        
         <div className={`bg-gray-100 p-12 pr-6 h-[75vh] w-[65vw] rounded-b-lg`}>
           <Table columnArr={tableColumns} dataArr={logsData}></Table>
         </div>
