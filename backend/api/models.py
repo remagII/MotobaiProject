@@ -166,7 +166,7 @@ class OrderTracking(models.Model):
 class Invoice(models.Model):
     order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='invoice', null=True, blank=True)
     
-    total_balance = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
+    total_balance = models.DecimalField(decimal_places=2, max_digits=10, null=False, blank=False)
     discounted_amount = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True) 
     payment_method = models.CharField(max_length=64, null=True, blank=True)
     total_amount_paid = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)

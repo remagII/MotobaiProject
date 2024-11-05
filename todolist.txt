@@ -25,11 +25,7 @@ NOTES:
 - Walk-in in progress shit
 
 Added stuff:
-- fixed stockin, 1 supplier per stockin, 1 employee per stockin
-- fixed stocklogs can now get employee
-- order details now fetchable
-- order, has own account information for integrity
-- started walk-in order modal
+- 
 
 Todo Pages:
 - OrderList + Order History -> Order Management

@@ -26,9 +26,7 @@ export default function Orders() {
 
     {
       header: "Total Price",
-      customRender: (item) => {
-        return <p>{item.total_balance}</p>;
-      },
+      row: "invoice.total_balance",
     },
 
     {

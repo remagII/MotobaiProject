@@ -22,8 +22,10 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   const confirmButton = async () => {
+    const total_balance = totalPrice.toFixed(2);
+    console.log(total_balance);
     if (initialOrder.length > 0) {
-      if (!selectedAccount || !selectedEmployee) {
+      if (!selectedAccount || !selectedEmployee) {  
         alert("Please select an account and employee.");
         return;
       }
@@ -31,6 +33,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
       const orderItems = initialOrder.map((item) => ({
         inventory: parseInt(item.id, 10),
         quantity: parseInt(item.quantity, 10) || 0,
+        product_price: parseFloat(item.product_price),
       }));
 
       try {
@@ -38,7 +41,8 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
           order_details: orderItems,
           order_type: "Delivery",
           account: selectedAccount,
-          employee: selectedEmployee,
+          employee: selectedEmployee, 
+          total_balance: total_balance,
         });
         console.log("Order creation successful:", res.data);
         setInitialOrder([]);

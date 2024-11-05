@@ -6,6 +6,8 @@ from .models import (
         OrderTracking, Customer, Employee, Supplier, 
         InboundStock, InboundStockItem, Invoice
     )
+from decimal import Decimal
+
 
 # USER
 class UserSerializer(serializers.ModelSerializer):
@@ -161,7 +163,8 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         order_details_data = validated_data.pop('order_details')
-        order = Order.objects.create(**validated_data)
+
+        order = Order.objects.create(**validated_data)  
 
         for order_detail_data in order_details_data:
             inventory_item = order_detail_data['inventory']
@@ -170,19 +173,23 @@ class OrderSerializer(serializers.ModelSerializer):
             if inventory_item.stock < quantity:
                 raise ValidationError(f"Not enough stock for {inventory_item.product.product_name}. Available: {inventory_item.stock}, Requested: {quantity}")
         
+
+        total_balance = 0  
+
         for order_detail_data in order_details_data:
             inventory_item = order_detail_data['inventory']
             quantity = order_detail_data['quantity']
-            
+            product_price = order_detail_data.get('product_price')
             
             inventory_item.stock -= quantity
             inventory_item.save()
 
+            total_balance += product_price * quantity
             
             OrderDetails.objects.create(order=order, **order_detail_data)
         
-        order_tracking_instance = OrderTracking.objects.create(order=order, status="unvalidated")
-        invoice_instance = Invoice.objects.create(order=order, payment_method="test")
+        OrderTracking.objects.create(order=order, status="unvalidated")
+        Invoice.objects.create(order=order, total_balance=total_balance)
 
         return order
 
