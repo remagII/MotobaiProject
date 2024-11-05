@@ -22,7 +22,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   const confirmButton = async () => {
-    if (!initialOrder) {
+    if (initialOrder.length > 0) {
       if (!selectedAccount || !selectedEmployee) {
         alert("Please select an account and employee.");
         return;
@@ -40,6 +40,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
           employee: selectedEmployee,
         });
         console.log("Order creation successful:", res.data);
+        setInitialOrder([]);
       } catch (error) {
         console.error("Error Creating Order:", error);
         ``;
@@ -144,7 +145,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                 alt="Motobai-Logo"
               />
             </div>
-            <form onSubmit={confirmHandler} className={`min-w-[70vw] `}>
+            <form onSubmit={confirmHandler} className={`min-w-[80vw] `}>
               <div className={`bg-gray-100 py-10 px-8 h-[80vh]  rounded-b-lg`}>
                 <h1 className="font-bold text-2xl mb-10">
                   Create Order Delivery

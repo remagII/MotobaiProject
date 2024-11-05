@@ -103,18 +103,17 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
               <h1 className="font-bold text-lg">Ram Christian D. Nacar</h1>
             </div>
             <div>
-              <h1 className=" text-md">Address</h1>
               <div className="flex gap-6">
                 <div>
-                  <h1 className="font-semibold text-md">City</h1>
+                  <h1 className=" text-md">City</h1>
                   <h1 className="font-bold text-lg">Davao City</h1>
                 </div>
                 <div>
-                  <h1 className="font-semibold text-md">Barangay</h1>
+                  <h1 className=" text-md">Barangay</h1>
                   <h1 className="font-bold text-lg">Sto. Nino</h1>
                 </div>
                 <div>
-                  <h1 className="font-semibold text-md">Street</h1>
+                  <h1 className=" text-md">Street</h1>
                   <h1 className="font-bold text-lg">
                     Camella blk 5 Lot 13 Ph 2
                   </h1>

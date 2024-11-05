@@ -37,6 +37,7 @@ const StockInForm = ({ confirmHandler }) => {
     {
       label: "Quantity",
       name: "quantity",
+      type: "number",
     },
   ];
   const tableColumns = [
@@ -57,33 +58,27 @@ const StockInForm = ({ confirmHandler }) => {
 
   //Makes array to OBJECT
   const prepareForm = () => {
-    return formArr.reduce((r, v) => ({ ...r, [v.name]: "" }), {});
+    return formArr.reduce((r, v) => ({ ...r, [v.name]: "" }), {
+      product_name: "",
+      supplier_name: "",
+    });
   };
-
   const [form, setForm] = useState(prepareForm(formArr));
   const initialForm = prepareForm(formArr);
 
   const onChangeHandler = (e, fieldName, extraData = {}) => {
-    const { name, value } = e.target;
+    const { value } = e.target;
 
-    // Update the form state and capture any extra data (like id) in the form
     setForm((prevForm) => ({
       ...prevForm,
-      [name]: value,
+      [fieldName]: value,
       ...extraData,
     }));
   };
 
   //SET FORM BACK TO OLD STATE
   const onSubmitHandler = () => {
-    if (
-      form &&
-      form.quantity &&
-      form &&
-      form.product_name &&
-      form &&
-      form.supplier_name
-    ) {
+    if (form && form.quantity && form && form.product_name) {
       setInitialStockIn((prevStock) => {
         const updatedStock = [...prevStock, form]; // Update stock
         setForm(initialForm); // Reset the form
@@ -96,7 +91,6 @@ const StockInForm = ({ confirmHandler }) => {
   // send data to database
   const confirmButton = async () => {
     console.log(initialStockIn);
-    console.log(initialStockIn.length);
 
     if (initialStockIn.length > 0) {
       const inboundStockItems = initialStockIn.map((stockInItem) => ({
@@ -142,10 +136,74 @@ const StockInForm = ({ confirmHandler }) => {
                 alt="Motobai-Logo"
               />
             </div>
-            <form onSubmit={confirmHandler} className={`min-w-[70vw] `}>
-              <div className={`bg-gray-100 py-10 px-8 h-[75vh]  rounded-b-lg`}>
+            <form onSubmit={confirmHandler} className={`min-w-[70vw]`}>
+              <div className={`bg-gray-100 py-10 px-8 h-[87vh]  rounded-b-lg`}>
                 <h1 className="font-bold text-2xl mb-10">Stock In</h1>
-                <div className="mb-12 ml-4 min-h-[40vh] max-h-[40vh] overflow-y-hidden">
+                <div className={`flex gap-4 items-center mb-4`}>
+                  <label className="font-bold">Supplier</label>
+                  <div className={`flex justify-center relative`}>
+                    <div className={`border-2 rounded-md`}>
+                      <input
+                        placeholder="Search for Supplier"
+                        autocomplete="off"
+                        className="text-lg p-2 min-w-[450px]"
+                        type="text"
+                        onChange={(e) =>
+                          onChangeHandler(e, "supplier_name", {
+                            supplier_id:
+                              supplierOptions.find(
+                                (item) => item.supplier_name === e.target.value
+                              ) || null,
+                          })
+                        }
+                        name="supplier_name"
+                        value={form.supplier_name || ""}
+                      />
+                      <div
+                        className={`flex flex-col absolute bg-gray-50 overflow-y-auto max-h-[180px] min-w-[450px] shadow-md rounded-md z-50`}
+                      >
+                        {supplierOptions
+                          .filter((item) => {
+                            const searchTerm = (
+                              form.supplier_name || ""
+                            ).toLowerCase();
+                            const fullName = item.supplier_name.toLowerCase();
+
+                            return (
+                              searchTerm &&
+                              fullName.startsWith(searchTerm) &&
+                              fullName !== searchTerm
+                            );
+                          })
+                          .map((item) => {
+                            return (
+                              <div
+                                onClick={() =>
+                                  setForm({
+                                    ...form,
+                                    supplier_name: item.supplier_name,
+                                    supplier_id: item.id,
+                                  })
+                                }
+                                data-id={item.id}
+                                key={item.id}
+                                className={`hover:bg-red-700 hover:text-white p-4 rounded-sm transition-all duration-100 cursor-pointer`}
+                              >
+                                {item.supplier_name}
+                              </div>
+                            );
+                          })}
+                      </div>
+                    </div>
+
+                    <div>
+                      <ChevronDownIcon
+                        className={` size-4 h-full mr-2  absolute flex right-0 items-center justify-center`}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="mb-12 ml-4 min-h-[40vh] h-[42vh] overflow-y-hidden">
                   <Table
                     columnArr={tableColumns}
                     dataArr={initialStockIn}
@@ -154,76 +212,63 @@ const StockInForm = ({ confirmHandler }) => {
                 </div>
                 <div className={`gap-x-6 gap-y-8 flex flex-wrap `}>
                   <div className="flex items-center gap-4">
-                    {/* PRODUCT SELECT */}
                     <label className="font-bold">Product</label>
-                    <div
-                      className={`flex justify-center relative min-w-[300px]`}
-                    >
-                      <select
-                        className="overflow-y-auto appearance-none shadow-shadowTable text-lg min-w-[10vw] min-h-6 p-2 w-full rounded-md border-2"
-                        required
-                        onChange={(e) =>
-                          onChangeHandler(e, "product_name", {
-                            inventory_id:
-                              e.target.selectedOptions[0].getAttribute(
-                                "data-id"
-                              ),
-                          })
-                        }
-                        name="product_name"
-                        value={form.product_name || ""}
-                      >
-                        <option value="" disabled>
-                          Select A Product
-                        </option>
-                        {productOptions.map((option) => (
-                          <option
-                            key={option.product.id}
-                            value={option.product.product_name}
-                            data-id={option.product.id}
-                          >
-                            {`${option.product.product_name}`}
-                          </option>
-                        ))}
-                      </select>
-                      <div>
-                        <ChevronDownIcon
-                          className={` size-4 h-full mr-2  absolute flex right-0 items-center justify-center`}
+                    <div className={`flex justify-center relative`}>
+                      <div className={`border-2 rounded-md`}>
+                        <input
+                          autocomplete="off"
+                          placeholder="Search for Product"
+                          className="text-lg p-2 min-w-[450px]"
+                          type="text"
+                          onChange={(e) =>
+                            onChangeHandler(e, "product_name", {
+                              inventory_id:
+                                productOptions.find(
+                                  (item) =>
+                                    item.product.product_name === e.target.value
+                                )?.product.id || null,
+                            })
+                          }
+                          name="product_name"
+                          value={form.product_name || ""}
                         />
+                        <div
+                          className={`flex flex-col absolute bg-gray-50 overflow-y-auto max-h-[180px] min-w-[450px] shadow-md rounded-md`}
+                        >
+                          {productOptions
+                            .filter((item) => {
+                              const searchTerm = (
+                                form.product_name || ""
+                              ).toLowerCase();
+                              const fullName =
+                                item.product.product_name.toLowerCase();
+
+                              return (
+                                searchTerm &&
+                                fullName.startsWith(searchTerm) &&
+                                fullName !== searchTerm
+                              );
+                            })
+                            .map((item) => {
+                              return (
+                                <div
+                                  onClick={() =>
+                                    setForm({
+                                      ...form,
+                                      product_name: item.product.product_name,
+                                      inventory_id: item.product.id,
+                                    })
+                                  }
+                                  data-id={item.product.id}
+                                  key={item.product.id}
+                                  className={`hover:bg-red-700 hover:text-white p-4 rounded-sm transition-all duration-100 cursor-pointer`}
+                                >
+                                  {item.product.product_name}
+                                </div>
+                              );
+                            })}
+                        </div>
                       </div>
-                    </div>
-                    {/* SUPPLIER SELECT */}
-                    <label className="font-bold">Supplier</label>
-                    <div
-                      className={`flex justify-center relative min-w-[300px]`}
-                    >
-                      <select
-                        className="appearance-none shadow-shadowTable text-lg min-w-[10vw] min-h-6 p-2 w-full rounded-md border-2"
-                        required
-                        onChange={(e) =>
-                          onChangeHandler(e, "supplier_name", {
-                            supplier_id:
-                              e.target.selectedOptions[0].getAttribute(
-                                "data-id"
-                              ),
-                          })
-                        }
-                        name="supplier_name"
-                        value={form.supplier_name || ""}
-                      >
-                        <option value="" disabled>
-                          Select A Supplier
-                        </option>
-                        {supplierOptions.map((option) => (
-                          <option
-                            key={option.id}
-                            value={option.supplier_name}
-                            data-id={option.id}
-                          >
-                            {`${option.supplier_name}`}
-                          </option>
-                        ))}
-                      </select>
                       <div>
                         <ChevronDownIcon
                           className={` size-4 h-full mr-2  absolute flex right-0 items-center justify-center`}
@@ -243,8 +288,9 @@ const StockInForm = ({ confirmHandler }) => {
                         id={name}
                         name={name}
                         type={type}
-                        value={form[name] || ""}
-                        onChange={(e) => onChangeHandler(e)}
+                        value={form.quantity || ""}
+                        onChange={(e) => onChangeHandler(e, "quantity")}
+                        min="1"
                         required
                       ></input>
                       <label

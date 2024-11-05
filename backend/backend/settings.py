@@ -101,11 +101,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'motobai',
         'USER': 'root',
-<<<<<<< Updated upstream
-        'PASSWORD': '123qwe12 ',
-=======
         'PASSWORD': '123qwe12',
->>>>>>> Stashed changes
         'HOST': 'localhost',  
         'PORT': '3306',      
     }
