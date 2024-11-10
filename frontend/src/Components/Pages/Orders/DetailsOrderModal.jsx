@@ -7,14 +7,16 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
   const [orderDetails, setOrderDetails] = useState({});
   const fetchOrderDetail = async (orderId) => {
     try {
-        const response = await fetch(`http://127.0.0.1:8000/api/order/view/${orderId}/`);
-        if (!response.ok) {
-            throw new Error('Failed to fetch orders');
-        }
-        const data = await response.json();
-        setOrderDetails(data);
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/order/view/${orderId}/`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch orders");
+      }
+      const data = await response.json();
+      setOrderDetails(data);
     } catch (error) {
-        console.error('Error fetching orders:', error);
+      console.error("Error fetching orders:", error);
     }
   };
 
@@ -84,10 +86,10 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
   ];
 
   // REUSABLE BUTTON
-  function OrderModalButton({ onClick, buttonName }) {
+  function OrderModalButton({ onClick, buttonName, className }) {
     return (
       <div
-        className={`shadow-md bg-white border-2 border-red-700 rounded px-4 py-2 hover:bg-red-700 hover:text-white transition-all duration-100 flex gap-4 items-center`}
+        className={`${className} shadow-md bg-white border-2 border-red-700 rounded px-4 py-2 hover:bg-red-700 hover:text-white transition-all duration-100 flex gap-4 items-center`}
       >
         <button onClick={onClick}>{buttonName}</button>
       </div>
@@ -132,14 +134,19 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
                   <h1 className="font-bold text-lg">{orderDetails.street}</h1>
                 </div>
                 <div>
-                  <h1 className=" text-md">Phone num</h1>
-                  <h1 className="font-bold text-lg">{orderDetails.phone_number}</h1>
+                  <h1 className=" text-md">Phone Number</h1>
+                  <h1 className="font-bold text-lg">
+                    {orderDetails.phone_number}
+                  </h1>
                 </div>
               </div>
             </div>
             <div>
               <h1 className="text-md">Employee Name</h1>
-              <h1 className="font-bold text-lg">{orderDetails.employee_first_name} {orderDetails.employee_last_name}</h1>
+              <h1 className="font-bold text-lg">
+                {orderDetails.employee_first_name}{" "}
+                {orderDetails.employee_last_name}
+              </h1>
             </div>
           </div>
           <div>
@@ -151,24 +158,27 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
           </div>
           <div className="flex justify-end gap-4">
             <OrderModalButton
+              className={`text-green-700 border-green-700`}
               onClick={() => updateStatus("validated")}
               buttonName={"Validate Order"}
             ></OrderModalButton>
-            <OrderModalButton
+            {/* <OrderModalButton
               onClick={() => updateStatus("shipped")}
               buttonName={"Proceed to Shipping"}
             ></OrderModalButton>
             <OrderModalButton
               onClick={() => updateStatus("completed")}
               buttonName={"Complete Order"}
-            ></OrderModalButton>
+            ></OrderModalButton> */}
             <OrderModalButton
-              onClick={() => updateStatus("cancelled")}
-              buttonName={"Cancel Order"}
-            ></OrderModalButton>
-            <OrderModalButton
+              className={`text-orange-500 border-orange-500`}
               onClick={() => updateStatus("returned")}
               buttonName={"Return Order"}
+            ></OrderModalButton>
+            <OrderModalButton
+              className={`text-red-700`}
+              onClick={() => updateStatus("cancelled")}
+              buttonName={"Cancel Order"}
             ></OrderModalButton>
           </div>
         </div>

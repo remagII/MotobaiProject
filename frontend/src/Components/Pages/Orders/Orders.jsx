@@ -24,10 +24,10 @@ export default function Orders() {
       },
     },
 
-    {
-      header: "Total Price",
-      row: "invoice.total_balance",
-    },
+    // {
+    //   header: "Total Price",
+    //   row: "invoice.total_balance",
+    // },
 
     {
       header: "Customer",
@@ -99,9 +99,16 @@ export default function Orders() {
 
         <div className={`flex flex-col flex-1 m-4`}>
           <div className={`m-4`}>
-            <div className={`flex justify-between mb-12`}>
+            <div className={`flex gap-12 mb-12`}>
               <h1 className={`text-3xl font-bold`}>Order Management</h1>
+              <div className="flex gap-4 mr-32 items-center">
+                <label className="font-bold ">Status</label>
+                <select
+                  className={`min-w-[10vw] max-h-4 rounded-lg p-4`}
+                ></select>
+              </div>
             </div>
+
             <Table
               columnArr={tableColumns}
               dataArr={order}

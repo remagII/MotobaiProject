@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Logo from "../../../assets/Logo.png";
-import "../../pages.css";
 import Table from "../../DynamicComponents/DynamicTable";
 import api from "../../../api";
 import {
@@ -96,12 +95,10 @@ const StockInForm = ({ confirmHandler }) => {
     setSupplier(1); // test
     setEmployee(1); // test
 
-
-
     if (initialStockIn.length > 0) {
       const inboundStockItems = initialStockIn.map((stockInItem) => ({
-        inventory: stockInItem.inventory_id, 
-        quantity: stockInItem.quantity || 0, 
+        inventory: stockInItem.inventory_id,
+        quantity: stockInItem.quantity || 0,
       }));
 
       try {
