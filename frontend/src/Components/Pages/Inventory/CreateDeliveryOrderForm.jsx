@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Logo from "../../../assets/Logo.png";
 import "../../pages.css";
 import Table from "../../DynamicComponents/DynamicTable";

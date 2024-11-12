@@ -115,6 +115,7 @@ const Employees = () => {
     },
     {
       header: "Employee Name",
+      row: "first_name",
       customRender: (item) => {
         return (
           <p>

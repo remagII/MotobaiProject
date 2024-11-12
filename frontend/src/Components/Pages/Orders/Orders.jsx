@@ -19,6 +19,7 @@ export default function Orders() {
 
     {
       header: "Number of Products",
+      row: "order_details.length",
       customRender: (item) => {
         return <p>{item.order_details.length}</p>;
       },
@@ -35,6 +36,7 @@ export default function Orders() {
     },
     {
       header: "Employee",
+      row: "employee_first_name",
       customRender: (item) => {
         return (
           <p>
@@ -47,6 +49,7 @@ export default function Orders() {
 
     {
       header: "Date and Time Created",
+      row: "order_date",
       customRender: (item) => {
         const createdAtDate = new Date(item.order_date);
         const options = { hour: "numeric", minute: "numeric", hour12: true }; // Options for formatting time

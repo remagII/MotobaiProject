@@ -18,6 +18,7 @@ export default function Inventory() {
     },
     {
       header: "Employee Name",
+      row: "employee_fname",
       customRender: (item) => {
         return <p>{item.employee_fname} {item.employee_lname}</p>;
       },
@@ -25,12 +26,14 @@ export default function Inventory() {
 
     {
       header: "Number of Items",
+      row: "inboundStockItems.length",
       customRender: (item) => {
         return <p>{item.inboundStockItems.length}</p>;
       },
     },
     {
       header: "Date and Time Created",
+      row: "date_created",
       customRender: (item) => {
         const createdAtDate = new Date(item.date_created);
         const options = { hour: "numeric", minute: "numeric", hour12: true }; // Options for formatting time

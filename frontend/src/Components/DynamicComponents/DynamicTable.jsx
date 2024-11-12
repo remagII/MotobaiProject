@@ -10,6 +10,37 @@ export default function Table({ editRow, columnArr, dataArr, className }) {
 
   const filteredDataArr = dataArr.filter((item) => !item.is_deleted);
 
+  // function to only show items that is item.quantity > item.inventory.threshold, only works if called outside
+
+  const [sortedField, setSortedField] = useState(null);
+  const [sortDirection, setSortDirection] = useState("asc");
+
+  const handleSort = (field) => {
+    if (sortedField === field) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortedField(field);
+      setSortDirection("asc");
+    }
+  };
+
+  const sortedDataArr = sortedField
+    ? [...filteredDataArr].sort((a, b) => {
+        const column = columnArr.find((col) => col.row === sortedField || col.customRender);
+        const aValue = column.customRender ? getNestedValue(a, sortedField) : getNestedValue(a, sortedField);
+        const bValue = column.customRender ? getNestedValue(b, sortedField) : getNestedValue(b, sortedField);
+
+
+        if (aValue < bValue) {
+          return sortDirection === "asc" ? -1 : 1;
+        }
+        if (aValue > bValue) {
+          return sortDirection === "asc" ? 1 : -1;
+        }
+        return 0;
+      })
+    : filteredDataArr;
+
   return (
     <section className={`h-full`}>
       <div
@@ -24,15 +55,19 @@ export default function Table({ editRow, columnArr, dataArr, className }) {
                 {columnArr.map((item, index) => {
                   return (
                     <th key={index} className={`p-3`}>
-                      {item.header}
+                      <button type="button" onClick={() => handleSort(item.row)}>
+                        {item.header}
+                        {sortedField === item.row &&
+                          (sortDirection === "asc" ? " ▲" : " ▼")}
+                      </button>
                     </th>
                   );
                 })}
               </tr>
             </thead>
             <tbody>
-              {filteredDataArr.length > 0 ? (
-                filteredDataArr.map((item, index) => {
+              {sortedDataArr.length > 0 ? (
+                sortedDataArr.map((item, index) => {
                   return (
                     <tr
                       onClick={() => editRow(index, item.id)}

@@ -140,6 +140,7 @@ export default function Accounts() {
     },
     {
       header: "Date Created",
+      row: "date_created",
       customRender: (item) => {
         const createdAtDate = new Date(item.date_created);
         const formattedDate = `${

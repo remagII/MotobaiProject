@@ -131,6 +131,7 @@ export default function Products() {
     },
     {
       header: "Minimum Treshold",
+      row: "stock_minimum_threshold",
       customRender: (item) => {
         return <p className="font-semibold">{item.stock_minimum_threshold}</p>;
       },

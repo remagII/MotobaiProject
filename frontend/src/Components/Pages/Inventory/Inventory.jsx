@@ -70,12 +70,14 @@ export default function Inventory() {
     },
     {
       header: "Threshold",
+      row: "stock_minimum_threshold",
       customRender: (item) => {
         return <p className="font-semibold">{item.stock_minimum_threshold}</p>;
       },
     },
     {
       header: "Status",
+      row: "stock",
       customRender: (item) => {
         if (item.stock === 0) {
           return <p className={`text-orange-500 font-bold`}>INACTIVE</p>;
@@ -88,6 +90,7 @@ export default function Inventory() {
     },
     {
       header: "Quantity",
+      row: "stock",
       customRender: (item) => {
         return <p className="font-bold">{item.stock}</p>;
       },
@@ -130,7 +133,9 @@ export default function Inventory() {
     }
   });
   const overviewArr = [
-    { title: "Products", quantity: `${inventory.length}` },
+    { title: "Products", 
+      quantity: `${inventory.length}` 
+    },
     {
       title: "Active",
       quantity: `${activeCount}`,
@@ -161,9 +166,10 @@ export default function Inventory() {
               <div className="flex mr-24">
                 <div className="flex gap-4 mr-32 items-center">
                   <label className="font-bold ">Status</label>
-                  <select
-                    className={`min-w-[10vw] max-h-4 rounded-lg p-4`}
-                  ></select>
+                  <select className={`min-w-[10vw] max-h-4 rounded-lg p-4`}>
+                    <option>Price</option>
+                    <option>Quantity</option>
+                  </select>
                 </div>
                 <div>
                   <button

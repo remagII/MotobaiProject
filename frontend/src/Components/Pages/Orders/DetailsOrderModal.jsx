@@ -60,6 +60,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
   const tableColumns = [
     {
       header: "Product Name",
+      row: "product_name",
       customRender: (item) => {
         return <p>{item.product_name}</p>;
       },
@@ -67,21 +68,24 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
 
     {
       header: "Quantity Added",
+      row: "quantity",
       customRender: (item) => {
         return <p>{item.quantity}</p>;
       },
     },
     {
       header: "Item Price",
+      row: "product_price",
       customRender: (item) => {
         return <p>{item.product_price}</p>;
       },
     },
     {
-      header: "Total Price",
+      header: "Total Price", 
       customRender: (item) => {
         return <p>{item.quantity * item.product_price}</p>;
       },
+      row: "totalPrice",
     },
   ];
 
