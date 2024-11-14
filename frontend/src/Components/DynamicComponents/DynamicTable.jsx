@@ -26,10 +26,15 @@ export default function Table({ editRow, columnArr, dataArr, className }) {
 
   const sortedDataArr = sortedField
     ? [...filteredDataArr].sort((a, b) => {
-        const column = columnArr.find((col) => col.row === sortedField || col.customRender);
-        const aValue = column.customRender ? getNestedValue(a, sortedField) : getNestedValue(a, sortedField);
-        const bValue = column.customRender ? getNestedValue(b, sortedField) : getNestedValue(b, sortedField);
-
+        const column = columnArr.find(
+          (col) => col.row === sortedField || col.customRender
+        );
+        const aValue = column.customRender
+          ? getNestedValue(a, sortedField)
+          : getNestedValue(a, sortedField);
+        const bValue = column.customRender
+          ? getNestedValue(b, sortedField)
+          : getNestedValue(b, sortedField);
 
         if (aValue < bValue) {
           return sortDirection === "asc" ? -1 : 1;
@@ -54,8 +59,14 @@ export default function Table({ editRow, columnArr, dataArr, className }) {
               <tr>
                 {columnArr.map((item, index) => {
                   return (
-                    <th key={index} className={`p-3`}>
-                      <button type="button" onClick={() => handleSort(item.row)}>
+                    <th
+                      key={index}
+                      className={`p-3 hover:bg-red-700 transition-all duration-100`}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => handleSort(item.row)}
+                      >
                         {item.header}
                         {sortedField === item.row &&
                           (sortDirection === "asc" ? " ▲" : " ▼")}

@@ -125,6 +125,19 @@ const StockInForm = ({ confirmHandler }) => {
     }
   };
 
+  // Function to validate the input against options
+  const validateInput = (field, options, fieldName) => {
+    const isValid = options.some((option) => option[fieldName] === form[field]);
+    if (!isValid) {
+      setForm((prevForm) => ({
+        ...prevForm,
+        [field]: "",
+        [`${field}_id`]: null,
+      }));
+      alert(`Please input the Correct Name`);
+    }
+  };
+
   return (
     <section>
       <div>
@@ -160,6 +173,13 @@ const StockInForm = ({ confirmHandler }) => {
                               ) || null,
                           })
                         }
+                        onBlur={() =>
+                          validateInput(
+                            "supplier_name",
+                            supplierOptions,
+                            "supplier_name"
+                          )
+                        }
                         name="supplier_name"
                         value={form.supplier_name || ""}
                       />
@@ -182,13 +202,16 @@ const StockInForm = ({ confirmHandler }) => {
                           .map((item) => {
                             return (
                               <div
-                                onClick={() =>
+                                onMouseDown={(e) => {
+                                  e.preventDefault();
+                                }}
+                                onClick={() => {
                                   setForm({
                                     ...form,
                                     supplier_name: item.supplier_name,
                                     supplier_id: item.id,
-                                  })
-                                }
+                                  });
+                                }}
                                 data-id={item.id}
                                 key={item.id}
                                 className={`hover:bg-red-700 hover:text-white p-4 rounded-sm transition-all duration-100 cursor-pointer`}
@@ -230,8 +253,15 @@ const StockInForm = ({ confirmHandler }) => {
                                 productOptions.find(
                                   (item) =>
                                     item.product.product_name === e.target.value
-                                )?.product.id || null,
+                                ) || null,
                             })
+                          }
+                          onBlur={() =>
+                            validateInput(
+                              "product_name",
+                              productOptions,
+                              "product_name"
+                            )
                           }
                           name="product_name"
                           value={form.product_name || ""}
@@ -256,6 +286,7 @@ const StockInForm = ({ confirmHandler }) => {
                             .map((item) => {
                               return (
                                 <div
+                                  onMouseDown={(e) => e.preventDefault()}
                                   onClick={() =>
                                     setForm({
                                       ...form,

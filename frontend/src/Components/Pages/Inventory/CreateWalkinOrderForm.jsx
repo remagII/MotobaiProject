@@ -149,7 +149,7 @@ const CreateWalkinOrderForm = ({ confirmHandler }) => {
             <form onSubmit={confirmHandler} className={`min-w-[80vw] `}>
               <div className={`bg-gray-100 py-10 px-8 h-[80vh]  rounded-b-lg`}>
                 <h1 className="font-bold text-2xl mb-10">
-                  Create Order Delivery
+                  Create Walk-In Order
                 </h1>
                 <div className={`ml-4 gap-x-6 gap-y-8 flex min-w-[40vw]`}>
                   {/* ACCOUNT SELECTION */}
@@ -331,7 +331,7 @@ const CreateWalkinOrderForm = ({ confirmHandler }) => {
                     }}
                     className={` shadow-md bg-white border-2 border-red-700 rounded px-4 py-2 hover:bg-red-700 hover:text-white transition-all duration-100 flex gap-4 items-center `}
                   >
-                    Confirm Delivery Order
+                    Confirm Walk-In Order
                     <CheckCircleIcon className={`size-6`} />
                   </button>
                 </div>
