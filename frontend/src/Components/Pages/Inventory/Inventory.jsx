@@ -103,7 +103,6 @@ export default function Inventory() {
 
   const [btnTitle, setBtnTitle] = useState("Create Order");
 
-  // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
   let inactiveCount = 0;
   let lowStockCount = 0;
   let activeCount = 0;
@@ -119,10 +118,10 @@ export default function Inventory() {
       activeCount++;
     }
   });
+
+  // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
   const overviewArr = [
-    { title: "Products", 
-      quantity: `${inventory.length}` 
-    },
+    { title: "Products", quantity: `${inventory.length}` },
     {
       title: "Active",
       quantity: `${activeCount}`,
@@ -203,10 +202,16 @@ export default function Inventory() {
             <DynamicModal modal={stockInModal} toggleModal={toggleStockInModal}>
               <StockInForm />
             </DynamicModal>
-            <DynamicModal modal={createDeliveryModal} toggleModal={toggleCreateDeliveryModal}>
+            <DynamicModal
+              modal={createDeliveryModal}
+              toggleModal={toggleCreateDeliveryModal}
+            >
               <CreateDeliveryOrderForm />
             </DynamicModal>
-            <DynamicModal modal={createWalkinModal} toggleModal={toggleCreateWalkinModal}>
+            <DynamicModal
+              modal={createWalkinModal}
+              toggleModal={toggleCreateWalkinModal}
+            >
               <CreateWalkinOrderForm />
             </DynamicModal>
 

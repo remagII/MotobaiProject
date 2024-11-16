@@ -71,7 +71,34 @@ export default function Orders() {
 
     {
       header: "Status",
-      row: "order_tracking.status",
+      // row: "order_tracking.status",
+      customRender: (item) => {
+        if (item.order_tracking.status === "validated") {
+          return (
+            <p className="uppercase font-semibold text-green-600">
+              {item.order_tracking.status}
+            </p>
+          );
+        } else if (item.order_tracking.status === "unvalidated") {
+          return (
+            <p className="uppercase font-semibold text-gray-600">
+              {item.order_tracking.status}
+            </p>
+          );
+        } else if (item.order_tracking.status === "shipped") {
+          return (
+            <p className="uppercase font-semibold text-indigo-800">
+              {item.order_tracking.status}
+            </p>
+          );
+        } else if (item.order_tracking.status === "recieved") {
+          return (
+            <p className="uppercase font-semibold text-yellow-600">
+              {item.order_tracking.status}
+            </p>
+          );
+        }
+      },
     },
   ];
 
@@ -99,8 +126,48 @@ export default function Orders() {
     toggleModal();
   };
 
+  let unvalidatedCount = 0;
+  let validatedCount = 0;
+  let shippedCount = 0;
+  let recievedCount = 0;
+
+  const statusCount = order;
+
+  statusCount.forEach((item) => {
+    if (item.order_tracking.status === "unvalidated") {
+      unvalidatedCount++;
+    } else if (item.order_tracking.status === "validated") {
+      validatedCount++;
+    } else if (item.order_tracking.status === "shipped") {
+      shippedCount++;
+    } else {
+      recievedCount++;
+    }
+  });
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
-  const overviewArr = [{ title: "Orders", quantity: `${order.length}` }];
+  const overviewArr = [
+    { title: "Orders", quantity: `${order.length}` },
+    {
+      title: "Unvalidated",
+      quantity: `${unvalidatedCount}`,
+      className: "!text-gray-500",
+    },
+    {
+      title: "Validated",
+      quantity: `${validatedCount}`,
+      className: "!text-green-500",
+    },
+    {
+      title: "Shipped",
+      quantity: `${shippedCount}`,
+      className: "!text-blue-500",
+    },
+    {
+      title: "Recieved",
+      quantity: `${recievedCount}`,
+      className: "!text-yellow-500",
+    },
+  ];
 
   return (
     <section className={`font-main h-full overflow-hidden`}>

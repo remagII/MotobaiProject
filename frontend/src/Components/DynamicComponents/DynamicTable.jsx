@@ -61,8 +61,11 @@ export default function Table({ editRow, columnArr, dataArr, className, sortFiel
                   return (
                     <th
                       key={index}
-                      className={`p-3 hover:bg-red-700 transition-all duration-100`}
+                      className={`p-3 hover:bg-red-700 transition-all duration-100 cursor-pointer`}
+                      type="button"
+                      onClick={() => handleSort(item.row)}
                     >
+<<<<<<< Updated upstream
                       <button
                         type="button"
                         onClick={() => handleSort(item.row)}
@@ -71,6 +74,11 @@ export default function Table({ editRow, columnArr, dataArr, className, sortFiel
                         {sortedField === item.row &&
                           (sortedDirection === "asc" ? " ▲" : " ▼")}
                       </button>
+=======
+                      {item.header}
+                      {sortedField === item.row &&
+                        (sortDirection === "asc" ? " ▲" : " ▼")}
+>>>>>>> Stashed changes
                     </th>
                   );
                 })}
