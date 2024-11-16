@@ -92,8 +92,8 @@ const StockInForm = ({ confirmHandler }) => {
   // send data to database
   const confirmButton = async () => {
     console.log(initialStockIn);
-    setSupplier(1); // test
-    setEmployee(1); // test
+    // setSupplier(1); // test
+    // setEmployee(1); // test
 
     if (initialStockIn.length > 0) {
       const inboundStockItems = initialStockIn.map((stockInItem) => ({
@@ -106,8 +106,8 @@ const StockInForm = ({ confirmHandler }) => {
           "http://127.0.0.1:8000/api/stockin/create/",
           {
             inboundStockItems: inboundStockItems,
-            supplier: supplier,
-            employee: employee,
+            supplier: 1, // replace later
+            employee: 1,
           }
         );
 
@@ -127,16 +127,21 @@ const StockInForm = ({ confirmHandler }) => {
 
   // Function to validate the input against options
   const validateInput = (field, options, fieldName) => {
-    const isValid = options.some((option) => option[fieldName] === form[field]);
+    // Normalize input and options for comparison
+    const isValid = options.some((option) => 
+      option[fieldName].trim().toLowerCase() === inputValue
+    );
+  
     if (!isValid) {
       setForm((prevForm) => ({
         ...prevForm,
         [field]: "",
         [`${field}_id`]: null,
       }));
-      alert(`Please input the Correct Name`);
+      alert(`Please input the correct ${fieldName.replace("_", " ")}`);
     }
   };
+  
 
   return (
     <section>

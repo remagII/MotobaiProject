@@ -85,6 +85,7 @@ class InboundStockItemSerializer(serializers.ModelSerializer):
     
 class InboundStockSerializer(serializers.ModelSerializer):
     inboundStockItems = InboundStockItemSerializer(many=True)
+
     supplier = serializers.PrimaryKeyRelatedField(queryset=Supplier.objects.all())
     employee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all())
     supplier_name = serializers.ReadOnlyField(source='supplier.supplier_name')
@@ -99,19 +100,22 @@ class InboundStockSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         inbound_stock_items_data = validated_data.pop('inboundStockItems')
 
-        # Create the InboundStock object first
+        # Create the InboundStock object
         inbound_stock = InboundStock.objects.create(**validated_data)
 
-        # Iterate through each inbound_stock_item
+        # Create related InboundStockItem objects
         for item_data in inbound_stock_items_data:
             inventory = item_data['inventory']
             quantity = item_data['quantity']
 
-            # Create each InboundStockItem linked to this InboundStock
-            inbound_stock_item = InboundStockItem.objects.create(**item_data)
-            inbound_stock.inboundStockItems.add(inbound_stock_item)
+            # Create the item and link it to the stock
+            InboundStockItem.objects.create(
+                inbound_stock=inbound_stock,
+                inventory=inventory,
+                quantity=quantity
+            )
 
-            # Update the Inventory stock for the related product
+            # Update inventory stock
             inventory.stock += quantity
             inventory.save()
 
@@ -171,19 +175,17 @@ class OrderSerializer(serializers.ModelSerializer):
             if inventory_item.stock < quantity:
                 raise ValidationError(f"Not enough stock for {inventory_item.product.product_name}. Available: {inventory_item.stock}, Requested: {quantity}")
         
-        order = Order.objects.create(**validated_data)  
-        total_balance = 0  
+        order = Order.objects.create(**validated_data)
+        total_balance = 0
 
         for order_detail_data in order_details_data:
             inventory_item = order_detail_data['inventory']
             quantity = order_detail_data['quantity']
             product_price = order_detail_data.get('product_price')
-            
-            inventory_item.stock -= quantity
-            inventory_item.save()
 
             total_balance += product_price * quantity
-            
+
+            # Create the order details
             OrderDetails.objects.create(order=order, **order_detail_data)
         
         OrderTracking.objects.create(order=order, status="unvalidated")

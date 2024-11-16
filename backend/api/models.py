@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinLengthValidator, MinValueValidator
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 class Product(models.Model):
     product_name = models.CharField(max_length=100)
@@ -48,9 +50,15 @@ class Employee(models.Model):
 class InboundStockItem(models.Model):
     inventory = models.ForeignKey(Inventory,null=False, blank=False, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(null=False, blank=False, default=0)
+    inbound_stock = models.ForeignKey(
+        'InboundStock',
+        related_name='inboundStockItems',
+        null=False,
+        blank=False,
+        on_delete=models.CASCADE
+    )
 
 class InboundStock(models.Model):
-    inboundStockItems = models.ManyToManyField(InboundStockItem, related_name='inbound_stocks', blank=False)
     supplier = models.ForeignKey(Supplier,null=False, blank=False, on_delete=models.CASCADE)
     employee = models.ForeignKey(Employee,null=False, blank=False, on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -142,12 +150,6 @@ class OrderDetails(models.Model):
             self.product_name = self.inventory.product.product_name
             self.product_price = self.inventory.product.price
         
-    # Deduct stock quantity
-        if self.inventory.stock >= self.quantity:
-            self.inventory.stock -= self.quantity
-            self.inventory.save()
-        else:
-            raise ValueError("Not enough stock available")
         super(OrderDetails, self).save(*args, **kwargs)
 
 class OrderTracking(models.Model):
@@ -174,3 +176,17 @@ class Invoice(models.Model):
     date_due = models.DateTimeField(null=True, blank=True)
     date_paid = models.DateTimeField(null=True, blank=True)
 
+@receiver(post_save, sender=OrderTracking)
+def update_stock_when_validated(sender, instance, created, **kwargs):
+    if not created and instance.status == "validated":
+        # Once the status is "validated," reduce the stock based on order details
+        order = instance.order
+        for order_detail in order.order_details.all():
+            inventory_item = order_detail.inventory
+            quantity = order_detail.quantity
+            if inventory_item.stock < quantity:
+                raise ValidationError(f"Not enough stock for {inventory_item.product.product_name}. Available: {inventory_item.stock}, Requested: {quantity}")
+            
+            inventory_item.stock -= quantity
+            inventory_item.save()
+        print(f"Stock updated for order {order.id} as status changed to validated.")

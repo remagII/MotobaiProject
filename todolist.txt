@@ -17,11 +17,13 @@ NOTES:
 - details modal(see information of a row onclick)
 - Revert/Delete row in initial Stock-In
 - fix create order sorting of price
-
+- 800 ml? units? how?
+- some fields have input validation but wont tell which is wrong when inputting (ex. supplier phone number)
 
 Added stuff:
-- fixed order creation when stock is low than quantity in backend
-- 
+- fixed stockin being weird
+- fixed order double - stock
+- stock change now moved to validated state/ validate button
 
 Todo Pages:
 - OrderList + Order History -> Order Management

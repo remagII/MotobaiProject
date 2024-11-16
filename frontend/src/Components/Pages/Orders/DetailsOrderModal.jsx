@@ -40,7 +40,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
       date_field = "date_cancelled";
     } else if (status == "returned") {
       date_field = "date_returned";
-    }
+    } // add received
     try {
       const currentDate = new Date().toISOString();
 
