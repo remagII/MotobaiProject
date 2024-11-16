@@ -40,11 +40,6 @@ const StockInForm = ({ confirmHandler }) => {
       name: "quantity",
       type: "number",
     },
-    {
-      label: "Reference #",
-      name: "reference_number",
-      type: "number",
-    },
   ];
   const tableColumns = [
     {
@@ -52,8 +47,8 @@ const StockInForm = ({ confirmHandler }) => {
       row: "product_name",
     },
     {
-      header: "Reference #",
-      row: "reference_number",
+      header: "Supplier Name",
+      row: "supplier_name",
     },
 
     {
@@ -66,7 +61,7 @@ const StockInForm = ({ confirmHandler }) => {
   const prepareForm = () => {
     return formArr.reduce((r, v) => ({ ...r, [v.name]: "" }), {
       product_name: "",
-      reference_number: "",
+      supplier_name: "",
     });
   };
   const [form, setForm] = useState(prepareForm(formArr));
@@ -134,17 +129,11 @@ const StockInForm = ({ confirmHandler }) => {
   const validateInput = (field, options, fieldName) => {
     // Normalize input and options for comparison
     const inputValue = form[field]?.trim().toLowerCase();
-<<<<<<< Updated upstream
     const isValid = options.some((option) => 
       option[fieldName].trim().toLowerCase() === inputValue
-=======
-    const isValid = options.some(
-      (option) => option[fieldName].trim().toLowerCase() === inputValue
->>>>>>> Stashed changes
     );
-
+  
     if (!isValid) {
-      console.log("works");
       setForm((prevForm) => ({
         ...prevForm,
         [field]: "",
@@ -153,6 +142,7 @@ const StockInForm = ({ confirmHandler }) => {
       alert(`Please input the correct ${fieldName.replace("_", " ")}`);
     }
   };
+  
 
   return (
     <section>
@@ -178,8 +168,8 @@ const StockInForm = ({ confirmHandler }) => {
                     <div className={`border-2 rounded-md`}>
                       <input
                         placeholder="Search for Supplier"
-                        autoComplete="off"
-                        className="text-lg p-2 min-w-[350px]"
+                        autocomplete="off"
+                        className="text-lg p-2 min-w-[450px]"
                         type="text"
                         onChange={(e) =>
                           onChangeHandler(e, "supplier_name", {
@@ -261,9 +251,9 @@ const StockInForm = ({ confirmHandler }) => {
                     <div className={`flex justify-center relative`}>
                       <div className={`border-2 rounded-md`}>
                         <input
-                          autoComplete="off"
+                          autocomplete="off"
                           placeholder="Search for Product"
-                          className="text-lg p-2 min-w-[350px]"
+                          className="text-lg p-2 min-w-[450px]"
                           type="text"
                           onChange={(e) =>
                             onChangeHandler(e, "product_name", {
@@ -341,8 +331,8 @@ const StockInForm = ({ confirmHandler }) => {
                         id={name}
                         name={name}
                         type={type}
-                        value={form[name] || ""}
-                        onChange={(e) => onChangeHandler(e, name)}
+                        value={form.quantity || ""}
+                        onChange={(e) => onChangeHandler(e, "quantity")}
                         min="1"
                         required
                       ></input>

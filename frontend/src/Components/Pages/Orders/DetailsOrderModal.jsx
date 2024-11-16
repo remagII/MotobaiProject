@@ -25,6 +25,8 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
     fetchOrderDetail(orderId);
   }, [orderId]);
 
+  const [buttonValidationState, setButtonValidationState] = useState("");
+
   const updateStatus = async (status) => {
     let date_field = "";
 
@@ -32,8 +34,6 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
       date_field = "date_validated";
     } else if (status == "shipped") {
       date_field = "date_shipped";
-    } else if (status == "recieved") {
-      date_field = "date_received";
     } else if (status == "completed") {
       date_field = "date_completed";
     } else if (status == "cancelled") {
@@ -81,19 +81,13 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
       },
     },
     {
-      header: "Total Price",
+      header: "Total Price", 
       customRender: (item) => {
         return <p>{item.quantity * item.product_price}</p>;
       },
       row: "totalPrice",
     },
   ];
-
-  const buttonStateToggler = (status) => {
-    if (status === "validated") {
-      setValidated(true);
-    }
-  };
 
   // REUSABLE BUTTON
   function OrderModalButton({ onClick, buttonName, className }) {
@@ -105,9 +99,6 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
       </div>
     );
   }
-
-  // Define tracking status when orderDetailsObj is fetched
-  const orderTrackingStatus = orderDetails?.order_tracking?.status;
 
   return (
     <section>
@@ -172,50 +163,29 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
             ></Table>
           </div>
           <div className="flex justify-end gap-4">
-            {orderTrackingStatus === "unvalidated" && (
-              <OrderModalButton
-                className={`text-green-800 border-green-800 hover:bg-green-800`}
-                onClick={() => updateStatus("validated")}
-                buttonName={"Validate Order"}
-              ></OrderModalButton>
-            )}
-            {orderTrackingStatus === "validated" && (
-              <OrderModalButton
-                className={`text-blue-800 border-blue-800 hover:bg-blue-800`}
-                onClick={() => updateStatus("shipped")}
-                buttonName={"Proceed to Shipping"}
-              ></OrderModalButton>
-            )}
-
-            {orderTrackingStatus === "shipped" && (
-              <OrderModalButton
-                className={`text-yellow-800 border-yellow-800 hover:bg-yellow-800`}
-                onClick={() => updateStatus("recieved")}
-                buttonName={"Recieve Order"}
-              ></OrderModalButton>
-            )}
-
-            {orderTrackingStatus === "recieved" && (
-              <OrderModalButton
-                className={`text-green-800 border-green-800 hover:bg-green-800`}
-                onClick={() => updateStatus("completed")}
-                buttonName={"Complete Order"}
-              ></OrderModalButton>
-            )}
-
             <OrderModalButton
-              className={`text-orange-800 border-orange-800 hover:bg-orange-800`}
+              className={`text-green-700 border-green-700`}
+              onClick={() => updateStatus("validated")}
+              buttonName={"Validate Order"}
+            ></OrderModalButton>
+            {/* <OrderModalButton
+              onClick={() => updateStatus("shipped")}
+              buttonName={"Proceed to Shipping"}
+            ></OrderModalButton>
+            <OrderModalButton
+              onClick={() => updateStatus("completed")}
+              buttonName={"Complete Order"}
+            ></OrderModalButton> */}
+            <OrderModalButton
+              className={`text-orange-500 border-orange-500`}
               onClick={() => updateStatus("returned")}
               buttonName={"Return Order"}
             ></OrderModalButton>
-
-            {orderTrackingStatus === "unvalidated" && (
-              <OrderModalButton
-                className={`text-red-600`}
-                onClick={() => updateStatus("cancelled")}
-                buttonName={"Cancel Order"}
-              ></OrderModalButton>
-            )}
+            <OrderModalButton
+              className={`text-red-700`}
+              onClick={() => updateStatus("cancelled")}
+              buttonName={"Cancel Order"}
+            ></OrderModalButton>
           </div>
         </div>
       </div>
