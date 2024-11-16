@@ -164,8 +164,6 @@ class OrderSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         order_details_data = validated_data.pop('order_details')
 
-        order = Order.objects.create(**validated_data)  
-
         for order_detail_data in order_details_data:
             inventory_item = order_detail_data['inventory']
             quantity = order_detail_data['quantity']
@@ -173,7 +171,7 @@ class OrderSerializer(serializers.ModelSerializer):
             if inventory_item.stock < quantity:
                 raise ValidationError(f"Not enough stock for {inventory_item.product.product_name}. Available: {inventory_item.stock}, Requested: {quantity}")
         
-
+        order = Order.objects.create(**validated_data)  
         total_balance = 0  
 
         for order_detail_data in order_details_data:

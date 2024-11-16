@@ -20,7 +20,7 @@ NOTES:
 
 
 Added stuff:
-- Added sorting
+- fixed order creation when stock is low than quantity in backend
 - 
 
 Todo Pages:
