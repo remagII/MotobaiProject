@@ -45,7 +45,12 @@ const DetailsStockModal = ({ logsData, supplierData }) => {
         </div>
         
         <div className={`bg-gray-100 p-12 pr-6 h-[75vh] w-[65vw] rounded-b-lg`}>
-          <Table columnArr={tableColumns} dataArr={logsData}></Table>
+          <Table 
+            columnArr={tableColumns} 
+            dataArr={logsData}
+            sortField={null}
+            sortDirection="asc">
+          </Table>
         </div>
       </div>
     </section>

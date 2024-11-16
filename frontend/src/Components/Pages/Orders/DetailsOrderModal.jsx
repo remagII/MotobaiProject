@@ -158,6 +158,8 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
               columnArr={tableColumns}
               dataArr={logsData}
               className={`!h-[45vh]`}
+              sortField="id"
+              sortDirection="asc"
             ></Table>
           </div>
           <div className="flex justify-end gap-4">

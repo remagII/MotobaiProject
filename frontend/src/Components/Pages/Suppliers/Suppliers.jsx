@@ -222,7 +222,7 @@ const Suppliers = () => {
   const handleEditRow = (index, id) => {
     toggleModal();
     setRowIdEdit(id);
-    setRowToEdit(index);
+    setRowToEdit(supplier.findIndex((item) => item.id === id));
     setMethod("edit");
     setBtnTitle("Edit Supplier");
     setDeleteBtn("active");
@@ -311,6 +311,8 @@ const Suppliers = () => {
             columnArr={tableColumns}
             dataArr={supplier}
             editRow={handleEditRow}
+            sortField="supplier_name"
+            sortDirection="asc"
           />
         </div>
       </div>

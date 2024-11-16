@@ -101,20 +101,7 @@ export default function Inventory() {
 
   const [loading, setLoading] = useState(false);
 
-  const [deleteBtn, setDeleteBtn] = useState(""); // HANDLES DELETE BUTTON STATE
-  const [rowToEdit, setRowToEdit] = useState(null);
-  const [rowIdEdit, setRowIdEdit] = useState(null);
   const [btnTitle, setBtnTitle] = useState("Create Order");
-  const handleEditRow = (index, id) => {
-    console.log("Editing row:", index); // just for troubleshoot
-    toggleModal();
-    setRowIdEdit(id);
-    setRowToEdit(index);
-    setMethod("edit");
-    setBtnTitle("Edit Inventory");
-    setDeleteBtn("active");
-    console.log(statusCount);
-  };
 
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
   let inactiveCount = 0;
@@ -245,7 +232,8 @@ export default function Inventory() {
           <Table
             columnArr={tableColumns}
             dataArr={inventory}
-            editRow={handleEditRow}
+            sortField="stock"
+            sortDirection="asc"
           />
         </div>
       </div>

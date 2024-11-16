@@ -224,6 +224,8 @@ const CreateWalkinOrderForm = ({ confirmHandler }) => {
                     columnArr={tableColumns}
                     dataArr={initialOrder}
                     className={`!max-h-[40vh]`}
+                    sortField={null}
+                    sortDirection="asc"
                   />
                 </div>
                 <div className={`gap-x-6 gap-y-8 flex flex-wrap `}>

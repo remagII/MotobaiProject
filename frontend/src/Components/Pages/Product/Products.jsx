@@ -250,7 +250,7 @@ export default function Products() {
   const handleEditRow = (index, id) => {
     toggleModal();
     setRowIdEdit(id); // need to make null after this is done
-    setRowToEdit(index);
+    setRowToEdit(product.findIndex((item) => item.id === id));
     setMethod("edit");
     setBtnTitle("Edit Product");
     setDeleteBtn("active");
@@ -338,6 +338,8 @@ export default function Products() {
             columnArr={tableColumns}
             dataArr={product}
             editRow={handleEditRow}
+            sortField="product.product_name"
+            sortDirection="asc"
           />
         </div>
       </div>

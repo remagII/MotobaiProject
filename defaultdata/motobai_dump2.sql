@@ -21,7 +21,7 @@
 
 LOCK TABLES `api_account` WRITE;
 /*!40000 ALTER TABLE `api_account` DISABLE KEYS */;
-INSERT INTO `api_account` VALUES (1,'MOTORJOY DEPOT INC.','Thomas C. Ongtenco','CEO','Davao City','Ecoland','2nd Floor TPI Building Quimpo Boulevard','09234567891','noah.cruz2024@outlook.com','2024-11-16 02:26:28.737283',0),(2,'MARS AGRI VENTURES AND COMMODITIES INCORPORATED','Charlie U. Te','COO','Davao City','Barangay Toril','37 Jorge Saavedra Street','09912345678','alex.rivera123@gmail.com','2024-11-16 02:27:36.884517',0),(3,'DAVAO GOLDEN HARDWARE, INC.','Eugene T. Go','Employee','Davao City','Matina','Goldcrest Building Km. 3, McArthur Highway','09567891234','luna.castillo.temp@protonmail.com','2024-11-16 02:28:24.551618',0),(4,'MOTORMALL DAVAO CORPORATION','Felipe S. Barroga','Owner','Davao City','Mintal','Km. 8, Barrio Pampanga','09345678912','isabella.reyes.mail@gmail.com','2024-11-16 02:29:53.165301',0);
+INSERT INTO `api_account` VALUES (1,'MOTORJOY DEPOT INC.','Thomas C. Ongtenco','Representative','Davao City','Ecoland','2nd Floor TPI Building Quimpo Boulevard','09234567891','noah.cruz2024@outlook.com','2024-11-16 02:26:28.737283',0),(2,'MARS AGRI VENTURES AND COMMODITIES INCORPORATED','Charlie U. Te','COO','Davao City','Barangay Toril','37 Jorge Saavedra Street','09912345678','alex.rivera123@gmail.com','2024-11-16 02:27:36.884517',0),(3,'DAVAO GOLDEN HARDWARE, INC.','Eugene T. Go','Employee','Davao City','Matina','Goldcrest Building Km. 3, McArthur Highway','09567891234','luna.castillo.temp@protonmail.com','2024-11-16 02:28:24.551618',0),(4,'aaMOTORMALL DAVAO CORPORATION','Felipe S. Barroga','Owner','Davao City','Mintal','Km. 8, Barrio Pampanga','09345678912','isabella.reyes.mail@gmail.com','2024-11-16 02:29:53.165301',1),(5,'Test Account','Joem','CEO','Davao City','asdasd','Street','09566921912','jridpan1225@gmail.com','2024-11-16 05:37:26.239569',1);
 /*!40000 ALTER TABLE `api_account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -40,7 +40,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `api_employee` WRITE;
 /*!40000 ALTER TABLE `api_employee` DISABLE KEYS */;
-INSERT INTO `api_employee` VALUES (1,'Davao City','Catalunan Pequeno','Some Street','09566921912','jridpan1225@gmail.com','2024-11-16 02:30:39.382635','Jose Emmanuel','Idpan','Rabino',0),(2,'Davao City','Calinan','Some Street2','09789123456','rcmn.123@hotmail.com','2024-11-16 02:31:29.976984','Ram Christian','Nacar','Doe',0),(3,'Davao City','Ecoland','Street','09123456789','email@hotmail.com','2024-11-16 02:32:14.426877','Thaddeus','Domingo','Daddy',0);
+INSERT INTO `api_employee` VALUES (1,'Davao City','Catalunan Pequeno','Some Street','09566921912','jridpan1225@gmail.com','2024-11-16 02:30:39.382635','Jose Emmanuel','Idpan','Rabino',0),(2,'Davao City','Calinan','Some Street2','09789123456','rcmn.123@hotmail.com','2024-11-16 02:31:29.976984','Ram Christian','Nacar','Doe',0),(3,'Davao City','Ecoland','Street','09123456789','email@hotmail.com','2024-11-16 02:32:14.426877','Thaddeus','Domingo','Dad',0),(4,'asd','sd','asd','09566921912','jridpan1225@gmail.com','2024-11-16 05:01:39.000980','a','a','asd',0);
 /*!40000 ALTER TABLE `api_employee` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -70,7 +70,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `api_inventory` WRITE;
 /*!40000 ALTER TABLE `api_inventory` DISABLE KEYS */;
-INSERT INTO `api_inventory` VALUES (1,2345,100,'2024-11-16 02:34:05.836153','2024-11-16 03:51:23.622456',1,0),(2,2446,25,'2024-11-16 02:35:34.659310','2024-11-16 03:17:59.746525',2,0),(3,5976,50,'2024-11-16 02:37:02.350740','2024-11-16 03:18:35.125332',3,0),(4,75,200,'2024-11-16 02:38:13.481972','2024-11-16 03:51:23.615441',4,0),(5,0,100,'2024-11-16 02:40:09.806560','2024-11-16 02:45:31.906627',5,0);
+INSERT INTO `api_inventory` VALUES (1,2345,100,'2024-11-16 02:34:05.836153','2024-11-16 03:51:23.622456',1,0),(2,2446,25,'2024-11-16 02:35:34.659310','2024-11-16 03:17:59.746525',2,0),(3,5976,50,'2024-11-16 02:37:02.350740','2024-11-16 03:18:35.125332',3,0),(4,75,200,'2024-11-16 02:38:13.481972','2024-11-16 03:51:23.615441',4,0),(5,0,25,'2024-11-16 02:40:09.806560','2024-11-16 05:18:19.887145',5,1),(6,0,100,'2024-11-16 05:18:41.915633','2024-11-16 05:18:41.915633',6,0);
 /*!40000 ALTER TABLE `api_inventory` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -110,7 +110,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `api_ordertracking` WRITE;
 /*!40000 ALTER TABLE `api_ordertracking` DISABLE KEYS */;
-INSERT INTO `api_ordertracking` VALUES (1,'unvalidated','2024-11-16 03:17:41.501259',NULL,NULL,NULL,NULL,1),(2,'unvalidated','2024-11-16 03:17:59.759500',NULL,NULL,NULL,NULL,2),(3,'unvalidated','2024-11-16 03:18:04.199995',NULL,NULL,NULL,NULL,3),(4,'unvalidated','2024-11-16 03:18:35.159013',NULL,NULL,NULL,NULL,4),(5,'unvalidated','2024-11-16 03:18:52.565439',NULL,NULL,NULL,NULL,5),(6,'unvalidated','2024-11-16 03:19:23.111358',NULL,NULL,NULL,NULL,6),(7,'unvalidated','2024-11-16 03:19:56.230864',NULL,NULL,NULL,NULL,7),(8,'unvalidated','2024-11-16 03:23:51.645183',NULL,NULL,NULL,NULL,8),(9,'unvalidated','2024-11-16 03:26:14.945646',NULL,NULL,NULL,NULL,9),(10,'validated','2024-11-16 03:42:41.562900','2024-11-16 03:43:17.252000',NULL,NULL,NULL,10),(11,'unvalidated','2024-11-16 03:46:20.891847',NULL,NULL,NULL,NULL,11),(12,'validated','2024-11-16 03:51:14.503030','2024-11-16 03:51:23.587000',NULL,NULL,NULL,12);
+INSERT INTO `api_ordertracking` VALUES (1,'cancelled','2024-11-16 03:17:41.501259',NULL,NULL,NULL,'2024-11-16 04:50:02.972000',1),(2,'cancelled','2024-11-16 03:17:59.759500',NULL,NULL,NULL,'2024-11-16 04:50:20.160000',2),(3,'unvalidated','2024-11-16 03:18:04.199995',NULL,NULL,NULL,NULL,3),(4,'returned','2024-11-16 03:18:35.159013',NULL,NULL,NULL,NULL,4),(5,'unvalidated','2024-11-16 03:18:52.565439',NULL,NULL,NULL,NULL,5),(6,'unvalidated','2024-11-16 03:19:23.111358',NULL,NULL,NULL,NULL,6),(7,'unvalidated','2024-11-16 03:19:56.230864',NULL,NULL,NULL,NULL,7),(8,'unvalidated','2024-11-16 03:23:51.645183',NULL,NULL,NULL,NULL,8),(9,'unvalidated','2024-11-16 03:26:14.945646',NULL,NULL,NULL,NULL,9),(10,'validated','2024-11-16 03:42:41.562900','2024-11-16 03:43:17.252000',NULL,NULL,NULL,10),(11,'unvalidated','2024-11-16 03:46:20.891847',NULL,NULL,NULL,NULL,11),(12,'returned','2024-11-16 03:51:14.503030','2024-11-16 03:51:23.587000',NULL,NULL,NULL,12);
 /*!40000 ALTER TABLE `api_ordertracking` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -120,7 +120,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `api_product` WRITE;
 /*!40000 ALTER TABLE `api_product` DISABLE KEYS */;
-INSERT INTO `api_product` VALUES (1,'AISIN 5W-30',1705.00,'greenTECH+','FULLY SYNTHETIC MOTOR OIL','Oils & Fluids','Universal'),(2,'Mobil 1 5W-30',4500.00,'Mobil 1','Fully Synthetic Gasoline Motor Oil','Oil','Motorcycle'),(3,'Superspeed Scooter Oil Semi Synthetic',135.00,'SuperSpeed','Semi Synthetic','Oil','Scooter'),(4,'Superspeed Scooter Oil Fully Synthetic',185.00,'SuperSpeed','Fully Synthetic','Oil','Scooter'),(5,'MOTUL SCOOTER 10W40',310.25,'MOTUL','JASO MB 800ml','Oil','Scooter');
+INSERT INTO `api_product` VALUES (1,'AISIN 5W-30',1705.00,'greenTECH+','FULLY SYNTHETIC MOTOR OIL','Oils & Fluids','Universal'),(2,'Mobil 1 5W-30',4500.00,'Mobil 1','Fully Synthetic Gasoline Motor Oil','Oil','Motorcycle'),(3,'Superspeed Scooter Oil Semi Synthetic',135.00,'SuperSpeed','Semi Synthetic','Oil','Scooter'),(4,'Superspeed Scooter Oil Fully Synthetic',185.00,'SuperSpeed','Fully Synthetic','Oil','Scooter'),(5,'Motul 1',4500.00,'Mobil 1','Fully Synthetic Gasoline Motor Oil','Oil','Motorcycle'),(6,'MOTUL SCOOTER 10W40',2000.00,'Motorex','Description','Oil','Scooter');
 /*!40000 ALTER TABLE `api_product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -130,7 +130,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `api_supplier` WRITE;
 /*!40000 ALTER TABLE `api_supplier` DISABLE KEYS */;
-INSERT INTO `api_supplier` VALUES (1,'Supplier 1','09566921912','Desc',0),(2,'Supplier 2','09566921912','Test Description',0),(3,'Supplier 3','09566921912','123',0);
+INSERT INTO `api_supplier` VALUES (1,'Supplier2','09566921912','Desc',0),(2,'Supplier 231','09566921912','Test Description',0),(3,'Supplier 5','09566921912','123',0);
 /*!40000 ALTER TABLE `api_supplier` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -168,7 +168,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `auth_user` WRITE;
 /*!40000 ALTER TABLE `auth_user` DISABLE KEYS */;
-INSERT INTO `auth_user` VALUES (1,'pbkdf2_sha256$720000$hFI6gTUMjB2F6mDfeN9yII$y2n73dfWwwZeaL55JOlnfzgDelYve6W43DOwYaH/axM=',NULL,0,'123','','','',0,1,'2024-11-16 02:23:27.342407');
+INSERT INTO `auth_user` VALUES (1,'pbkdf2_sha256$720000$hFI6gTUMjB2F6mDfeN9yII$y2n73dfWwwZeaL55JOlnfzgDelYve6W43DOwYaH/axM=',NULL,0,'123','','','',0,1,'2024-11-16 02:23:27.342407'),(2,'pbkdf2_sha256$720000$Ce09kNgMCNc98e6maQClfL$T6uXj/mSXUucumN3ahUPWqBC8I0Ry9x0cv8KPTrH1do=',NULL,0,'666','','','',0,1,'2024-11-16 05:31:41.278178');
 /*!40000 ALTER TABLE `auth_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -237,4 +237,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-16 11:53:21
+-- Dump completed on 2024-11-16 14:21:04

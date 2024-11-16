@@ -2,27 +2,27 @@ import { useState } from "react";
 import Swal from "sweetalert2";
 import api from "../../api";
 
-export function useCreateData() {
+export function useUpdateData() {
   const [loading, setLoading] = useState(false);
-
-  const createData = async (info, successMessage, errorMessage, toggleModal) => {
-    const url = `http://127.0.0.1:8000/api/${info}/create/`;
+  
+  const updateData = async (info, id, formData, successMessage, errorMessage, toggleModal) => {
+    const url = `http://127.0.0.1:8000/api/${info}/update/${id}/`;
     // Show confirmation dialog before proceeding
     const result = await Swal.fire({
-      title: `Are you sure you want to create this data?`,
+      title: `Are you sure you want to edit this data?`,
       text: "This action cannot be undone.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: `Yes, create it!`,
+      confirmButtonText: `Yes, edit it!`,
     });
 
     // If user confirms, proceed with the action
     if (result.isConfirmed) {
       setLoading(true);
       try {
-        const res = await api.post(url, formData);
+        const res = await api.put(url, formData);
         Swal.fire({
           title: successMessage,
           text: "The operation was successful.",
@@ -45,5 +45,5 @@ export function useCreateData() {
     }
   };
 
-  return { createData, loading };
+  return { updateData, loading };
 }

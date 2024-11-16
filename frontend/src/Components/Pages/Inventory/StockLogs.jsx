@@ -87,6 +87,8 @@ export default function Inventory() {
               columnArr={tableColumns}
               dataArr={logs}
               editRow={handleRowDetails}
+              sortField="date_created"
+              sortDirection="desc"
             />
           </div>
         </div>

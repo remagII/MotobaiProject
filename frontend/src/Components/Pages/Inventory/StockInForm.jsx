@@ -128,6 +128,7 @@ const StockInForm = ({ confirmHandler }) => {
   // Function to validate the input against options
   const validateInput = (field, options, fieldName) => {
     // Normalize input and options for comparison
+    const inputValue = form[field]?.trim().toLowerCase();
     const isValid = options.some((option) => 
       option[fieldName].trim().toLowerCase() === inputValue
     );
@@ -240,6 +241,8 @@ const StockInForm = ({ confirmHandler }) => {
                     columnArr={tableColumns}
                     dataArr={initialStockIn}
                     className={`!max-h-[40vh]`}
+                    sortField={null}
+                    sortDirection="asc"
                   />
                 </div>
                 <div className={`gap-x-6 gap-y-8 flex flex-wrap `}>

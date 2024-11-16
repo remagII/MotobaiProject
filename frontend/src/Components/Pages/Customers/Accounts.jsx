@@ -262,7 +262,7 @@ export default function Accounts() {
     console.log("ID:", id); // just for troubleshoot
     toggleModal();
     setRowIdEdit(id); // need to make null after this is done
-    setRowToEdit(index);
+    setRowToEdit(account.findIndex((item) => item.id === id));
     setMethod("edit");
     setBtnTitle("Edit Account");
     setDeleteBtn("active");
@@ -356,6 +356,8 @@ export default function Accounts() {
             columnArr={tableColumns}
             dataArr={account}
             editRow={handleEditRow}
+            sortField="account"
+            sortDirection="asc"
           />
         </div>
       </div>

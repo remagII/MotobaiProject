@@ -8,6 +8,8 @@ import api from "../../../api";
 import DynamicCustomLink from "../../DynamicComponents/DynamicCustomLink.jsx";
 import { useFetchData } from "../../Hooks/useFetchData.js";
 import { useDeleteData } from "../../Hooks/useDeleteData.js";
+import { useCreateData } from "../../Hooks/useCreateData.js";
+import { useUpdateData } from "../../Hooks/useUpdateData.js";
 
 const WalkIn = () => {
   const [method, setMethod] = useState("");
@@ -48,22 +50,6 @@ const WalkIn = () => {
   const [errors, setErrors] = useState("");
   var errorFields = [];
 
-  // SUCCESS WINDOW TOGGLE
-  const [successWindow, setSuccessWindow] = useState(false);
-  const toggleSuccessWindow = () => {
-    setSuccessWindow((e) => (e = !e));
-  };
-
-  useEffect(() => {
-    if (successWindow) {
-      const timer = setTimeout(() => {
-        setSuccessWindow(false);
-      }, 2000); // Closes the error window after 5 seconds
-
-      return () => clearTimeout(timer); // Cleanup if component unmounts
-    }
-  }, [successWindow]);
-
   //PROPS FOR <INPUT>
   const formArr = [
     { label: "Customer Name", name: "customer_name" },
@@ -99,6 +85,7 @@ const WalkIn = () => {
     },
   ];
 
+  
   const { data: customer, triggerRefresh } = useFetchData("customer");
   const { deleteData, error } = useDeleteData(); // add error field here later
 
@@ -110,84 +97,46 @@ const WalkIn = () => {
     { title: "Walk-in Customers", quantity: `${customer.length}` },
   ];
 
-  const [loading, setLoading] = useState(false);
+  const { createData, loading: createLoading } = useCreateData();
+  const { updateData, loading: updateLoading } = useUpdateData();
 
-  const [successMethod, setSuccessMethod] = useState("");
-
-  const onSubmitHandler = async (form, callback) => {
-    console.log("submitting..");
-    setLoading(true);
-
+  const onSubmitHandler = async (form) => {
     if (method === "create") {
-      console.log("create method");
       if (rowToEdit === null) {
-        try {
-          const res = await api.post(
-            "http://127.0.0.1:8000/api/customer/create/",
-            {
-              customer_name: form.customer_name,
-              phone_number: form.phone_number,
-            }
-          );
-
-          {
-            errorWindow ? toggleErrorWindow() : "";
-          }
-          triggerRefresh();
-          toggleModal();
-          callback();
-          setSuccessMethod("Added");
-          toggleSuccessWindow();
-          setRowToEdit(null);
-          errorFields = [];
-        } catch (error) {
-          for (const [key, value] of Object.entries(form)) {
-            if (!value) {
-              errorFields.push(key);
-            }
-          }
-          setErrors((e) => errorFields.join(", "));
-          {
-            !errorWindow ? toggleErrorWindow() : "";
-          }
-        } finally {
-        }
-      }
-    } else if (method === "edit") {
-      console.log(`edit method, id: ` + rowIdEdit);
-      try {
-        const res = await api.put(
-          `http://127.0.0.1:8000/api/customer/update/${rowIdEdit}/`,
+        await createData(
+          "customer",
           {
             customer_name: form.customer_name,
             phone_number: form.phone_number,
-          }
+          },
+          "Customer Created Successfully",
+          "There was an error creating the customer.",
+          toggleModal
         );
-        {
-          errorWindow ? toggleErrorWindow() : "";
-        }
+
+
         triggerRefresh();
-        toggleModal();
         callback();
-        setSuccessMethod("Edited");
-        toggleSuccessWindow();
         setRowToEdit(null);
-        errorFields = [];
-      } catch (error) {
-        for (const [key, value] of Object.entries(form)) {
-          if (!value) {
-            errorFields.push(key);
-          }
-        }
-        setErrors((e) => errorFields.join(", "));
-        {
-          !errorWindow ? toggleErrorWindow() : "";
-        }
-      } finally {
-        setLoading(false);
       }
+    } else if (method === "edit") {
+      await updateData(
+        `customer`, rowIdEdit,
+        {
+          customer_name: form.customer_name,
+          phone_number: form.phone_number,
+        },
+        "Customer Updated Successfully",
+        "There was an error updating the customer.",
+        toggleModal
+      );
+
+      triggerRefresh();
+      callback && callback(); 
+      setRowToEdit(null);
     }
   };
+
   const [deleteBtn, setDeleteBtn] = useState(""); // HANDLES DELETE BUTTON STATE
   const [rowToEdit, setRowToEdit] = useState(null);
   const [rowIdEdit, setRowIdEdit] = useState(null);
@@ -197,7 +146,7 @@ const WalkIn = () => {
     console.log("ID:", id); // just for troubleshoot
     toggleModal();
     setRowIdEdit(id); // need to make null after this is done
-    setRowToEdit(index);
+    setRowToEdit(customer.findIndex((item) => item.id === id));
     setMethod("edit");
     setBtnTitle("Edit Customer");
     setDeleteBtn("active");
@@ -266,30 +215,13 @@ const WalkIn = () => {
                 icon={<UserPlusIcon className="size-5" />}
               />
             </DynamicModal>
-            <div className="absolute z-20 top-20  left-1/2 transform -translate-x-1/2">
-              {successWindow && (
-                <div
-                  className={`rounded mt-8 p-4 text-lg font-bold text-green-600   bg-green-200 flex justify-between transition-all w-[30vw] shadow-2xl`}
-                >
-                  <h1>
-                    <span className="text-green-700">
-                      Successfully {successMethod}!
-                    </span>
-                  </h1>
-                  <button
-                    onClick={toggleSuccessWindow}
-                    className={`p-2 hover:text-green-700 text-xl`}
-                  >
-                    Close
-                  </button>
-                </div>
-              )}
-            </div>
           </div>
           <Table
             columnArr={tableColumns}
             dataArr={customer}
             editRow={handleEditRow}
+            sortField="date_created"
+            sortDirection="desc"
           />
         </div>
       </div>

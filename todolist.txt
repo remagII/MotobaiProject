@@ -9,7 +9,6 @@ NOTES:
 - filter active/inactive/etc. when clicking on sidepanel
 - sorting function maybe at click of row at top
 - add label identifier on create order (employee, account)
-- INVENTORY auto sort active top
 - description box too small
 - stock logs modal lacks some information maybe
 - double clicking submission issue
@@ -19,16 +18,22 @@ NOTES:
 - fix create order sorting of price
 - 800 ml? units? how?
 - some fields have input validation but wont tell which is wrong when inputting (ex. supplier phone number)
+- fix state change, etc. to reference the actual thing, (inventory, order)(backend)
+- fix sorting button to be the whole header
+- sorting acting weird when editing
+- sort order history by last updated
 
 Added stuff:
-- fixed stockin being weird
-- fixed order double - stock
-- stock change now moved to validated state/ validate button
+- updated dynamic table to default sort
+- added filter for order tracking and History
+- order history page created
+- customhook for create and edit prototype created only inside customer
+- imported sweetalert2
+- updated login and registration(now has prompts!)
 
 Todo Pages:
 - OrderList + Order History -> Order Management
 - Dashboard/Landing Page
-- Authentication
 
 Extra stuff that may or may not be implemented:
 - edit History

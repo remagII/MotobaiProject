@@ -5,16 +5,16 @@ import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
 import DetailsOrderModal from "./DetailsOrderModal.jsx";
 import { useFetchData } from "../../Hooks/useFetchData.js";
 
-export default function Orders() {
+export default function OrderHistory() {
   const [orderDetails, setOrderDetails] = useState([]);
   const [orderId, setOrderId] = useState();
   const { data: orders } = useFetchData("order");
 
   const order = orders.filter(
     (item) =>
-      item.order_tracking?.status !== "completed" &&
-      item.order_tracking?.status !== "returned" &&
-      item.order_tracking?.status !== "cancelled"
+      item.order_tracking?.status !== "unvalidated" &&
+      item.order_tracking?.status !== "validated" &&
+      item.order_tracking?.status !== "shipped"
   );
 
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
@@ -31,11 +31,6 @@ export default function Orders() {
         return <p>{item.order_details.length}</p>;
       },
     },
-
-    // {
-    //   header: "Total Price",
-    //   row: "invoice.total_balance",
-    // },
 
     {
       header: "Customer",
@@ -123,8 +118,8 @@ export default function Orders() {
               columnArr={tableColumns}
               dataArr={order}
               editRow={handleRowDetails}
-              sortField="order_date"
-              sortDirection="desc"
+              sortField="id"
+              sortDirection="asc"
             />
           </div>
         </div>

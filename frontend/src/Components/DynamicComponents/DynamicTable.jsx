@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../pages.css";
 
-export default function Table({ editRow, columnArr, dataArr, className }) {
+export default function Table({ editRow, columnArr, dataArr, className, sortField, sortDirection}) {
   const getNestedValue = (obj, path) => {
     return (
       path.split(".").reduce((acc, part) => acc && acc[part], obj) || "N/A"
@@ -12,15 +12,15 @@ export default function Table({ editRow, columnArr, dataArr, className }) {
 
   // function to only show items that is item.quantity > item.inventory.threshold, only works if called outside
 
-  const [sortedField, setSortedField] = useState(null);
-  const [sortDirection, setSortDirection] = useState("asc");
+  const [sortedField, setSortedField] = useState(sortField);
+  const [sortedDirection, setSortedDirection] = useState(sortDirection);
 
   const handleSort = (field) => {
     if (sortedField === field) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+      setSortedDirection(sortedDirection === "asc" ? "desc" : "asc");
     } else {
       setSortedField(field);
-      setSortDirection("asc");
+      setSortedDirection("asc");
     }
   };
 
@@ -37,10 +37,10 @@ export default function Table({ editRow, columnArr, dataArr, className }) {
           : getNestedValue(b, sortedField);
 
         if (aValue < bValue) {
-          return sortDirection === "asc" ? -1 : 1;
+          return sortedDirection === "asc" ? -1 : 1;
         }
         if (aValue > bValue) {
-          return sortDirection === "asc" ? 1 : -1;
+          return sortedDirection === "asc" ? 1 : -1;
         }
         return 0;
       })
@@ -69,7 +69,7 @@ export default function Table({ editRow, columnArr, dataArr, className }) {
                       >
                         {item.header}
                         {sortedField === item.row &&
-                          (sortDirection === "asc" ? " ▲" : " ▼")}
+                          (sortedDirection === "asc" ? " ▲" : " ▼")}
                       </button>
                     </th>
                   );

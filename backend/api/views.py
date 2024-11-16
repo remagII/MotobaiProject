@@ -94,7 +94,7 @@ class CustomerListView(generics.ListAPIView):
 class CustomerUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 class CustomerDeleteView(generics.DestroyAPIView):
     queryset = Customer.objects.all()

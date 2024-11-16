@@ -254,7 +254,7 @@ const Employees = () => {
   const handleEditRow = (index, id) => {
     toggleModal();
     setRowIdEdit(id);
-    setRowToEdit(index);
+    setRowToEdit(employee.findIndex((item) => item.id === id));
     setMethod("edit");
     setBtnTitle("Edit Employee");
     setDeleteBtn("active");
@@ -341,6 +341,8 @@ const Employees = () => {
             columnArr={tableColumns}
             dataArr={employee}
             editRow={handleEditRow}
+            sortField="id"
+            sortDirection="asc"
           />
         </div>
       </div>

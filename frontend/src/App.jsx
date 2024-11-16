@@ -6,7 +6,7 @@ import Products from "./Components/Pages/Product/Products";
 import Inventory from "./Components/Pages/Inventory/Inventory";
 import StockLogs from "./Components/Pages/Inventory/StockLogs.jsx";
 import Orders from "./Components/Pages/Orders/Orders";
-import OrderList from "./Components/Pages/Orders/OrderList";
+import OrderHistory from "./Components/Pages/Orders/OrderHistory";
 import Login from "./Components/Pages/Authentication/Login.jsx";
 import Register from "./Components/Pages/Authentication/Register.jsx";
 import Suppliers from "./Components/Pages/Suppliers/Suppliers";
@@ -29,7 +29,7 @@ function App() {
           <Route path="/employees" element={<Employees />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/orders" element={<Orders />} />
-          <Route path="/orderList" element={<OrderList />} />
+          <Route path="/orderList" element={<OrderHistory />} />
           <Route path="/walkIn" element={<WalkIn />} />
           <Route path="/stockinlogs" element={<StockLogs />} />
           <Route path="/" element={<Accounts />} />
