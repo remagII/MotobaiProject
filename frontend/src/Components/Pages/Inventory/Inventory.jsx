@@ -1,35 +1,21 @@
 import React, { useState } from "react";
-import { GiftIcon, TruckIcon, CubeIcon } from "@heroicons/react/24/outline";
+import { CubeIcon } from "@heroicons/react/24/outline";
 import Table from "../../DynamicComponents/DynamicTable.jsx";
 import Overview from "../../Overview.jsx";
 import StockInForm from "./StockInForm.jsx";
 import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
-import CreateDeliveryOrderForm from "./CreateDeliveryOrderForm.jsx";
-import CreateWalkinOrderForm from "./CreateWalkinOrderForm.jsx";
+
 import { useFetchData } from "../../Hooks/useFetchData.js";
 
 export default function Inventory() {
   const [method, setMethod] = useState("");
   const [stockInModal, setStockInModal] = useState(false);
-  const [createDeliveryModal, setCreateDeliveryModal] = useState(false);
-  const [createWalkinModal, setCreateWalkinModal] = useState(false);
 
   // MODAL TOGGLE
-  const toggleModal = () => {
-    // setModal((m) => (m = !m));
-  };
 
   const toggleStockInModal = () => {
     setStockInModal((m) => (m = !m));
     triggerRefresh();
-  };
-
-  const toggleCreateDeliveryModal = () => {
-    setCreateDeliveryModal((m) => (m = !m));
-  };
-
-  const toggleCreateWalkinModal = () => {
-    setCreateWalkinModal((m) => (m = !m));
   };
 
   const [errorWindow, setErrorWindow] = useState(false);
@@ -101,8 +87,6 @@ export default function Inventory() {
 
   const [loading, setLoading] = useState(false);
 
-  const [btnTitle, setBtnTitle] = useState("Create Order");
-
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
   let inactiveCount = 0;
   let lowStockCount = 0;
@@ -120,9 +104,7 @@ export default function Inventory() {
     }
   });
   const overviewArr = [
-    { title: "Products", 
-      quantity: `${inventory.length}` 
-    },
+    { title: "Products", quantity: `${inventory.length}` },
     {
       title: "Active",
       quantity: `${activeCount}`,
@@ -172,42 +154,11 @@ export default function Inventory() {
                   </button>
                 </div>
               </div>
-
-              <div className="flex gap">
-                <button
-                  onClick={toggleCreateDeliveryModal}
-                  className={`text-gray-100 bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center shadow-md`}
-                >
-                  Delivery Order
-                  <div
-                    className={`py-2 px-3 rounded-lg bg-red-700  transition-all duration-100`}
-                  >
-                    <TruckIcon className="size-5" />
-                  </div>
-                </button>
-                <button
-                  onClick={toggleCreateWalkinModal}
-                  className={`text-gray-100 bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center shadow-md`}
-                >
-                  Walk-In Order
-                  <div
-                    className={`py-2 px-3 rounded-lg bg-red-700  transition-all duration-100`}
-                  >
-                    <GiftIcon className="size-5" />
-                  </div>
-                </button>
-              </div>
             </div>
 
             {/* STOCK IN FORM */}
             <DynamicModal modal={stockInModal} toggleModal={toggleStockInModal}>
               <StockInForm />
-            </DynamicModal>
-            <DynamicModal modal={createDeliveryModal} toggleModal={toggleCreateDeliveryModal}>
-              <CreateDeliveryOrderForm />
-            </DynamicModal>
-            <DynamicModal modal={createWalkinModal} toggleModal={toggleCreateWalkinModal}>
-              <CreateWalkinOrderForm />
             </DynamicModal>
 
             <div className="absolute top-50 z-10 shadow-xl">

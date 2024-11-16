@@ -1,14 +1,28 @@
 import React, { useState } from "react";
+import { GiftIcon, TruckIcon } from "@heroicons/react/24/outline";
 import Table from "../../DynamicComponents/DynamicTable.jsx";
 import Overview from "../../Overview.jsx";
 import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
 import DetailsOrderModal from "./DetailsOrderModal.jsx";
 import { useFetchData } from "../../Hooks/useFetchData.js";
+import CreateDeliveryOrderForm from "./CreateDeliveryOrderForm.jsx";
+import CreateWalkinOrderForm from "./CreateWalkinOrderForm.jsx";
 
 export default function Orders() {
   const [orderDetails, setOrderDetails] = useState([]);
   const [orderId, setOrderId] = useState();
   const { data: orders } = useFetchData("order");
+
+  const [createDeliveryModal, setCreateDeliveryModal] = useState(false);
+  const [createWalkinModal, setCreateWalkinModal] = useState(false);
+
+  const toggleCreateDeliveryModal = () => {
+    setCreateDeliveryModal((m) => (m = !m));
+  };
+
+  const toggleCreateWalkinModal = () => {
+    setCreateWalkinModal((m) => (m = !m));
+  };
 
   const order = orders.filter(
     (item) =>
@@ -31,11 +45,6 @@ export default function Orders() {
         return <p>{item.order_details.length}</p>;
       },
     },
-
-    // {
-    //   header: "Total Price",
-    //   row: "invoice.total_balance",
-    // },
 
     {
       header: "Customer",
@@ -71,7 +80,33 @@ export default function Orders() {
 
     {
       header: "Status",
-      row: "order_tracking.status",
+      customRender: (item) => {
+        if (item.order_tracking.status === "validated") {
+          return (
+            <p className="uppercase font-semibold text-green-600">
+              {item.order_tracking.status}
+            </p>
+          );
+        } else if (item.order_tracking.status === "unvalidated") {
+          return (
+            <p className="uppercase font-semibold text-gray-600">
+              {item.order_tracking.status}
+            </p>
+          );
+        } else if (item.order_tracking.status === "shipped") {
+          return (
+            <p className="uppercase font-semibold text-indigo-800">
+              {item.order_tracking.status}
+            </p>
+          );
+        } else if (item.order_tracking.status === "recieved") {
+          return (
+            <p className="uppercase font-semibold text-yellow-600">
+              {item.order_tracking.status}
+            </p>
+          );
+        }
+      },
     },
   ];
 
@@ -100,7 +135,48 @@ export default function Orders() {
   };
 
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
-  const overviewArr = [{ title: "Orders", quantity: `${order.length}` }];
+  let unvalidatedCount = 0;
+  let validatedCount = 0;
+  let shippedCount = 0;
+  let recievedCount = 0;
+
+  const statusCount = order;
+
+  statusCount.forEach((item) => {
+    if (item.order_tracking.status === "unvalidated") {
+      unvalidatedCount++;
+    } else if (item.order_tracking.status === "validated") {
+      validatedCount++;
+    } else if (item.order_tracking.status === "shipped") {
+      shippedCount++;
+    } else {
+      recievedCount++;
+    }
+  });
+  // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
+  const overviewArr = [
+    { title: "Orders", quantity: `${order.length}` },
+    {
+      title: "Unvalidated",
+      quantity: `${unvalidatedCount}`,
+      className: "!text-gray-400",
+    },
+    {
+      title: "Validated",
+      quantity: `${validatedCount}`,
+      className: "!text-green-500",
+    },
+    {
+      title: "Shipped",
+      quantity: `${shippedCount}`,
+      className: "!text-blue-500",
+    },
+    {
+      title: "Recieved",
+      quantity: `${recievedCount}`,
+      className: "!text-yellow-500",
+    },
+  ];
 
   return (
     <section className={`font-main h-full overflow-hidden`}>
@@ -109,13 +185,45 @@ export default function Orders() {
 
         <div className={`flex flex-col flex-1 m-4`}>
           <div className={`m-4`}>
-            <div className={`flex gap-12 mb-12`}>
+            <div className={`flex gap-12 mb-12 justify-between`}>
               <h1 className={`text-3xl font-bold`}>Order Management</h1>
-              <div className="flex gap-4 mr-32 items-center">
-                <label className="font-bold ">Status</label>
-                <select
-                  className={`min-w-[10vw] max-h-4 rounded-lg p-4`}
-                ></select>
+              <div>
+                <div className="flex">
+                  <button
+                    onClick={toggleCreateDeliveryModal}
+                    className={`text-gray-100 bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center shadow-md`}
+                  >
+                    Delivery Order
+                    <div
+                      className={`py-2 px-3 rounded-lg bg-red-700  transition-all duration-100`}
+                    >
+                      <TruckIcon className="size-5" />
+                    </div>
+                  </button>
+                  <button
+                    onClick={toggleCreateWalkinModal}
+                    className={`text-gray-100 bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center shadow-md`}
+                  >
+                    Walk-In Order
+                    <div
+                      className={`py-2 px-3 rounded-lg bg-red-700  transition-all duration-100`}
+                    >
+                      <GiftIcon className="size-5" />
+                    </div>
+                  </button>
+                  <DynamicModal
+                    modal={createDeliveryModal}
+                    toggleModal={toggleCreateDeliveryModal}
+                  >
+                    <CreateDeliveryOrderForm />
+                  </DynamicModal>
+                  <DynamicModal
+                    modal={createWalkinModal}
+                    toggleModal={toggleCreateWalkinModal}
+                  >
+                    <CreateWalkinOrderForm />
+                  </DynamicModal>
+                </div>
               </div>
             </div>
 

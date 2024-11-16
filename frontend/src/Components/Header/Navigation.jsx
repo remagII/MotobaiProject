@@ -102,7 +102,7 @@ function Navigation() {
         <div>
           <ShoppingCartIcon className="size-6 " />
         </div>
-        <p>Order Tracking</p>
+        <p>Order Management</p>
       </DynamicCustomLink>
       <DynamicCustomLink to="/orderList">
         <div>

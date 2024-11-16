@@ -40,13 +40,27 @@ Extra stuff that may or may not be implemented:
 - "order again" with same items input etc.
 
 MY QUESTIONS:
-- for backend when checking, what are the common questions or tasks that the panelists do to check the backend?
-- may tax pa ba?
+- for backend when checking, what are the common questions or tasks that the panelists do to check the backend? 
+- may tax pa ba? ////// Nah di mn apil sa scope and no mention of it so far sa advisers (hope never)
 
 Current Issues:
 - when an order is created, so does invoice, tracking; the way it is set up is so that orderid = 1, then invoiceid, trackingid = 1; even though invoice and tacking cannot be made without an order, 
 if orderid != trackingi != invoiceid is not the same then most functions will not work
 - same for product -> inventory
+
+
+NEW THING TO DO (FRONTEND){
+  "Complete Order" button on order tracking must be a toggleModal form where the user can input the reference #
+
+  not sure yet sa concept watchu think? 
+
+  Wala pako nag deductions lmao
+
+  Create Walk-In on create Walk-In Order form
+  
+  
+}
+
 
 dont mind this
   C:\Users\tyche\AppData\Local\Programs\Python\Python313\python.exe manage.py runserver

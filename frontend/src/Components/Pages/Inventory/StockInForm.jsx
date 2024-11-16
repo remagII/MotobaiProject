@@ -28,8 +28,6 @@ const StockInForm = ({ confirmHandler }) => {
   }, [successWindow]);
 
   const [initialStockIn, setInitialStockIn] = useState([]);
-  const [supplier, setSupplier] = useState([]);
-  const [employee, setEmployee] = useState([]);
 
   const { data: productOptions } = useFetchData("inventory");
   const { data: supplierOptions } = useFetchData("supplier");
@@ -40,6 +38,11 @@ const StockInForm = ({ confirmHandler }) => {
       name: "quantity",
       type: "number",
     },
+    {
+      label: "Reference #",
+      name: "reference_number",
+      type: "number",
+    },
   ];
   const tableColumns = [
     {
@@ -47,10 +50,9 @@ const StockInForm = ({ confirmHandler }) => {
       row: "product_name",
     },
     {
-      header: "Supplier Name",
-      row: "supplier_name",
+      header: "Reference #",
+      row: "reference_number",
     },
-
     {
       header: "Quantity to add",
       row: "quantity",
@@ -62,6 +64,7 @@ const StockInForm = ({ confirmHandler }) => {
     return formArr.reduce((r, v) => ({ ...r, [v.name]: "" }), {
       product_name: "",
       supplier_name: "",
+      reference_number: "",
     });
   };
   const [form, setForm] = useState(prepareForm(formArr));
@@ -125,14 +128,13 @@ const StockInForm = ({ confirmHandler }) => {
     }
   };
 
-  // Function to validate the input against options
   const validateInput = (field, options, fieldName) => {
     // Normalize input and options for comparison
-    const inputValue = form[field]?.trim().toLowerCase();
-    const isValid = options.some((option) => 
-      option[fieldName].trim().toLowerCase() === inputValue
+    const inputValue = (form[field]?.trim() || "").toLowerCase();
+    const isValid = options.some(
+      (option) => option[fieldName].trim().toLowerCase() === inputValue
     );
-  
+
     if (!isValid) {
       setForm((prevForm) => ({
         ...prevForm,
@@ -142,7 +144,6 @@ const StockInForm = ({ confirmHandler }) => {
       alert(`Please input the correct ${fieldName.replace("_", " ")}`);
     }
   };
-  
 
   return (
     <section>
@@ -168,8 +169,8 @@ const StockInForm = ({ confirmHandler }) => {
                     <div className={`border-2 rounded-md`}>
                       <input
                         placeholder="Search for Supplier"
-                        autocomplete="off"
-                        className="text-lg p-2 min-w-[450px]"
+                        autoComplete="off"
+                        className="text-lg p-2 min-w-[350px]"
                         type="text"
                         onChange={(e) =>
                           onChangeHandler(e, "supplier_name", {
@@ -179,13 +180,15 @@ const StockInForm = ({ confirmHandler }) => {
                               ) || null,
                           })
                         }
-                        onBlur={() =>
-                          validateInput(
-                            "supplier_name",
-                            supplierOptions,
-                            "supplier_name"
-                          )
-                        }
+                        onBlur={() => {
+                          if (form.supplier_name) {
+                            validateInput(
+                              "supplier_name",
+                              supplierOptions,
+                              "supplier_name"
+                            );
+                          }
+                        }}
                         name="supplier_name"
                         value={form.supplier_name || ""}
                       />
@@ -251,9 +254,9 @@ const StockInForm = ({ confirmHandler }) => {
                     <div className={`flex justify-center relative`}>
                       <div className={`border-2 rounded-md`}>
                         <input
-                          autocomplete="off"
+                          autoComplete="off"
                           placeholder="Search for Product"
-                          className="text-lg p-2 min-w-[450px]"
+                          className="text-lg p-2 min-w-[350px]"
                           type="text"
                           onChange={(e) =>
                             onChangeHandler(e, "product_name", {
@@ -264,13 +267,15 @@ const StockInForm = ({ confirmHandler }) => {
                                 ) || null,
                             })
                           }
-                          onBlur={() =>
-                            validateInput(
-                              "product_name",
-                              productOptions,
-                              "product_name"
-                            )
-                          }
+                          onBlur={() => {
+                            if (form.product_name) {
+                              validateInput(
+                                "product_name",
+                                productOptions,
+                                "product_name"
+                              );
+                            }
+                          }}
                           name="product_name"
                           value={form.product_name || ""}
                         />
@@ -331,8 +336,8 @@ const StockInForm = ({ confirmHandler }) => {
                         id={name}
                         name={name}
                         type={type}
-                        value={form.quantity || ""}
-                        onChange={(e) => onChangeHandler(e, "quantity")}
+                        value={form[name] || ""}
+                        onChange={(e) => onChangeHandler(e, name)}
                         min="1"
                         required
                       ></input>

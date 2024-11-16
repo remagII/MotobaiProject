@@ -8,7 +8,7 @@ import { useFetchData } from "../../Hooks/useFetchData.js";
 export default function Inventory() {
   const [inboundStockItem, setInboundStockItem] = useState([]);
   const { data: logs } = useFetchData("stockin");
-  const [ supplier, setSupplier ] = useState("");
+  const [supplier, setSupplier] = useState("");
 
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
   const tableColumns = [
@@ -17,10 +17,18 @@ export default function Inventory() {
       row: "id",
     },
     {
+      header: "Reference #",
+      row: "reference",
+    },
+    {
       header: "Employee Name",
       row: "employee_fname",
       customRender: (item) => {
-        return <p>{item.employee_fname} {item.employee_lname}</p>;
+        return (
+          <p>
+            {item.employee_fname} {item.employee_lname}
+          </p>
+        );
       },
     },
 
@@ -94,7 +102,10 @@ export default function Inventory() {
         </div>
       </div>
       <DynamicModal modal={modal} toggleModal={toggleModal}>
-        <DetailsStockModal logsData={inboundStockItem} supplierData={supplier} />
+        <DetailsStockModal
+          logsData={inboundStockItem}
+          supplierData={supplier}
+        />
       </DynamicModal>
     </section>
   );

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
-  UserPlusIcon,
+  ArchiveBoxArrowDownIcon,
   ArrowDownTrayIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
@@ -15,6 +15,7 @@ import { useDeleteData } from "../../Hooks/useDeleteData.js";
 export default function Products() {
   const [method, setMethod] = useState("");
   const [modal, setModal] = useState(false);
+  const [packageModal, setPackageModal] = useState(false);
 
   // MODAL TOGGLE
   const toggleModal = () => {
@@ -30,6 +31,11 @@ export default function Products() {
     {
       errorWindow ? toggleErrorWindow() : "";
     }
+  };
+
+  const packageModalToggle = () => {
+    setPackageModal((p) => (p = !p));
+    setDeleteBtn("inactive");
   };
 
   const [errorWindow, setErrorWindow] = useState(false);
@@ -102,6 +108,21 @@ export default function Products() {
     },
   ];
 
+  //PROPS FOR <INPUT>
+  const packageFormArr = [
+    {
+      label: "Search Product (Searchbar)",
+      name: "product.product_name",
+    },
+    {
+      label: "Package Name",
+      name: "package_name",
+    },
+    {
+      label: "Quantity",
+      name: "quantity",
+    },
+  ];
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
   const tableColumns = [
     {
@@ -265,7 +286,18 @@ export default function Products() {
           <div className={`m-4`}>
             <div className={`flex justify-between`}>
               <h1 className={`text-3xl font-bold`}>Products</h1>
-              <div>
+              <div className={`flex gap-4`}>
+                <button
+                  onClick={packageModalToggle}
+                  className={`shadow-md text-black  border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700 hover:text-white  transition-all duration-100 flex gap-4 items-center`}
+                >
+                  Create Package
+                  <div
+                    className={`text-white py-2 px-3 rounded-lg bg-red-800 hover:bg-red-800 transition-all duration-100`}
+                  >
+                    <ArchiveBoxArrowDownIcon className="size-5" />
+                  </div>
+                </button>
                 <button
                   onClick={toggleModal}
                   className={`shadow-md text-white bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center`}
@@ -313,6 +345,18 @@ export default function Products() {
                 defaultValue={rowToEdit !== null ? product[rowToEdit] : ""}
                 icon={<ArrowDownTrayIcon className="size-5" />}
               />
+            </DynamicModal>
+
+            <DynamicModal modal={packageModal} toggleModal={packageModalToggle}>
+              <DynamicForm
+                btnTitle={btnTitle}
+                deleteBtn={deleteBtn}
+                title={"Package"}
+                formArr={packageFormArr}
+                onSubmit={onSubmitHandler}
+                defaultValue={rowToEdit !== null ? product[rowToEdit] : ""}
+                icon={<ArrowDownTrayIcon className="size-5" />}
+              ></DynamicForm>
             </DynamicModal>
             <div className="absolute z-20 top-20  left-1/2 transform -translate-x-1/2">
               {successWindow && (

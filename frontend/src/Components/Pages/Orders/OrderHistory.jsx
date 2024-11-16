@@ -65,8 +65,29 @@ export default function OrderHistory() {
     },
 
     {
+      header: "Order Type",
+      customRender: (item) => {
+        if (item.order_type === "Delivery") {
+          return (
+            <p className="text-orange-600 font-bold uppercase">
+              {item.order_type}
+            </p>
+          );
+        }
+      },
+    },
+
+    {
       header: "Status",
-      row: "order_tracking.status",
+      customRender: (item) => {
+        if (item.order_tracking.status === "completed") {
+          return (
+            <p className="uppercase font-semibold text-green-600">
+              {item.order_tracking.status}
+            </p>
+          );
+        }
+      },
     },
   ];
 
@@ -95,17 +116,50 @@ export default function OrderHistory() {
   };
 
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
-  const overviewArr = [{ title: "Orders", quantity: `${order.length}` }];
+
+  let completedOrderCount = 0;
+  let cancelledOrderCount = 0;
+  let returnedOrderCount = 0;
+
+  const statusCount = orders;
+
+  statusCount.forEach((item) => {
+    if (item.order_tracking.status === "completed") {
+      completedOrderCount++;
+    } else if (item.order_tracking.status === "cancelled") {
+      cancelledOrderCount++;
+    } else if (item.order_tracking.status === "returned") {
+      returnedOrderCount++;
+    }
+  });
+  const overviewArr = [
+    { title: "Orders", quantity: `${order.length}` },
+    {
+      title: "Completed",
+      quantity: `${completedOrderCount}`,
+      className: "!text-green-500",
+    },
+    {
+      title: "Cancelled",
+      quantity: `${cancelledOrderCount}`,
+      className: "!text-red-300",
+    },
+    {
+      title: "Returned",
+      quantity: `${returnedOrderCount}`,
+      className: "!text-orange-500",
+    },
+  ];
 
   return (
     <section className={`font-main h-full overflow-hidden`}>
       <div className={`bg-normalGray box-border flex h-full `}>
-        <Overview title={`Order Management`} overviewArr={overviewArr} />
+        <Overview title={`Order History`} overviewArr={overviewArr} />
 
         <div className={`flex flex-col flex-1 m-4`}>
           <div className={`m-4`}>
             <div className={`flex gap-12 mb-12`}>
-              <h1 className={`text-3xl font-bold`}>Order Management</h1>
+              <h1 className={`text-3xl font-bold`}>Order History</h1>
               <div className="flex gap-4 mr-32 items-center">
                 <label className="font-bold ">Status</label>
                 <select
