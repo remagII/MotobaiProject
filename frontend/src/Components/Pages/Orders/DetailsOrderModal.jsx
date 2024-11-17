@@ -204,13 +204,15 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
               ></OrderModalButton>
             )}
 
-            {orderTrackingStatus !== "completed" && (
-              <OrderModalButton
-                className={`text-orange-500 border-orange-500`}
-                onClick={() => updateStatus("returned")}
-                buttonName={"Return Order"}
-              ></OrderModalButton>
-            )}
+            {orderTrackingStatus !== "completed" &&
+              orderTrackingStatus !== "cancelled" &&
+              orderTrackingStatus !== "returned" && (
+                <OrderModalButton
+                  className={`text-orange-500 border-orange-500`}
+                  onClick={() => updateStatus("returned")}
+                  buttonName={"Return Order"}
+                ></OrderModalButton>
+              )}
           </div>
         </div>
       </div>
