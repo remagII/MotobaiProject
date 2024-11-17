@@ -8,7 +8,7 @@ export default function DynamicModal({ children, toggleModal, modal }) {
         ></div>
         <div>
           <div>{children}</div>
-        </div>
+        </div> 
       </>
     )
   );

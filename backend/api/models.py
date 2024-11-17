@@ -17,6 +17,7 @@ class Product(models.Model):
 
 class Inventory(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    sku = models.CharField(max_length=64, unique=True, null=True, blank=True)
     stock = models.PositiveIntegerField(null=False, blank=False, default=0)
     stock_minimum_threshold = models.PositiveIntegerField(null=False, blank=False, default=0)
     date_added = models.DateTimeField(auto_now_add=True)
@@ -61,6 +62,7 @@ class InboundStockItem(models.Model):
 class InboundStock(models.Model):
     supplier = models.ForeignKey(Supplier,null=False, blank=False, on_delete=models.CASCADE)
     employee = models.ForeignKey(Employee,null=False, blank=False, on_delete=models.CASCADE)
+    reference_number = models.CharField(max_length=64, unique=True, null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     
 
@@ -99,8 +101,8 @@ class Order(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=False, blank=False, default="")
     order_type = models.CharField(max_length=64, null=False, blank=False, default="Delivery")
     order_date = models.DateTimeField(auto_now_add=True)
+    reference_number = models.CharField(max_length=64, unique=True, null=True, blank=True)
 
-    # gross_price = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
     # for information integrity
     account_name = models.CharField(max_length=64, null=True, blank=True)
     representative_name = models.CharField(max_length=64, null=True, blank=True)
@@ -162,6 +164,8 @@ class OrderTracking(models.Model):
     date_completed = models.DateTimeField(null=True, blank=True)
     date_cancelled = models.DateTimeField(null=True, blank=True)
 
+    last_updated = models.DateTimeField(auto_now=True)
+
     def __str__(self):
         return f'{self.status}'
 
@@ -177,16 +181,38 @@ class Invoice(models.Model):
     date_paid = models.DateTimeField(null=True, blank=True)
 
 @receiver(post_save, sender=OrderTracking)
-def update_stock_when_validated(sender, instance, created, **kwargs):
-    if not created and instance.status == "validated":
-        # Once the status is "validated," reduce the stock based on order details
+def update_stock_based_on_status(sender, instance, created, **kwargs):
+    if not created:
         order = instance.order
-        for order_detail in order.order_details.all():
-            inventory_item = order_detail.inventory
-            quantity = order_detail.quantity
-            if inventory_item.stock < quantity:
-                raise ValidationError(f"Not enough stock for {inventory_item.product.product_name}. Available: {inventory_item.stock}, Requested: {quantity}")
-            
-            inventory_item.stock -= quantity
-            inventory_item.save()
-        print(f"Stock updated for order {order.id} as status changed to validated.")
+        
+        # When status changes to 'validated', reduce stock
+        if instance.status == "validated":
+            for order_detail in order.order_details.all():
+                inventory_item = order_detail.inventory
+                quantity = order_detail.quantity
+                if inventory_item.stock < quantity:
+                    raise ValidationError(f"Not enough stock for {inventory_item.product.product_name}. Available: {inventory_item.stock}, Requested: {quantity}")
+                
+                inventory_item.stock -= quantity
+                inventory_item.save()
+            print(f"Stock reduced for order {order.id} as status changed to 'validated'.")
+        
+        # When status changes to 'canceled', return stock
+        elif instance.status == "canceled":
+            for order_detail in order.order_details.all():
+                inventory_item = order_detail.inventory
+                quantity = order_detail.quantity
+                
+                inventory_item.stock += quantity
+                inventory_item.save()
+            print(f"Stock returned for order {order.id} as status changed to 'canceled'.")
+        
+        # When status changes to 'returned', process as necessary
+        elif instance.status == "returned":
+            for order_detail in order.order_details.all():
+                inventory_item = order_detail.inventory
+                quantity = order_detail.quantity
+                
+                inventory_item.stock += quantity
+                inventory_item.save()
+            print(f"Stock returned for order {order.id} as status changed to 'returned'.")

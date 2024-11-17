@@ -268,7 +268,7 @@ export default function Products() {
   const [rowToEdit, setRowToEdit] = useState(null);
   const [rowIdEdit, setRowIdEdit] = useState(null);
   const [btnTitle, setBtnTitle] = useState("Create Product");
-  const handleEditRow = (index, id) => {
+  const handleEditRow = (id) => {
     toggleModal();
     setRowIdEdit(id); // need to make null after this is done
     setRowToEdit(product.findIndex((item) => item.id === id));

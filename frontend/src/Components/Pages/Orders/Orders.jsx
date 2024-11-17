@@ -13,6 +13,13 @@ export default function Orders() {
   const [orderId, setOrderId] = useState();
   const { data: orders } = useFetchData("order");
 
+  const order = orders.filter(
+    (item) =>
+      item.order_tracking?.status !== "completed" &&
+      item.order_tracking?.status !== "returned" &&
+      item.order_tracking?.status !== "cancelled"
+  );
+
   const [createDeliveryModal, setCreateDeliveryModal] = useState(false);
   const [createWalkinModal, setCreateWalkinModal] = useState(false);
 
@@ -24,12 +31,7 @@ export default function Orders() {
     setCreateWalkinModal((m) => (m = !m));
   };
 
-  const order = orders.filter(
-    (item) =>
-      item.order_tracking?.status !== "completed" &&
-      item.order_tracking?.status !== "returned" &&
-      item.order_tracking?.status !== "cancelled"
-  );
+  
 
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
   const tableColumns = [
@@ -64,10 +66,10 @@ export default function Orders() {
     },
 
     {
-      header: "Date and Time Created",
-      row: "order_date",
+      header: "Last Updated",
+      row: "last_updated",
       customRender: (item) => {
-        const createdAtDate = new Date(item.order_date);
+        const createdAtDate = new Date(item.last_updated);
         const options = { hour: "numeric", minute: "numeric", hour12: true }; // Options for formatting time
         const formattedTime = createdAtDate.toLocaleString("en-US", options); // Format the time
         const formattedDate = `${
@@ -99,7 +101,7 @@ export default function Orders() {
               {item.order_tracking.status}
             </p>
           );
-        } else if (item.order_tracking.status === "recieved") {
+        } else if (item.order_tracking.status === "received") {
           return (
             <p className="uppercase font-semibold text-yellow-600">
               {item.order_tracking.status}
@@ -123,12 +125,12 @@ export default function Orders() {
     }
   };
 
-  const handleRowDetails = (index) => {
-    const selectedItem = order[index]; // Get the log based on the row clicked
+  const handleRowDetails = (id) => {
+    const selectedItem = order.find((log) => log.id === id); // Get the log based on the row clicked
     setOrderDetails(selectedItem.order_details); // Set the specific log's items
     setOrderId(selectedItem.id);
 
-    setDetailsRow(index);
+    setDetailsRow(id);
     setMethod("Details");
 
     toggleModal();
@@ -138,7 +140,7 @@ export default function Orders() {
   let unvalidatedCount = 0;
   let validatedCount = 0;
   let shippedCount = 0;
-  let recievedCount = 0;
+  let receivedCount = 0;
 
   const statusCount = order;
 
@@ -150,7 +152,7 @@ export default function Orders() {
     } else if (item.order_tracking.status === "shipped") {
       shippedCount++;
     } else {
-      recievedCount++;
+      receivedCount++;
     }
   });
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
@@ -172,8 +174,8 @@ export default function Orders() {
       className: "!text-blue-500",
     },
     {
-      title: "Recieved",
-      quantity: `${recievedCount}`,
+      title: "Received",
+      quantity: `${receivedCount}`,
       className: "!text-yellow-500",
     },
   ];

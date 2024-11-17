@@ -32,7 +32,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
       date_field = "date_validated";
     } else if (status == "shipped") {
       date_field = "date_shipped";
-    } else if (status == "recieved") {
+    } else if (status == "received") {
       date_field = "date_received";
     } else if (status == "completed") {
       date_field = "date_completed";
@@ -40,7 +40,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
       date_field = "date_cancelled";
     } else if (status == "returned") {
       date_field = "date_returned";
-    } // add received
+    } 
     try {
       const currentDate = new Date().toISOString();
 
@@ -184,12 +184,12 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
             {orderTrackingStatus === "shipped" && (
               <OrderModalButton
                 className={`text-yellow-800 border-yellow-800 hover:bg-yellow-800`}
-                onClick={() => updateStatus("recieved")}
-                buttonName={"Recieve Order"}
+                onClick={() => updateStatus("received")}
+                buttonName={"Receive Order"}
               ></OrderModalButton>
             )}
 
-            {orderTrackingStatus === "recieved" && (
+            {orderTrackingStatus === "received" && (
               <OrderModalButton
                 className={`text-green-800 border-green-800 hover:bg-green-800`}
                 onClick={() => updateStatus("completed")}

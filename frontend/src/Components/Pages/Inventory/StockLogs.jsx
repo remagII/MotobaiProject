@@ -68,14 +68,19 @@ export default function Inventory() {
     }
   };
 
-  const handleRowDetails = (index) => {
-    const selectedLog = logs[index]; // Get the log based on the row clicked
-    setInboundStockItem(selectedLog.inboundStockItems); // Set the specific log's items
-    setSupplier(selectedLog.supplier_name);
-    setDetailsRow(index);
-    setMethod("Details");
-
-    toggleModal();
+  const handleRowDetails = (id) => {
+    console.log("Selected ID:", id); // Debug the passed id
+    const selectedLog = logs.find((log) => log.id === id);
+    console.log("Selected Log:", selectedLog); // Debug the selected log
+    if (selectedLog) {
+      setInboundStockItem(selectedLog.inboundStockItems);
+      setSupplier(selectedLog.supplier_name);
+      setDetailsRow(id);
+      setMethod("Details");
+      toggleModal();
+    } else {
+      console.error("No log found for the given ID");
+    }
   };
 
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
