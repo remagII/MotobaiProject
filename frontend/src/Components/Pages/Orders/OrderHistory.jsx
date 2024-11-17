@@ -52,9 +52,9 @@ export default function OrderHistory() {
 
     {
       header: "Last Updated",
-      row: "last_updated",
+      row: "order_tracking.last_updated",
       customRender: (item) => {
-        const createdAtDate = new Date(item.last_updated);
+        const createdAtDate = new Date(item.order_tracking.last_updated);
         const options = { hour: "numeric", minute: "numeric", hour12: true }; // Options for formatting time
         const formattedTime = createdAtDate.toLocaleString("en-US", options); // Format the time
         const formattedDate = `${
@@ -194,7 +194,7 @@ export default function OrderHistory() {
               columnArr={tableColumns}
               dataArr={order}
               editRow={handleRowDetails}
-              sortField="id"
+              sortField="order_tracking.last_updated"
               sortDirection="desc"
             />
           </div>

@@ -32,8 +32,8 @@ urlpatterns = [
     path('orderdetails/create/', views.OrderDetailsAdd.as_view(), name='orderdetails-add'),
     path('orderdetails/list/', views.OrderDetailsListView.as_view(), name='orderdetails-list'),
 
-    path('invoice/create/', views.InvoiceCreate.as_view(), name='invoice-create'),
-    path('invoice/list/', views.InvoiceListView.as_view(), name='invoice-list'),
+    path('payment/create/', views.PaymentCreate.as_view(), name='payment-create'),
+    path('payment/list/', views.PaymentListView.as_view(), name='payment-list'),
 
     path('ordertracking/create/', views.OrderTrackingCreate.as_view(), name='ordertracking-add'),
     path('ordertracking/list/', views.OrderTrackingListView.as_view(), name='ordertracking-list'),

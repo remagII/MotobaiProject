@@ -4,7 +4,7 @@ from rest_framework.exceptions import ValidationError
 from .models import (
         Product, Inventory, Account, Order, OrderDetails,
         OrderTracking, Customer, Employee, Supplier, 
-        InboundStock, InboundStockItem, Invoice
+        InboundStock, InboundStockItem, Payment
     )
 from decimal import Decimal
 
@@ -129,11 +129,11 @@ class InventorySerializer(serializers.ModelSerializer):
         depth = 1
 
 # ORDER MANAGEMENT
-class InvoiceSerializer(serializers.ModelSerializer):
+class PaymentSerializer(serializers.ModelSerializer):
     order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all(), required=False)
 
     class Meta:
-        model = Invoice
+        model = Payment
         fields = '__all__'
 
 class OrderTrackingSerializer(serializers.ModelSerializer):
@@ -159,7 +159,7 @@ class OrderSerializer(serializers.ModelSerializer):
     employee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all(), required=True)
     order_details = OrderDetailsSerializer(many=True)
     order_tracking = OrderTrackingSerializer(read_only=True)
-    invoice = InvoiceSerializer(read_only=True)
+    payment = PaymentSerializer(read_only=True)
 
     class Meta:
         model = Order
@@ -189,7 +189,7 @@ class OrderSerializer(serializers.ModelSerializer):
             OrderDetails.objects.create(order=order, **order_detail_data)
         
         OrderTracking.objects.create(order=order, status="unvalidated")
-        Invoice.objects.create(order=order, total_balance=total_balance)
+        Payment.objects.create(order=order, total_balance=total_balance)
 
         return order
 
