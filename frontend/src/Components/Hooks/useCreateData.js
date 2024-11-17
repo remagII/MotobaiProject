@@ -5,7 +5,7 @@ import api from "../../api";
 export function useCreateData() {
   const [loading, setLoading] = useState(false);
 
-  const createData = async (info, successMessage, errorMessage, toggleModal) => {
+  const createData = async (info, formData, successMessage, errorMessage, toggleModal) => {
     const url = `http://127.0.0.1:8000/api/${info}/create/`;
     // Show confirmation dialog before proceeding
     const result = await Swal.fire({

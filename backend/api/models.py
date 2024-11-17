@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.core.validators import MinLengthValidator, MinValueValidator
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.core.exceptions import ValidationError
 
 class Product(models.Model):
     product_name = models.CharField(max_length=100)
@@ -148,6 +149,9 @@ class OrderDetails(models.Model):
     product_name = models.CharField(max_length=64, null=True, blank=True)
 
     def save(self, *args, **kwargs):
+        if self.quantity <= 0:
+            raise ValidationError("Quantity must be greater than 0.")
+        
         if self.inventory:
             self.product_name = self.inventory.product.product_name
             self.product_price = self.inventory.product.price
