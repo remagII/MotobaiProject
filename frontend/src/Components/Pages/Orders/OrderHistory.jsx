@@ -14,7 +14,8 @@ export default function OrderHistory() {
     (item) =>
       item.order_tracking?.status !== "unvalidated" &&
       item.order_tracking?.status !== "validated" &&
-      item.order_tracking?.status !== "shipped"
+      item.order_tracking?.status !== "shipped" &&
+      item.order_tracking?.status !== "received"
   );
 
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
@@ -50,10 +51,10 @@ export default function OrderHistory() {
     },
 
     {
-      header: "Date and Time Created",
-      row: "order_date",
+      header: "Last Updated",
+      row: "last_updated",
       customRender: (item) => {
-        const createdAtDate = new Date(item.order_date);
+        const createdAtDate = new Date(item.last_updated);
         const options = { hour: "numeric", minute: "numeric", hour12: true }; // Options for formatting time
         const formattedTime = createdAtDate.toLocaleString("en-US", options); // Format the time
         const formattedDate = `${
@@ -87,6 +88,27 @@ export default function OrderHistory() {
             </p>
           );
         }
+        else if (item.order_tracking.status === "cancelled") {
+          return (
+            <p className="uppercase font-semibold text-green-600">
+              {item.order_tracking.status}
+            </p>
+          );
+        }
+        else if (item.order_tracking.status === "returned") {
+          return (
+            <p className="uppercase font-semibold text-green-600">
+              {item.order_tracking.status}
+            </p>
+          );
+        }
+        else {
+          return (
+            <p className="uppercase font-semibold text-green-600">
+              N/A
+            </p>
+          );
+        }
       },
     },
   ];
@@ -104,12 +126,12 @@ export default function OrderHistory() {
     }
   };
 
-  const handleRowDetails = (index) => {
-    const selectedItem = order[index]; // Get the log based on the row clicked
+  const handleRowDetails = (id) => {
+    const selectedItem = order.find((log) => log.id === id); // Get the log based on the row clicked
     setOrderDetails(selectedItem.order_details); // Set the specific log's items
     setOrderId(selectedItem.id);
 
-    setDetailsRow(index);
+    setDetailsRow(id);
     setMethod("Details");
 
     toggleModal();
@@ -173,7 +195,7 @@ export default function OrderHistory() {
               dataArr={order}
               editRow={handleRowDetails}
               sortField="id"
-              sortDirection="asc"
+              sortDirection="desc"
             />
           </div>
         </div>

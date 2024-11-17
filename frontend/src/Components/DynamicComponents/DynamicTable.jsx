@@ -81,7 +81,7 @@ export default function Table({ editRow, columnArr, dataArr, className, sortFiel
                 sortedDataArr.map((item, index) => {
                   return (
                     <tr
-                      onClick={() => editRow(index, item.id)}
+                      onClick={() => editRow(item.id)}
                       className={` bg-gray-50 hover:bg-red-700 hover:border-red-800 hover:text-white border-b-2 border-gray-200 transition-all duration-75 ease-in cursor-pointer`}
                       key={item.id}
                     >

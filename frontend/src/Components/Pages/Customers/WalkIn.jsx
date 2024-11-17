@@ -100,7 +100,7 @@ const WalkIn = () => {
   const { createData, loading: createLoading } = useCreateData();
   const { updateData, loading: updateLoading } = useUpdateData();
 
-  const onSubmitHandler = async (form) => {
+  const onSubmitHandler = async (form, callback) => {
     if (method === "create") {
       if (rowToEdit === null) {
         await createData(
@@ -116,7 +116,7 @@ const WalkIn = () => {
 
 
         triggerRefresh();
-        callback();
+        callback && callback(); 
         setRowToEdit(null);
       }
     } else if (method === "edit") {
@@ -141,8 +141,7 @@ const WalkIn = () => {
   const [rowToEdit, setRowToEdit] = useState(null);
   const [rowIdEdit, setRowIdEdit] = useState(null);
   const [btnTitle, setBtnTitle] = useState("Create Customer");
-  const handleEditRow = (index, id) => {
-    console.log("Editing row:", index); // just for troubleshoot
+  const handleEditRow = (id) => {
     console.log("ID:", id); // just for troubleshoot
     toggleModal();
     setRowIdEdit(id); // need to make null after this is done

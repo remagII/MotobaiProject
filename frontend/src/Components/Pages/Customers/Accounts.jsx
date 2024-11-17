@@ -257,8 +257,7 @@ export default function Accounts() {
   const [rowToEdit, setRowToEdit] = useState(null);
   const [rowIdEdit, setRowIdEdit] = useState(null);
   const [btnTitle, setBtnTitle] = useState("Create Account");
-  const handleEditRow = (index, id) => {
-    console.log("Editing row:", index); // just for troubleshoot
+  const handleEditRow = (id) => {
     console.log("ID:", id); // just for troubleshoot
     toggleModal();
     setRowIdEdit(id); // need to make null after this is done

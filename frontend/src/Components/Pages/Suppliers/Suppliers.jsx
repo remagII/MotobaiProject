@@ -219,7 +219,7 @@ const Suppliers = () => {
   const [rowToEdit, setRowToEdit] = useState(null);
   const [rowIdEdit, setRowIdEdit] = useState(null);
   const [btnTitle, setBtnTitle] = useState("Create Supplier");
-  const handleEditRow = (index, id) => {
+  const handleEditRow = (id) => {
     toggleModal();
     setRowIdEdit(id);
     setRowToEdit(supplier.findIndex((item) => item.id === id));

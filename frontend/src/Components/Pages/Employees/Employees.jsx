@@ -251,7 +251,7 @@ const Employees = () => {
   const [rowToEdit, setRowToEdit] = useState(null);
   const [rowIdEdit, setRowIdEdit] = useState(null);
   const [btnTitle, setBtnTitle] = useState("Create Employee");
-  const handleEditRow = (index, id) => {
+  const handleEditRow = (id) => {
     toggleModal();
     setRowIdEdit(id);
     setRowToEdit(employee.findIndex((item) => item.id === id));
