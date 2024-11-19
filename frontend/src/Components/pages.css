@@ -10,7 +10,7 @@ input:focus + .label-line,
 input:valid + .label-line {
   color: #2f9e44;
   font-weight: 500;
-  transform: translate(0px, -30px);
+  transform: translate(0px, -34px);
   z-index: 10;
   font-size: 14px;
   padding: 6px;

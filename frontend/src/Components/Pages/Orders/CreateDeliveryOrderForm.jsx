@@ -24,8 +24,9 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
   const confirmButton = async () => {
     const total_balance = totalPrice.toFixed(2);
     console.log(total_balance);
+
     if (initialOrder.length > 0) {
-      if (!selectedAccount || !selectedEmployee) {  
+      if (!selectedAccount || !form.employee_name) {
         alert("Please select an account and employee.");
         return;
       }
@@ -41,17 +42,16 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
           order_details: orderItems,
           order_type: "Delivery",
           account: selectedAccount,
-          employee: selectedEmployee, 
+          employee: selectedEmployee,
           total_balance: total_balance,
         });
         console.log("Order creation successful:", res.data);
         setInitialOrder([]);
       } catch (error) {
         console.error("Error Creating Order:", error);
-        ``;
       }
     } else {
-      alert("Please add atlesast one(1) product");
+      alert("Please add at least one (1) product");
     }
   };
 
@@ -98,17 +98,17 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
   const initialForm = prepareForm(formArr);
 
   const onChangeHandler = (e, fieldName, extraData = {}) => {
-    const { name, value } = e.target;
+    const { value } = e.target;
 
     setForm((prevForm) => ({
       ...prevForm,
-      [name]: value,
+      [fieldName]: value,
       ...extraData,
     }));
 
     if (fieldName === "account") {
       setSelectedAccount(extraData.account_id);
-    } else if (fieldName === "first_name") {
+    } else if (fieldName === "employee_name") {
       setSelectedEmployee(extraData.employee_id);
     }
   };
@@ -125,15 +125,38 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
     delete form.account_id;
     delete form.employee_id;
 
-    if (form && form.quantity && form && form.product_name) {
+    if (form.quantity && form.product_name) {
       setInitialOrder((prevOrder) => {
         const updatedOrder = [...prevOrder, form]; // Update order
-        setForm(initialForm); // Reset the form
+        setForm((prevForm) => ({
+          ...initialForm, // Reset other fields
+          employee_name: prevForm.employee_name, // Retain employee_name
+          employee_id: prevForm.employee_id, // Retain employee_id
+        }));
         console.log(updatedOrder); // This will now correctly log the updated order
         return updatedOrder; // Return updated state
       });
     }
   };
+
+  const validateInput = (field, options, fieldName) => {
+    // Normalize input and options for comparison
+    const inputValue = (form[field]?.trim() || "").toLowerCase();
+    const isValid = options.some(
+      (option) => option[fieldName].trim().toLowerCase() === inputValue
+    );
+
+    if (!isValid) {
+      setForm((prevForm) => ({
+        ...prevForm,
+        [field]: "",
+        [`${field}_id`]: null,
+      }));
+      alert(`Please input the correct ${fieldName.replace("_", " ")}`);
+    }
+  };
+
+  const [searchInput, setSearchInput] = useState("");
 
   return (
     <section>
@@ -151,75 +174,179 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
               />
             </div>
             <form onSubmit={confirmHandler} className={`min-w-[80vw] `}>
-              <div className={`bg-gray-100 py-10 px-8 h-[80vh]  rounded-b-lg`}>
+              <div className={`bg-gray-100 py-10 px-8 h-full rounded-b-lg`}>
                 <h1 className="font-bold text-2xl mb-10">
                   Create Order Delivery
                 </h1>
                 <div className={`ml-4 gap-x-6 gap-y-8 flex min-w-[40vw]`}>
                   {/* ACCOUNT SELECTION */}
-                  <div className={`flex justify-center relative min-w-[300px]`}>
-                    <select
-                      className="overflow-y-auto appearance-none shadow-shadowTable text-lg min-w-[10vw] min-h-6 p-2 w-full rounded-md border-2"
-                      required
-                      onChange={(e) =>
-                        onChangeHandler(e, "account", {
-                          account_id:
-                            e.target.selectedOptions[0].getAttribute("data-id"),
-                        })
-                      }
-                      name="account"
-                      defaultValue={``}
-                    >
-                      <option value={form.account || ""} disabled>
-                        Select an Account
-                      </option>
-                      {accountOptions.map((option) => (
-                        <option
-                          key={option.id}
-                          value={option.account}
-                          data-id={option.id}
+                  <div className={`flex justify-center relative  gap-4`}>
+                    <label className="font-bold">Account</label>
+                    <div className={`flex justify-center relative`}>
+                      <div className={`border-2 rounded-md`}>
+                        <input
+                          placeholder="Search for Account"
+                          autoComplete="off"
+                          className="text-lg p-2 min-w-[350px]"
+                          type="text"
+                          onChange={(e) =>
+                            onChangeHandler(e, "account", {
+                              account_id:
+                                accountOptions.find(
+                                  (item) => item.account === e.target.value
+                                ) || null,
+                            })
+                          }
+                          onBlur={() => {
+                            if (form.account) {
+                              validateInput(
+                                "account",
+                                accountOptions,
+                                "account"
+                              );
+                            }
+                          }}
+                          name="account"
+                          value={form.account || ""}
+                        />
+                        <div
+                          className={`flex flex-col absolute bg-gray-50 overflow-y-auto max-h-[180px] min-w-[450px] shadow-md rounded-md z-50`}
                         >
-                          {`${option.account}`}
-                        </option>
-                      ))}
-                    </select>
-                    <div>
-                      <ChevronDownIcon
-                        className={` size-4 h-full mr-2  absolute flex right-0 items-center justify-center`}
-                      />
+                          {accountOptions
+                            .filter((item) => {
+                              const searchTerm = (
+                                form.account || ""
+                              ).toLowerCase();
+                              const fullName = item.account.toLowerCase();
+
+                              return (
+                                searchTerm &&
+                                fullName.startsWith(searchTerm) &&
+                                fullName !== searchTerm
+                              );
+                            })
+                            .map((item) => {
+                              return (
+                                <div
+                                  onMouseDown={(e) => {
+                                    e.preventDefault();
+                                  }}
+                                  onClick={() => {
+                                    setForm({
+                                      ...form,
+                                      account: item.account,
+                                      account_id: item.id,
+                                    });
+                                  }}
+                                  data-id={item.id}
+                                  key={item.id}
+                                  className={`hover:bg-red-700 hover:text-white p-4 rounded-sm transition-all duration-100 cursor-pointer`}
+                                >
+                                  {item.account}
+                                </div>
+                              );
+                            })}
+                        </div>
+                      </div>
+                      <div>
+                        <ChevronDownIcon
+                          className={` size-4 h-full mr-2  absolute flex right-0 items-center justify-center`}
+                        />
+                      </div>
                     </div>
                   </div>
                   {/* EMPLOYEE SELECTION */}
-                  <div className={`flex justify-center relative min-w-[300px]`}>
-                    <select
-                      className="overflow-y-auto appearance-none shadow-shadowTable text-lg min-w-[10vw] min-h-6 p-2 w-full rounded-md border-2"
-                      required
-                      onChange={(e) =>
-                        onChangeHandler(e, "first_name", {
-                          employee_id:
-                            e.target.selectedOptions[0].getAttribute("data-id"),
-                        })
-                      }
-                      name="employee_name"
-                      defaultValue={``}
-                    >
-                      <option value={form.employee_name || ""} disabled>
-                        Select an Employee
-                      </option>
-                      {employeeOptions.map((option) => (
-                        <option
-                          key={option.id}
-                          value={`${option.first_name} ${option.last_name}`}
-                          data-id={option.id}
-                        >
-                          {`${option.first_name} ${option.last_name}`}
-                        </option>
-                      ))}
-                    </select>
-                    <div>
-                      <ChevronDownIcon
-                        className={` size-4 h-full mr-2  absolute flex right-0 items-center justify-center`}
+                  <label className="font-bold ">Employee</label>
+                  <div className={`flex justify-center relative`}>
+                    <div className={`border-2 rounded-md`}>
+                      <input
+                        autoComplete="off"
+                        placeholder="Search for Employee"
+                        className="text-lg p-2 min-w-[350px]"
+                        type="text"
+                        onChange={(e) => {
+                          setSearchInput(e.target.value); // Update the search input value
+                        }}
+                        onBlur={() => {
+                          // Validate the input only if the user hasn't selected from the dropdown
+                          const matchedEmployee = employeeOptions.find(
+                            (employee) => {
+                              const fullName = [
+                                employee.first_name,
+                                employee.middle_name,
+                                employee.last_name,
+                              ]
+                                .join(" ")
+                                .toLowerCase();
+                              return fullName === searchInput.toLowerCase();
+                            }
+                          );
+
+                          if (!matchedEmployee) {
+                            alert("Please select a valid employee.");
+                            setSearchInput(""); // Reset input
+                            setForm({
+                              ...form,
+                              employee_name: "",
+                              employee_id: null,
+                            });
+                            setSelectedEmployee(null);
+                          }
+                        }}
+                        name="employee_name"
+                        value={searchInput} // Bind to the search input state
                       />
+                      <div
+                        className={`flex flex-col absolute bg-gray-50 overflow-y-auto max-h-[180px] min-w-[450px] shadow-md rounded-md z-50`}
+                      >
+                        {employeeOptions
+                          .filter((employee) => {
+                            const searchTerm = searchInput.toLowerCase();
+                            const fullName = [
+                              employee.first_name,
+                              employee.middle_name,
+                              employee.last_name,
+                            ]
+                              .join(" ")
+                              .toLowerCase();
+
+                            return (
+                              searchTerm &&
+                              fullName.startsWith(searchTerm) &&
+                              fullName !== searchTerm
+                            );
+                          })
+                          .map((employee) => (
+                            <div
+                              key={employee.id}
+                              onMouseDown={(e) => e.preventDefault()}
+                              onClick={() => {
+                                // Update the form when an option is clicked
+                                setForm({
+                                  ...form,
+                                  employee_name: [
+                                    employee.first_name,
+                                    employee.middle_name,
+                                    employee.last_name,
+                                  ].join(" "),
+                                  employee_id: employee.id,
+                                });
+                                setSelectedEmployee(employee.id); // Update state
+                                setSearchInput(
+                                  [
+                                    employee.first_name,
+                                    employee.middle_name,
+                                    employee.last_name,
+                                  ].join(" ")
+                                ); // Set the input value to the selected employee
+                              }}
+                              className={`hover:bg-red-700 hover:text-white p-4 rounded-sm transition-all duration-100 cursor-pointer`}
+                            >
+                              {employee.first_name} {employee.middle_name}{" "}
+                              {employee.last_name}
+                            </div>
+                          ))}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -236,47 +363,89 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                   <div className="flex items-center gap-4">
                     {/* PRODUCT SELECT */}
                     <label className="font-bold">Product</label>
-                    <div
-                      className={`flex justify-center relative min-w-[300px]`}
-                    >
-                      <select
-                        className="overflow-y-auto appearance-none shadow-shadowTable text-lg min-w-[10vw] min-h-6 p-2 w-full rounded-md border-2"
-                        required
-                        onChange={(e) =>
-                          onChangeHandler(e, "product_name", {
-                            id: e.target.selectedOptions[0].getAttribute(
-                              "data-id"
-                            ),
-                            product_price:
-                              e.target.selectedOptions[0].getAttribute(
-                                "product_price"
-                              ),
-                          })
-                        }
-                        name="product_name"
-                        value={form.product_name || ""}
-                      >
-                        <option value="" disabled>
-                          Select A Product
-                        </option>
-                        {productOptions.map((option) => (
-                          <option
-                            key={option.product.id}
-                            value={option.product.product_name}
-                            data-id={option.product.id}
-                            product_price={option.product.price}
-                          >
-                            {`${option.product.product_name}`}
-                          </option>
-                        ))}
-                      </select>
+                    <div className={`flex justify-center relative`}>
+                      <div className={`border-2 rounded-md`}>
+                        <input
+                          autoComplete="off"
+                          placeholder="Search for Product"
+                          className="text-lg p-2 min-w-[350px]"
+                          type="text"
+                          onChange={(e) => {
+                            const selectedProduct = productOptions.find(
+                              (item) =>
+                                item.product.product_name.toLowerCase ===
+                                e.target.value.toLowerCase
+                            );
+                            console.log("Selected Product:", selectedProduct);
+
+                            onChangeHandler(e, "product_name", {
+                              inventory_id: selectedProduct
+                                ? selectedProduct.product.id
+                                : null,
+                              product_price: selectedProduct
+                                ? selectedProduct.product.product_price
+                                : null,
+                            });
+                          }}
+                          onBlur={() => {
+                            if (form.product_name) {
+                              validateInput(
+                                "product_name",
+                                productOptions.map((item) => ({
+                                  product_name: item.product.product_name,
+                                })), // Flatten options to match the expected structure
+                                "product_name"
+                              );
+                            }
+                          }}
+                          name="product_name"
+                          value={form.product_name || ""}
+                        />
+                        <div
+                          className={`flex flex-col absolute bg-gray-50 overflow-y-auto max-h-[180px] min-w-[450px] shadow-md rounded-md z-50`}
+                        >
+                          {productOptions
+                            .filter((item) => {
+                              const searchTerm = (
+                                form.product_name || ""
+                              ).toLowerCase();
+                              const fullName =
+                                item.product.product_name.toLowerCase();
+
+                              return (
+                                searchTerm &&
+                                fullName.startsWith(searchTerm) &&
+                                fullName !== searchTerm
+                              );
+                            })
+                            .map((item) => {
+                              return (
+                                <div
+                                  onMouseDown={(e) => e.preventDefault()}
+                                  onClick={() =>
+                                    setForm({
+                                      ...form,
+                                      product_name: item.product.product_name,
+                                      product_price: item.product.product_price,
+                                      inventory_id: item.product.id,
+                                    })
+                                  }
+                                  data-id={item.product.id}
+                                  key={item.product.id}
+                                  className={`hover:bg-red-700 hover:text-white p-4 rounded-sm transition-all duration-100 cursor-pointer`}
+                                >
+                                  {item.product.product_name}
+                                </div>
+                              );
+                            })}
+                        </div>
+                      </div>
                       <div>
                         <ChevronDownIcon
                           className={` size-4 h-full mr-2  absolute flex right-0 items-center justify-center`}
                         />
                       </div>
                     </div>
-                    {/* SUPPLIER SELECT */}
                     <div className={`flex justify-center relative`}>
                       <div>
                         <ChevronDownIcon
@@ -298,7 +467,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                         name={name}
                         type={type}
                         value={form[name] || ""}
-                        onChange={(e) => onChangeHandler(e)}
+                        onChange={(e) => onChangeHandler(e, name)}
                         required
                       ></input>
                       <label

@@ -4,8 +4,15 @@ import api from "../../api";
 
 export function useUpdateData() {
   const [loading, setLoading] = useState(false);
-  
-  const updateData = async (info, id, formData, successMessage, errorMessage, toggleModal) => {
+
+  const updateData = async (
+    info,
+    id,
+    formData,
+    successMessage,
+    errorMessage,
+    toggleModal
+  ) => {
     const url = `http://127.0.0.1:8000/api/${info}/update/${id}/`;
     // Show confirmation dialog before proceeding
     const result = await Swal.fire({
@@ -13,9 +20,9 @@ export function useUpdateData() {
       text: "This action cannot be undone.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
+      confirmButtonColor: "#196e3a",
       cancelButtonColor: "#d33",
-      confirmButtonText: `Yes, edit it!`,
+      confirmButtonText: `Yes, edit it`,
     });
 
     // If user confirms, proceed with the action

@@ -4,7 +4,6 @@ import Table from "../../DynamicComponents/DynamicTable.jsx";
 import Overview from "../../Overview.jsx";
 import StockInForm from "./StockInForm.jsx";
 import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
-
 import { useFetchData } from "../../Hooks/useFetchData.js";
 
 export default function Inventory() {
@@ -55,13 +54,6 @@ export default function Inventory() {
       row: "product.vehicle_type",
     },
     {
-      header: "Threshold",
-      row: "stock_minimum_threshold",
-      customRender: (item) => {
-        return <p className="font-semibold">{item.stock_minimum_threshold}</p>;
-      },
-    },
-    {
       header: "Status",
       row: "stock",
       customRender: (item) => {
@@ -72,6 +64,13 @@ export default function Inventory() {
         } else {
           return <p className={`text-green-500 font-bold`}>ACTIVE</p>;
         }
+      },
+    },
+    {
+      header: "Threshold",
+      row: "stock_minimum_threshold",
+      customRender: (item) => {
+        return <p className="font-semibold">{item.stock_minimum_threshold}</p>;
       },
     },
     {

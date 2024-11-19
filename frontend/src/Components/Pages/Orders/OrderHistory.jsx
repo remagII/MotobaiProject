@@ -43,7 +43,7 @@ export default function OrderHistory() {
       customRender: (item) => {
         return (
           <p>
-            {item.employee_last_name}, {item.employee_first_name},
+            {item.employee_last_name}, {item.employee_first_name},{""}
             {item.employee_middle_name}
           </p>
         );
@@ -68,13 +68,17 @@ export default function OrderHistory() {
     {
       header: "Order Type",
       customRender: (item) => {
-        if (item.order_type === "Delivery") {
-          return (
-            <p className="text-orange-600 font-bold uppercase">
-              {item.order_type}
-            </p>
-          );
-        }
+        return (
+          <p
+            className={`font-bold uppercase ${
+              item.order_type === "Delivery"
+                ? "text-red-600"
+                : "text-orange-600"
+            }`}
+          >
+            {item.order_type}
+          </p>
+        );
       },
     },
 
@@ -87,27 +91,20 @@ export default function OrderHistory() {
               {item.order_tracking.status}
             </p>
           );
-        }
-        else if (item.order_tracking.status === "cancelled") {
+        } else if (item.order_tracking.status === "cancelled") {
           return (
             <p className="uppercase font-semibold text-green-600">
               {item.order_tracking.status}
             </p>
           );
-        }
-        else if (item.order_tracking.status === "returned") {
+        } else if (item.order_tracking.status === "returned") {
           return (
             <p className="uppercase font-semibold text-green-600">
               {item.order_tracking.status}
             </p>
           );
-        }
-        else {
-          return (
-            <p className="uppercase font-semibold text-green-600">
-              N/A
-            </p>
-          );
+        } else {
+          return <p className="uppercase font-semibold text-green-600">N/A</p>;
         }
       },
     },

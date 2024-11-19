@@ -349,7 +349,7 @@ export default function Products() {
 
             <DynamicModal modal={packageModal} toggleModal={packageModalToggle}>
               <DynamicForm
-                btnTitle={btnTitle}
+                btnTitle={"Create Package"}
                 deleteBtn={deleteBtn}
                 title={"Package"}
                 formArr={packageFormArr}

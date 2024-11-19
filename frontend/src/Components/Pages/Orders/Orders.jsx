@@ -11,7 +11,7 @@ import CreateWalkinOrderForm from "./CreateWalkinOrderForm.jsx";
 export default function Orders() {
   const [orderDetails, setOrderDetails] = useState([]);
   const [orderId, setOrderId] = useState();
-  const { data: orders } = useFetchData("order");
+  const { data: orders, triggerRefresh } = useFetchData("order");
 
   const order = orders.filter(
     (item) =>
@@ -24,14 +24,14 @@ export default function Orders() {
   const [createWalkinModal, setCreateWalkinModal] = useState(false);
 
   const toggleCreateDeliveryModal = () => {
+    triggerRefresh();
     setCreateDeliveryModal((m) => (m = !m));
   };
 
   const toggleCreateWalkinModal = () => {
+    triggerRefresh();
     setCreateWalkinModal((m) => (m = !m));
   };
-
-  
 
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
   const tableColumns = [
@@ -58,7 +58,7 @@ export default function Orders() {
       customRender: (item) => {
         return (
           <p>
-            {item.employee_last_name}, {item.employee_first_name},
+            {item.employee_last_name}, {item.employee_first_name},{" "}
             {item.employee_middle_name}
           </p>
         );
@@ -77,6 +77,22 @@ export default function Orders() {
         }/${createdAtDate.getDate()}/${createdAtDate.getFullYear()} - ${formattedTime}`;
 
         return <p>{formattedDate}</p>;
+      },
+    },
+    {
+      header: "Order Type",
+      customRender: (item) => {
+        return (
+          <p
+            className={`font-bold uppercase ${
+              item.order_type === "Delivery"
+                ? "text-red-600"
+                : "text-orange-600"
+            }`}
+          >
+            {item.order_type}
+          </p>
+        );
       },
     },
 

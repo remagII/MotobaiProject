@@ -13,7 +13,7 @@ const DynamicCustomLink = ({ to, children, ...props }) => {
         isActive ? "bg-red-600 text-white" : "bg-white"
       } `}
     >
-      <Link className={`flex gap-3 px-4 py-2`} to={to} {...props}>
+      <Link className={`flex gap-3 px-4 py-2 text-base`} to={to} {...props}>
         {children}
       </Link>
     </button>

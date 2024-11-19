@@ -30,7 +30,6 @@ export default function Accounts() {
   };
 
   // ERROR WINDOW TOGGLE
-
   const [errorWindow, setErrorWindow] = useState(false);
   const toggleErrorWindow = () => {
     setErrorWindow((e) => (e = !e));

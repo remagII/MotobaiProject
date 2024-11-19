@@ -5,17 +5,24 @@ import api from "../../api";
 export function useCreateData() {
   const [loading, setLoading] = useState(false);
 
-  const createData = async (info, successMessage, errorMessage, toggleModal) => {
+  const createData = async (
+    info,
+    formData,
+    successMessage,
+    errorMessage,
+    toggleModal
+  ) => {
     const url = `http://127.0.0.1:8000/api/${info}/create/`;
     // Show confirmation dialog before proceeding
     const result = await Swal.fire({
+      customClass: { container: "create-swal" },
       title: `Are you sure you want to create this data?`,
       text: "This action cannot be undone.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
+      confirmButtonColor: "#196e3a",
       cancelButtonColor: "#d33",
-      confirmButtonText: `Yes, create it!`,
+      confirmButtonText: `Yes, create it`,
     });
 
     // If user confirms, proceed with the action

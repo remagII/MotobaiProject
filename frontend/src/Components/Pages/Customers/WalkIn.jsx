@@ -85,7 +85,6 @@ const WalkIn = () => {
     },
   ];
 
-  
   const { data: customer, triggerRefresh } = useFetchData("customer");
   const { deleteData, error } = useDeleteData(); // add error field here later
 
@@ -113,15 +112,25 @@ const WalkIn = () => {
           "There was an error creating the customer.",
           toggleModal
         );
-
-
-        triggerRefresh();
-        callback && callback(); 
-        setRowToEdit(null);
+        errorFields = [];
+        for (const [key, value] of Object.entries(form)) {
+          if (!value) {
+            errorFields.push(key);
+          }
+        }
+        setErrors((e) => errorFields.join(", "));
+        {
+          !errorWindow ? toggleErrorWindow() : "";
+        }
       }
+
+      triggerRefresh();
+      callback && callback();
+      setRowToEdit(null);
     } else if (method === "edit") {
       await updateData(
-        `customer`, rowIdEdit,
+        `customer`,
+        rowIdEdit,
         {
           customer_name: form.customer_name,
           phone_number: form.phone_number,
@@ -132,7 +141,7 @@ const WalkIn = () => {
       );
 
       triggerRefresh();
-      callback && callback(); 
+      callback && callback();
       setRowToEdit(null);
     }
   };
@@ -222,6 +231,26 @@ const WalkIn = () => {
             sortField="date_created"
             sortDirection="desc"
           />
+        </div>
+        <div className="absolute z-20 top-20  left-1/2 transform -translate-x-1/2  ">
+          {errorWindow && (
+            <div
+              className={`rounded mt-8 p-4 text-lg font-bold text-red-600   bg-red-200 flex justify-between transition-all w-[70vw] shadow-2xl`}
+            >
+              <h1>
+                <span className="text-red-700">
+                  Please fill in properly the:{" "}
+                </span>
+                {errors}
+              </h1>
+              <button
+                onClick={toggleErrorWindow}
+                className={`p-2 hover:text-red-700 text-xl`}
+              >
+                Close
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </section>

@@ -11,6 +11,7 @@ import { useFetchData } from "../../Hooks/useFetchData.js";
 
 const StockInForm = ({ confirmHandler }) => {
   const [successWindow, setSuccessWindow] = useState(false);
+  const [referenceNumber, setReferenceNumber] = useState("");
   const toggleSuccessWindow = () => {
     setSuccessWindow((e) => (e = !e));
   };
@@ -38,21 +39,17 @@ const StockInForm = ({ confirmHandler }) => {
       name: "quantity",
       type: "number",
     },
-    {
-      label: "Reference #",
-      name: "reference_number",
-      type: "number",
-    },
   ];
   const tableColumns = [
+    {
+      header: "SKU",
+      row: "sku",
+    },
     {
       header: "Product Name",
       row: "product_name",
     },
-    {
-      header: "Reference #",
-      row: "reference_number",
-    },
+
     {
       header: "Quantity to add",
       row: "quantity",
@@ -78,11 +75,17 @@ const StockInForm = ({ confirmHandler }) => {
       [fieldName]: value,
       ...extraData,
     }));
+
+    if (fieldName === "product") {
+      setSelectedAccount(extraData.account_id);
+    } else if (fieldName === "first_name") {
+      setSelectedEmployee(extraData.employee_id);
+    }
   };
 
   //SET FORM BACK TO OLD STATE
   const onSubmitHandler = () => {
-    if (form && form.quantity && form && form.product_name) {
+    if (form && form.quantity && form.product_name) {
       setInitialStockIn((prevStock) => {
         const updatedStock = [...prevStock, form]; // Update stock
         setForm(initialForm); // Reset the form
@@ -161,94 +164,9 @@ const StockInForm = ({ confirmHandler }) => {
               />
             </div>
             <form onSubmit={confirmHandler} className={`min-w-[70vw]`}>
-              <div className={`bg-gray-100 py-10 px-8 h-[87vh]  rounded-b-lg`}>
+              <div className={`bg-gray-100 py-10 px-8 h-full  rounded-b-lg`}>
                 <h1 className="font-bold text-2xl mb-10">Stock In</h1>
-                <div className={`flex gap-4 items-center mb-4`}>
-                  <label className="font-bold">Supplier</label>
-                  <div className={`flex justify-center relative`}>
-                    <div className={`border-2 rounded-md`}>
-                      <input
-                        placeholder="Search for Supplier"
-                        autoComplete="off"
-                        className="text-lg p-2 min-w-[350px]"
-                        type="text"
-                        onChange={(e) =>
-                          onChangeHandler(e, "supplier_name", {
-                            supplier_id:
-                              supplierOptions.find(
-                                (item) => item.supplier_name === e.target.value
-                              ) || null,
-                          })
-                        }
-                        onBlur={() => {
-                          if (form.supplier_name) {
-                            validateInput(
-                              "supplier_name",
-                              supplierOptions,
-                              "supplier_name"
-                            );
-                          }
-                        }}
-                        name="supplier_name"
-                        value={form.supplier_name || ""}
-                      />
-                      <div
-                        className={`flex flex-col absolute bg-gray-50 overflow-y-auto max-h-[180px] min-w-[450px] shadow-md rounded-md z-50`}
-                      >
-                        {supplierOptions
-                          .filter((item) => {
-                            const searchTerm = (
-                              form.supplier_name || ""
-                            ).toLowerCase();
-                            const fullName = item.supplier_name.toLowerCase();
-
-                            return (
-                              searchTerm &&
-                              fullName.startsWith(searchTerm) &&
-                              fullName !== searchTerm
-                            );
-                          })
-                          .map((item) => {
-                            return (
-                              <div
-                                onMouseDown={(e) => {
-                                  e.preventDefault();
-                                }}
-                                onClick={() => {
-                                  setForm({
-                                    ...form,
-                                    supplier_name: item.supplier_name,
-                                    supplier_id: item.id,
-                                  });
-                                }}
-                                data-id={item.id}
-                                key={item.id}
-                                className={`hover:bg-red-700 hover:text-white p-4 rounded-sm transition-all duration-100 cursor-pointer`}
-                              >
-                                {item.supplier_name}
-                              </div>
-                            );
-                          })}
-                      </div>
-                    </div>
-
-                    <div>
-                      <ChevronDownIcon
-                        className={` size-4 h-full mr-2  absolute flex right-0 items-center justify-center`}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="mb-12 ml-4 min-h-[40vh] h-[42vh] overflow-y-hidden">
-                  <Table
-                    columnArr={tableColumns}
-                    dataArr={initialStockIn}
-                    className={`!max-h-[40vh]`}
-                    sortField={null}
-                    sortDirection="asc"
-                  />
-                </div>
-                <div className={`gap-x-6 gap-y-8 flex flex-wrap `}>
+                <div className="mb-12 ml-4 h-[45vh] md:h-[40vh] sm:h-[20vh] overflow-y-hidden">
                   <div className="flex items-center gap-4">
                     <label className="font-bold">Product</label>
                     <div className={`flex justify-center relative`}>
@@ -271,7 +189,9 @@ const StockInForm = ({ confirmHandler }) => {
                             if (form.product_name) {
                               validateInput(
                                 "product_name",
-                                productOptions,
+                                productOptions.map((item) => ({
+                                  product_name: item.product.product_name,
+                                })), // Flatten options to match the expected structure
                                 "product_name"
                               );
                             }
@@ -280,7 +200,7 @@ const StockInForm = ({ confirmHandler }) => {
                           value={form.product_name || ""}
                         />
                         <div
-                          className={`flex flex-col absolute bg-gray-50 overflow-y-auto max-h-[180px] min-w-[450px] shadow-md rounded-md`}
+                          className={`flex flex-col absolute bg-gray-50 overflow-y-auto max-h-[180px] min-w-[450px] shadow-md rounded-md z-50`}
                         >
                           {productOptions
                             .filter((item) => {
@@ -323,45 +243,146 @@ const StockInForm = ({ confirmHandler }) => {
                         />
                       </div>
                     </div>
-                  </div>
-                  {formArr.map(({ label, name, type, readOnly }, index) => (
-                    <div
-                      className={`flex flex-col justify-between`}
-                      key={index}
-                    >
-                      <input
-                        className={`text-base border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none shadow-sm`}
-                        readOnly={readOnly}
-                        label={label}
-                        id={name}
-                        name={name}
-                        type={type}
-                        value={form[name] || ""}
-                        onChange={(e) => onChangeHandler(e, name)}
-                        min="1"
-                        required
-                      ></input>
-                      <label
-                        className={`absolute transition-all duration-100 ease-in  px-4 py-2 label-line text-gray-600 label-line`}
-                        htmlFor={name}
+                    {formArr.map(({ label, name, type, readOnly }, index) => (
+                      <div
+                        className={`flex flex-col justify-between`}
+                        key={index}
                       >
-                        {label}
+                        <input
+                          className={`text-lg border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none shadow-sm`}
+                          readOnly={readOnly}
+                          label={label}
+                          id={name}
+                          name={name}
+                          type={type}
+                          value={form[name] || ""}
+                          onChange={(e) => onChangeHandler(e, name)}
+                          min="1"
+                          required
+                        ></input>
+                        <label
+                          className={`absolute transition-all duration-100 ease-in  px-4 py-2 text-gray-600 label-line`}
+                          htmlFor={name}
+                        >
+                          {label}
+                        </label>
+                      </div>
+                    ))}
+                    {/* CREATE ROW BUTTON */}
+                    <button
+                      onClick={(e) => {
+                        onSubmitHandler();
+                      }}
+                      type="submit"
+                      className={`shadow-md bg-white border-2 border-red-700 rounded px-4 py-2 hover:bg-red-700 hover:text-white transition-all duration-100 flex gap-4 items-center`}
+                    >
+                      Add Product to Stock In
+                      <PlusCircleIcon className={`size-6`} />
+                    </button>
+                  </div>
+                  <Table
+                    columnArr={tableColumns}
+                    dataArr={initialStockIn}
+                    className={`!max-h-[40vh]`}
+                    sortField={null}
+                    sortDirection="asc"
+                  />
+                </div>
+
+                <div className={`gap-x-6 gap-y-8 flex flex-wrap `}>
+                  <div className={`flex gap-4 items-center mb-4`}>
+                    <div className="flex items-center gap-4 ml-4">
+                      <input
+                        className={`text-lg border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none shadow-sm`}
+                        type="number"
+                        value={referenceNumber}
+                        onChange={(e) => setReferenceNumber(e.target.value)}
+                        required
+                        name="reference"
+                      />
+                      <label
+                        className={`text-base absolute transition-all duration-100 ease-in px-4 py-2 text-gray-600 label-line`}
+                      >
+                        Reference Number
                       </label>
                     </div>
-                  ))}
+                    <label className="font-bold">Supplier</label>
+                    <div className={`flex justify-center relative`}>
+                      <div className={`border-2 rounded-md`}>
+                        <input
+                          placeholder="Search for Supplier"
+                          autoComplete="off"
+                          className="text-lg p-2 min-w-[350px]"
+                          type="text"
+                          onChange={(e) =>
+                            onChangeHandler(e, "supplier_name", {
+                              supplier_id:
+                                supplierOptions.find(
+                                  (item) =>
+                                    item.supplier_name === e.target.value
+                                ) || null,
+                            })
+                          }
+                          onBlur={() => {
+                            if (form.supplier_name) {
+                              validateInput(
+                                "supplier_name",
+                                supplierOptions,
+                                "supplier_name"
+                              );
+                            }
+                          }}
+                          name="supplier_name"
+                          value={form.supplier_name || ""}
+                        />
+                        <div
+                          className={`flex flex-col absolute bg-gray-50 overflow-y-auto max-h-[180px] min-w-[450px] shadow-md rounded-md z-50`}
+                        >
+                          {supplierOptions
+                            .filter((item) => {
+                              const searchTerm = (
+                                form.supplier_name || ""
+                              ).toLowerCase();
+                              const fullName = item.supplier_name.toLowerCase();
+
+                              return (
+                                searchTerm &&
+                                fullName.startsWith(searchTerm) &&
+                                fullName !== searchTerm
+                              );
+                            })
+                            .map((item) => {
+                              return (
+                                <div
+                                  onMouseDown={(e) => {
+                                    e.preventDefault();
+                                  }}
+                                  onClick={() => {
+                                    setForm({
+                                      ...form,
+                                      supplier_name: item.supplier_name,
+                                      supplier_id: item.id,
+                                    });
+                                  }}
+                                  data-id={item.id}
+                                  key={item.id}
+                                  className={`hover:bg-red-700 hover:text-white p-4 rounded-sm transition-all duration-100 cursor-pointer`}
+                                >
+                                  {item.supplier_name}
+                                </div>
+                              );
+                            })}
+                        </div>
+                      </div>
+                      <div>
+                        <ChevronDownIcon
+                          className={` size-4 h-full mr-2  absolute flex right-0 items-center justify-center`}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div className={`flex justify-end gap-4 mt-12`}>
-                  {/* CREATE ROW BUTTON */}
-                  <button
-                    onClick={(e) => {
-                      onSubmitHandler();
-                    }}
-                    type="submit"
-                    className={`shadow-md bg-white border-2 border-red-700 rounded px-4 py-2 hover:bg-red-700 hover:text-white transition-all duration-100 flex gap-4 items-center`}
-                  >
-                    Add Product to Stock In
-                    <PlusCircleIcon className={`size-6`} />
-                  </button>
                   <button
                     type="button"
                     onClick={(e) => {

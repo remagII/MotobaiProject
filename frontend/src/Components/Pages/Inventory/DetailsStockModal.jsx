@@ -5,29 +5,27 @@ import Table from "../../DynamicComponents/DynamicTable";
 const DetailsStockModal = ({ logsData, supplierData }) => {
   const tableColumns = [
     {
+      header: "SKU",
+      row: "sku",
+    },
+    {
       header: "Product Name",
       customRender: (item) => {
-        return (
-          <p>{item.product.product_name}</p>
-        )
+        return <p>{item.product.product_name}</p>;
       },
     },
     {
       header: "Supplier Name",
       customRender: () => {
-        return (
-          <p>{supplierData}</p>
-        );
+        return <p>{supplierData}</p>;
       },
     },
     {
       header: "Quantity Added",
       customRender: (item) => {
-        return (
-          <p>{item.quantity}</p>
-        )
+        return <p>{item.quantity}</p>;
       },
-    }
+    },
   ];
 
   return (
@@ -43,14 +41,14 @@ const DetailsStockModal = ({ logsData, supplierData }) => {
             alt="Motobai-Logo"
           />
         </div>
-        
+
         <div className={`bg-gray-100 p-12 pr-6 h-[75vh] w-[65vw] rounded-b-lg`}>
-          <Table 
-            columnArr={tableColumns} 
+          <Table
+            columnArr={tableColumns}
             dataArr={logsData}
             sortField={null}
-            sortDirection="asc">
-          </Table>
+            sortDirection="asc"
+          ></Table>
         </div>
       </div>
     </section>

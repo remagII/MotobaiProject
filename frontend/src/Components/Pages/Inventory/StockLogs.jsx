@@ -18,8 +18,9 @@ export default function Inventory() {
     },
     {
       header: "Reference #",
-      row: "reference",
+      row: "reference_number",
     },
+
     {
       header: "Employee Name",
       row: "employee_fname",

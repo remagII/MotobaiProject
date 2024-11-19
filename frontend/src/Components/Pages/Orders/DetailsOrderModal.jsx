@@ -40,7 +40,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
       date_field = "date_cancelled";
     } else if (status == "returned") {
       date_field = "date_returned";
-    } 
+    }
     try {
       const currentDate = new Date().toISOString();
 
@@ -118,7 +118,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
         </div>
 
         <div
-          className={`flex flex-col gap-12 bg-gray-100 p-12 pr-6 h-[80vh] w-[75vw] rounded-b-lg`}
+          className={`flex flex-col gap-12 bg-gray-100 p-12 pr-6 h-full w-[75vw] rounded-b-lg`}
         >
           <div className="flex gap-12">
             <h1 className="font-bold text-2xl">{orderDetails.order_type}</h1>
