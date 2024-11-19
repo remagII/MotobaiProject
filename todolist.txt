@@ -23,16 +23,17 @@ NOTES:
 - in stock in and in create order, list how much stock is in the selected product
 - change color of states in order history
 - "order again" with same items input etc.
-
-Payment modal will need fixing but is last prio
+- quantity handling in create order can input negative or 0 or decimals
+- leave error handling for if quantity is 0 etc. , if stock is not enough to me in the backend
+- validation state check if stock is enough handler
+- edit order
 - updated_by fields per state, select employee
 - payment status ;-;
 
 Added stuff:
-- fixed edit and view row referencing issue
-- added stock return when returned or cancelled
-- instead of date created, it is now last updated in order
-- sorting by last updated now
+- last commit had invoice -> payment rename
+- handling for orders with 0 quantity fixed in backend
+- alerts for create order delivery and state changes
 
 Todo Pages:
 - Dashboard/Landing Page

@@ -99,7 +99,7 @@ const WalkIn = () => {
   const { createData, loading: createLoading } = useCreateData();
   const { updateData, loading: updateLoading } = useUpdateData();
 
-  const onSubmitHandler = async (form, callback) => {
+  const onSubmitHandler = async (form) => {
     if (method === "create") {
       if (rowToEdit === null) {
         await createData(

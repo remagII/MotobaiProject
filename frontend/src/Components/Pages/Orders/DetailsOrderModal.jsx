@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Logo from "../../../assets/Logo.png";
 import Table from "../../DynamicComponents/DynamicTable";
 import api from "../../../api";
+import Swal from 'sweetalert2'
 
 const DetailsOrderModal = ({ logsData, orderId }) => {
   const [orderDetails, setOrderDetails] = useState({});
@@ -25,22 +26,60 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
     fetchOrderDetail(orderId);
   }, [orderId]);
 
+  const onClickUpdateStatus = async (status) => {
+    let statusString = "";  // Local variable inside the function
+    if (status === "validated") {
+      statusString = "Validate";
+    } else if (status === "shipped") {
+      statusString = "Ship";
+    } else if (status === "received") {
+      statusString = "Receive";
+    } else if (status === "completed") {
+      statusString = "Complete, this should also open a modal first";
+    } else if (status === "cancelled") {
+      statusString = "Cancel";
+    } else if (status === "returned") {
+      statusString = "Return";
+    }
+    Swal.fire({
+      title: `Confirm ${statusString}`,
+      text: "This process is irreversible!",
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: `${statusString}`
+    }).then((result) => {
+      if (result.isConfirmed) {
+        updateStatus(status);
+      }
+    });
+  }
+
   const updateStatus = async (status) => {
     let date_field = "";
 
-    if (status == "validated") {
+    let statusString = "";
+    if (status === "validated") {
+      statusString = "Validated";
       date_field = "date_validated";
-    } else if (status == "shipped") {
+    } else if (status === "shipped") {
+      statusString = "Shipped";
       date_field = "date_shipped";
-    } else if (status == "received") {
+    } else if (status === "received") {
+      statusString = "Received";
       date_field = "date_received";
-    } else if (status == "completed") {
+    } else if (status === "completed") {
+      statusString = "Completed";
       date_field = "date_completed";
-    } else if (status == "cancelled") {
+    } else if (status === "cancelled") {
+      statusString = "Cancelled";
       date_field = "date_cancelled";
-    } else if (status == "returned") {
+    } else if (status === "returned") {
+      statusString = "Returned";
       date_field = "date_returned";
     }
+  
     try {
       const currentDate = new Date().toISOString();
 
@@ -51,9 +90,21 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
           [date_field]: currentDate,
         }
       );
+      Swal.fire({
+        title: `Order has been ${statusString}!`,
+        text: "The order has been updated.",
+        icon: "success",
+        timer: 2000,
+      }).then((result) => {
+        location.reload();
+      });
       console.log(`Order status updated to: ${status}`);
     } catch (error) {
-      console.error(`Error changing state`, error);
+      Swal.fire({
+        title: "Error!",
+        text: error.response.data.detail || "There was an issue creating the order.",
+        icon: "error",
+      });
     }
   };
 
@@ -169,14 +220,14 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
             {orderTrackingStatus === "unvalidated" && (
               <OrderModalButton
                 className={`text-green-800 border-green-800 hover:bg-green-800`}
-                onClick={() => updateStatus("validated")}
+                onClick={() => onClickUpdateStatus("validated")}
                 buttonName={"Validate Order"}
               ></OrderModalButton>
             )}
             {orderTrackingStatus === "validated" && (
               <OrderModalButton
                 className={`text-blue-800 border-blue-800 hover:bg-blue-800`}
-                onClick={() => updateStatus("shipped")}
+                onClick={() => onClickUpdateStatus("shipped")}
                 buttonName={"Proceed to Shipping"}
               ></OrderModalButton>
             )}
@@ -184,7 +235,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
             {orderTrackingStatus === "shipped" && (
               <OrderModalButton
                 className={`text-yellow-800 border-yellow-800 hover:bg-yellow-800`}
-                onClick={() => updateStatus("received")}
+                onClick={() => onClickUpdateStatus("received")}
                 buttonName={"Receive Order"}
               ></OrderModalButton>
             )}
@@ -192,14 +243,14 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
             {orderTrackingStatus === "received" && (
               <OrderModalButton
                 className={`text-green-800 border-green-800 hover:bg-green-800`}
-                onClick={() => updateStatus("completed")}
+                onClick={() => onClickUpdateStatus("completed")}
                 buttonName={"Complete Order"}
               ></OrderModalButton>
             )}
             {orderTrackingStatus === "unvalidated" && (
               <OrderModalButton
                 className={`text-red-600`}
-                onClick={() => updateStatus("cancelled")}
+                onClick={() => onClickUpdateStatus("cancelled")}
                 buttonName={"Cancel Order"}
               ></OrderModalButton>
             )}
@@ -209,7 +260,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
               orderTrackingStatus !== "returned" && (
                 <OrderModalButton
                   className={`text-orange-500 border-orange-500`}
-                  onClick={() => updateStatus("returned")}
+                  onClick={() => onClickUpdateStatus("returned")}
                   buttonName={"Return Order"}
                 ></OrderModalButton>
               )}

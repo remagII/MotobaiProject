@@ -1,6 +1,9 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from rest_framework.decorators import api_view
 from rest_framework.exceptions import ValidationError
+from rest_framework import status
+from rest_framework.response import Response
 from .models import (
         Product, Inventory, Account, Order, OrderDetails,
         OrderTracking, Customer, Employee, Supplier, 
@@ -172,6 +175,9 @@ class OrderSerializer(serializers.ModelSerializer):
             inventory_item = order_detail_data['inventory']
             quantity = order_detail_data['quantity']
 
+            if quantity <= 0:
+                raise ValidationError("Quantity must be greater than 0.")
+
             if inventory_item.stock < quantity:
                 raise ValidationError(f"Not enough stock for {inventory_item.product.product_name}. Available: {inventory_item.stock}, Requested: {quantity}")
         
@@ -192,6 +198,21 @@ class OrderSerializer(serializers.ModelSerializer):
         Payment.objects.create(order=order, total_balance=total_balance)
 
         return order
+
+# @api_view(['POST'])
+# def create_order(request):
+#     try:
+#         serializer = OrderSerializer(data=request.data)
+#         if serializer.is_valid(raise_exception=True):
+#             order = serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#     except ValidationError as e:
+#         # Capture the validation error and send the detailed error message
+#         return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+#     except Exception as e:
+#         # Handle unexpected errors
+#         return Response({'detail': 'An unexpected error occurred. Please try again.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 # MISC
 class SupplierSerializer(serializers.ModelSerializer):

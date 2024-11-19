@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import Logo from "../../../assets/Logo.png";
 import "../../pages.css";
 import Table from "../../DynamicComponents/DynamicTable";
@@ -8,6 +8,7 @@ import {
   PlusCircleIcon,
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
+import Swal from "sweetalert2";
 
 import { useFetchData } from "../../Hooks/useFetchData.js";
 
@@ -21,16 +22,34 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
 
-  const confirmButton = async () => {
+  const confirmButton = () => {
+    Swal.fire({
+      title: "Confirm Order Creation",
+      text: "You are about to create a new order with the provided details. Please ensure all information is accurate before proceeding.",
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Confirm and Create Order",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        createOrder();
+      }
+    });
+  };
+
+  const createOrder = async () => {
     const total_balance = totalPrice.toFixed(2);
-    console.log(total_balance);
 
     if (initialOrder.length > 0) {
-      if (!selectedAccount || !form.employee_name) {
-        alert("Please select an account and employee.");
+      if (!selectedAccount || !selectedEmployee) {
+        Swal.fire({
+          title: "Error!",
+          text: `Please select an account and employee.`,
+          icon: "warning",
+        });
         return;
       }
-
       const orderItems = initialOrder.map((item) => ({
         inventory: parseInt(item.id, 10),
         quantity: parseInt(item.quantity, 10) || 0,
@@ -45,13 +64,42 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
           employee: selectedEmployee,
           total_balance: total_balance,
         });
+        Swal.fire({
+          title: "Order Successfully Created!",
+          text: "The order has been created and saved successfully.",
+          icon: "success",
+          timer: 2000,
+        }).then((result) => {
+          location.reload();
+        });
         console.log("Order creation successful:", res.data);
         setInitialOrder([]);
       } catch (error) {
-        console.error("Error Creating Order:", error);
+        // catch if quantity is 0 or negative, or if stock is not enough probably backend
+        if (error.response) {
+          // If the backend sends a detailed error response
+          Swal.fire({
+            title: "Error!",
+            text:
+              error.response.data.detail ||
+              "There was an issue creating the order.",
+            icon: "error",
+          });
+        } else {
+          // If it's a network error or something unexpected
+          Swal.fire({
+            title: "Error!",
+            text: "An unexpected error occurred. Please try again.",
+            icon: "error",
+          });
+        }
       }
     } else {
-      alert("Please add at least one (1) product");
+      Swal.fire({
+        title: "Error!",
+        text: `Please add at least one product`,
+        icon: "warning",
+      });
     }
   };
 

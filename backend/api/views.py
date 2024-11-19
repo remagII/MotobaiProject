@@ -17,6 +17,8 @@ from .models import (
     )
 
 
+
+
 # USER
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -285,3 +287,5 @@ class InboundStockListView(generics.ListAPIView):
     queryset = InboundStock.objects.all()
     serializer_class = InboundStockSerializer
     permission_classes = [AllowAny]
+
+
