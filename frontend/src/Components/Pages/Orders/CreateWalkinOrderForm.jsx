@@ -101,9 +101,7 @@ const CreateWalkinOrderForm = ({ confirmHandler }) => {
       ...extraData,
     }));
 
-    if (fieldName === "account") {
-      setSelectedAccount(extraData.account_id);
-    } else if (fieldName === "employee_name") {
+    if (fieldName === "employee_name") {
       setSelectedEmployee(extraData.employee_id);
     }
   };
@@ -225,16 +223,22 @@ const CreateWalkinOrderForm = ({ confirmHandler }) => {
                             placeholder="Search for Product"
                             className="text-lg p-2 min-w-[350px]"
                             type="text"
-                            onChange={(e) =>
+                            onChange={(e) => {
+                              const selectedProduct = productOptions.find(
+                                (item) =>
+                                  item.product.product_name.toLowerCase ===
+                                  e.target.value.toLowerCase
+                              );
+
                               onChangeHandler(e, "product_name", {
-                                inventory_id:
-                                  productOptions.find(
-                                    (item) =>
-                                      item.product.product_name ===
-                                      e.target.value
-                                  ) || null,
-                              })
-                            }
+                                inventory_id: selectedProduct
+                                  ? selectedProduct.product.id
+                                  : null,
+                                product_price: selectedProduct
+                                  ? selectedProduct.product.price
+                                  : null,
+                              });
+                            }}
                             onBlur={() => {
                               if (form.product_name) {
                                 validateInput(
@@ -274,6 +278,7 @@ const CreateWalkinOrderForm = ({ confirmHandler }) => {
                                       setForm({
                                         ...form,
                                         product_name: item.product.product_name,
+                                        product_price: item.product.price,
                                         inventory_id: item.product.id,
                                       })
                                     }
