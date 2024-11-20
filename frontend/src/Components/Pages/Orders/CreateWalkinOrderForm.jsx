@@ -23,14 +23,18 @@ const CreateWalkinOrderForm = ({ confirmHandler }) => {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   const confirmButton = async () => {
+    const total_balance = totalPrice.toFixed(2);
+
     if (initialOrder.length > 0) {
       // if (!selectedAccount || !selectedEmployee) {
       //   alert("Please select an account and employee.");
       //   return;
       // }
+      
       const orderItems = initialOrder.map((item) => ({
-        inventory: parseInt(item.id, 10),
+        inventory: parseInt(item.inventory_id, 10),
         quantity: parseInt(item.quantity, 10) || 0,
+        product_price: parseFloat(item.product_price),
       }));
 
       try {
@@ -38,6 +42,9 @@ const CreateWalkinOrderForm = ({ confirmHandler }) => {
           order_details: orderItems,
           order_type: "Walkin",
           employee: selectedEmployee,
+          total_balance: total_balance,
+          customer_name: customerName,
+          phone_number: phoneNumber,
         });
         console.log("Order creation successful:", res.data);
         setInitialOrder([]);
@@ -61,7 +68,7 @@ const CreateWalkinOrderForm = ({ confirmHandler }) => {
   const tableColumns = [
     {
       header: "SKU",
-      row: "id",
+      row: "sku",
     },
 
     {
@@ -115,7 +122,6 @@ const CreateWalkinOrderForm = ({ confirmHandler }) => {
 
   //SET FORM BACK TO OLD STATE
   const onSubmitHandler = () => {
-    delete form.account_id;
     delete form.employee_id;
 
     if (form.quantity && form.product_name) {

@@ -171,6 +171,10 @@ class OrderSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         order_details_data = validated_data.pop('order_details')
 
+        # Ensure that either account or customer is provided
+        if not validated_data.get('account') and not validated_data.get('customer'):
+            raise ValidationError("Either 'account' or 'customer' must be provided.")
+        
         for order_detail_data in order_details_data:
             inventory_item = order_detail_data['inventory']
             quantity = order_detail_data['quantity']
@@ -194,6 +198,7 @@ class OrderSerializer(serializers.ModelSerializer):
             # Create the order details
             OrderDetails.objects.create(order=order, **order_detail_data)
         
+        Customer.objects.create(customer_name = validated_data.get('customer_name'), phone_number=validated_data.get('phone_number'))
         OrderTracking.objects.create(order=order, status="unvalidated")
         Payment.objects.create(order=order, total_balance=total_balance)
 

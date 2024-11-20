@@ -29,11 +29,12 @@ NOTES:
 - edit order
 - updated_by fields per state, select employee
 - payment status ;-;
+- status not sorting properly in order
+- fix status sorting in inventory
+- make unique fields
 
 Added stuff:
-- last commit had invoice -> payment rename
-- handling for orders with 0 quantity fixed in backend
-- alerts for create order delivery and state changes
+- 
 
 Todo Pages:
 - Dashboard/Landing Page

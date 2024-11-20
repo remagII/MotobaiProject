@@ -88,7 +88,7 @@ class Account(models.Model):
     
 class Customer(models.Model):
     customer_name = models.CharField(max_length=100, default='', null=False, blank=False)
-    phone_number = models.CharField(max_length=11, validators=[MinLengthValidator(11)], null=False, blank=False)
+    phone_number = models.CharField(max_length=11, validators=[MinLengthValidator(11)], null=False, blank=True, default="")
     date_created = models.DateTimeField(auto_now_add=True)
 
     is_deleted = models.BooleanField(default=False, null=False, blank=False)
@@ -97,9 +97,9 @@ class Customer(models.Model):
         return '{}'.format(self.customer_name)
 
 class Order(models.Model): 
-    account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True, default="")  # one of only nullable fields in the system
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True, default="") # one of only nullable fields in the system
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=False, blank=False, default="")
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True)  # one of only nullable fields in the system
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True) # one of only nullable fields in the system
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=False, blank=False)
     order_type = models.CharField(max_length=64, null=False, blank=False, default="Delivery")
     order_date = models.DateTimeField(auto_now_add=True)
     reference_number = models.CharField(max_length=64, unique=True, null=True, blank=True)
