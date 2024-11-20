@@ -98,8 +98,7 @@ const StockInForm = ({ confirmHandler }) => {
   // send data to database
   const confirmButton = async () => {
     console.log(initialStockIn);
-    // setSupplier(1); // test
-    // setEmployee(1); // test
+    console.log(referenceNumber);
 
     if (initialStockIn.length > 0) {
       const inboundStockItems = initialStockIn.map((stockInItem) => ({
@@ -112,8 +111,9 @@ const StockInForm = ({ confirmHandler }) => {
           "http://127.0.0.1:8000/api/stockin/create/",
           {
             inboundStockItems: inboundStockItems,
-            supplier: 1, // replace later
-            employee: 1,
+            supplier: 1, // replace SelectedSupplier or smth
+            employee: 1, // same here
+            reference_number: referenceNumber,
           }
         );
 

@@ -199,21 +199,6 @@ class OrderSerializer(serializers.ModelSerializer):
 
         return order
 
-# @api_view(['POST'])
-# def create_order(request):
-#     try:
-#         serializer = OrderSerializer(data=request.data)
-#         if serializer.is_valid(raise_exception=True):
-#             order = serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#     except ValidationError as e:
-#         # Capture the validation error and send the detailed error message
-#         return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-#     except Exception as e:
-#         # Handle unexpected errors
-#         return Response({'detail': 'An unexpected error occurred. Please try again.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
 # MISC
 class SupplierSerializer(serializers.ModelSerializer):
     class Meta:

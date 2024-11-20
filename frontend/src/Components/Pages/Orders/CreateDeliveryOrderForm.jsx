@@ -77,18 +77,14 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
         console.log("Order creation successful:", res.data);
         setInitialOrder([]);
       } catch (error) {
-        // catch if quantity is 0 or negative, or if stock is not enough probably backend
         if (error.response) {
-          // If the backend sends a detailed error response
           Swal.fire({
             title: "Error!",
             text:
-              error.response.data.detail ||
-              "There was an issue creating the order.",
+              error.response.data || "There was an issue creating the order.",
             icon: "error",
           });
         } else {
-          // If it's a network error or something unexpected
           Swal.fire({
             title: "Error!",
             text: "An unexpected error occurred. Please try again.",

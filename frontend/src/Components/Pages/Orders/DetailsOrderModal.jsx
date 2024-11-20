@@ -95,14 +95,14 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
         text: "The order has been updated.",
         icon: "success",
         timer: 2000,
-      }).then((result) => {
+      }).then(() => {
         location.reload();
       });
       console.log(`Order status updated to: ${status}`);
     } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: error.response.data.detail || "There was an issue creating the order.",
+        text: error.response.data || "There was an issue updating the order.",
         icon: "error",
       });
     }
