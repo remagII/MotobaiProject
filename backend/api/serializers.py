@@ -160,6 +160,7 @@ class OrderSerializer(serializers.ModelSerializer):
     account = serializers.PrimaryKeyRelatedField(queryset=Account.objects.all(), required=False)
     customer = serializers.PrimaryKeyRelatedField(queryset=Customer.objects.all(), required=False)
     employee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all(), required=True)
+    customer = CustomerSerializer(read_only=True)
     order_details = OrderDetailsSerializer(many=True)
     order_tracking = OrderTrackingSerializer(read_only=True)
     payment = PaymentSerializer(read_only=True)
@@ -171,9 +172,9 @@ class OrderSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         order_details_data = validated_data.pop('order_details')
 
-        # Ensure that either account or customer is provided
-        if not validated_data.get('account') and not validated_data.get('customer'):
-            raise ValidationError("Either 'account' or 'customer' must be provided.")
+        
+        if  validated_data.get('order_type') == "Walkin":
+            Customer.objects.create(customer_name = validated_data.get('customer_name'), phone_number=validated_data.get('phone_number'))
         
         for order_detail_data in order_details_data:
             inventory_item = order_detail_data['inventory']
@@ -198,7 +199,7 @@ class OrderSerializer(serializers.ModelSerializer):
             # Create the order details
             OrderDetails.objects.create(order=order, **order_detail_data)
         
-        Customer.objects.create(customer_name = validated_data.get('customer_name'), phone_number=validated_data.get('phone_number'))
+        
         OrderTracking.objects.create(order=order, status="unvalidated")
         Payment.objects.create(order=order, total_balance=total_balance)
 

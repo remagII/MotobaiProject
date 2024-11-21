@@ -51,6 +51,15 @@ export default function Orders() {
     {
       header: "Customer",
       row: "account_name",
+      customRender: (item) => {
+        if (item.order_type === "Walkin") {
+          return <p>{item.customer_name}</p>;
+        } else if (item.order_type === "Delivery") {
+          return <p>{item.account_name}</p>;
+        } else {
+          return <p>Unknown</p>; // Fallback case
+        }
+      },      
     },
     {
       header: "Employee",

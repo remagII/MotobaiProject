@@ -102,7 +102,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
     } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: error.response.data || "There was an issue updating the order.",
+        text: error.response.data.detail || "There was an issue updating the order.",
         icon: "error",
       });
     }
@@ -142,6 +142,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
 
   // Define tracking status when orderDetailsObj is fetched
   const orderTrackingStatus = orderDetails?.order_tracking?.status;
+  const orderType = orderDetails?.order_type;
 
   // REUSABLE BUTTON
   function OrderModalButton({ onClick, buttonName, className }) {
@@ -217,7 +218,14 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
             ></Table>
           </div>
           <div className="flex justify-end gap-4">
-            {orderTrackingStatus === "unvalidated" && (
+            {orderTrackingStatus === "unvalidated" && orderType === "Walkin" && (
+              <OrderModalButton
+                className={`text-green-800 border-green-800 hover:bg-green-800`}
+                onClick={() => onClickUpdateStatus("completed")}
+                buttonName={"Complete Order"}
+              ></OrderModalButton>
+            )}
+            {orderTrackingStatus === "unvalidated" && orderType === "Delivery" && (
               <OrderModalButton
                 className={`text-green-800 border-green-800 hover:bg-green-800`}
                 onClick={() => onClickUpdateStatus("validated")}

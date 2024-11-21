@@ -4,9 +4,10 @@ from django.core.validators import MinLengthValidator, MinValueValidator
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.core.exceptions import ValidationError
+from django.db.models.signals import pre_save
 
 class Product(models.Model):
-    product_name = models.CharField(max_length=100)
+    product_name = models.CharField(max_length=100, unique=True)
     price = models.DecimalField(decimal_places=2, max_digits=10, null=False, blank=False, validators=[MinValueValidator(1)])
     product_type = models.CharField(max_length=100, null=False, blank=False, default='')
     description = models.TextField(max_length=150, null=False, blank=False, default='')
@@ -30,7 +31,7 @@ class Inventory(models.Model):
         return '{}: {}'.format(self.product, self.stock)
     
 class Supplier(models.Model):
-    supplier_name = models.CharField(max_length=64,null=False, blank=False, default='')
+    supplier_name = models.CharField(max_length=64,null=False, blank=False, unique=True)
     phone_number = models.CharField(max_length=11,null=False, blank=False, validators=[MinLengthValidator(11)])
     description = models.CharField(max_length=150,null=False, blank=False, default='')
 
@@ -48,6 +49,9 @@ class Employee(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
 
     is_deleted = models.BooleanField(default=False, null=False, blank=False)
+
+    class Meta:
+        unique_together = ('first_name', 'middle_name', 'last_name')
 
 class InboundStockItem(models.Model):
     inventory = models.ForeignKey(Inventory,null=False, blank=False, on_delete=models.CASCADE)
@@ -71,7 +75,7 @@ class InboundStock(models.Model):
         return 'Stock Entry: {} items on {}'.format(self.inboundStockItems.count(), self.date_created)
     
 class Account(models.Model):
-    account = models.CharField(max_length=64)
+    account = models.CharField(max_length=64, unique=True)
     representative_name = models.CharField(max_length=64, null=False, blank=False)
     representative_position = models.CharField(max_length=64, null=False, blank=False)
     city = models.CharField(max_length=64, null=False, blank=False)
@@ -98,7 +102,7 @@ class Customer(models.Model):
 
 class Order(models.Model): 
     account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True)  # one of only nullable fields in the system
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True) # one of only nullable fields in the system
+    # customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True) # one of only nullable fields in the system
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=False, blank=False)
     order_type = models.CharField(max_length=64, null=False, blank=False, default="Delivery")
     order_date = models.DateTimeField(auto_now_add=True)
@@ -125,8 +129,8 @@ class Order(models.Model):
             self.barangay = self.account.barangay
             self.street = self.account.street
             self.phone_number = self.account.phone_number
-        else:
-            self.customer_name = self.customer.customer_name
+        # else:
+            # self.customer_name = self.customer.customer_name
 
         if self.employee:
             self.employee_first_name = self.employee.first_name
@@ -137,8 +141,8 @@ class Order(models.Model):
     def __str__(self):
         if self.account:
             return f'Order ID: {self.pk}, Account Name: {self.account.account}'
-        else:
-            return f'Order ID: {self.pk}, Customer Name: {self.customer.last_name}, {self.customer.last_name}'
+        # else:
+        #     return f'Order ID: {self.pk}, Customer Name: {self.customer.last_name}, {self.customer.last_name}'
     
 class OrderDetails(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_details', null=False, blank=False)
@@ -170,8 +174,20 @@ class OrderTracking(models.Model):
 
     last_updated = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return f'{self.status}'
+    def save(self, *args, **kwargs):
+        if self.pk:  # Ensure this is an update, not creation
+            previous_instance = OrderTracking.objects.get(pk=self.pk)
+
+            # Check stock only if the status is being changed to "validated" or "completed"
+            if self.status in ["validated", "completed"] and self.status != previous_instance.status:
+                for order_detail in self.order.order_details.all():
+                    inventory_item = order_detail.inventory
+                    quantity = order_detail.quantity
+
+                    if inventory_item.stock < quantity:
+                        raise ValidationError(f"Not enough stock for {inventory_item.product.product_name}. Available: {inventory_item.stock}, Requested: {quantity}")
+
+        super(OrderTracking, self).save(*args, **kwargs)
 
 class Payment(models.Model):
     order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='payment', null=True, blank=True)
@@ -183,39 +199,69 @@ class Payment(models.Model):
     date_due = models.DateTimeField(null=True, blank=True)
     date_paid = models.DateTimeField(null=True, blank=True)
 
-@receiver(post_save, sender=OrderTracking)
-def update_stock_based_on_status(sender, instance, created, **kwargs):
-    if not created:
-        order = instance.order
-        
-        # When status changes to 'validated', reduce stock
-        if instance.status == "validated":
+@receiver(pre_save, sender=OrderTracking)
+def validate_stock_before_status_change(sender, instance, **kwargs):
+    if instance.pk:  # Ensure this is an update, not creation
+        previous_instance = OrderTracking.objects.get(pk=instance.pk)
+
+        # Check stock only if the status is being changed to "validated" or "completed"
+        if instance.status in ["validated", "completed"] and instance.status != previous_instance.status:
+            order = instance.order
             for order_detail in order.order_details.all():
                 inventory_item = order_detail.inventory
                 quantity = order_detail.quantity
+
                 if inventory_item.stock < quantity:
                     raise ValidationError(f"Not enough stock for {inventory_item.product.product_name}. Available: {inventory_item.stock}, Requested: {quantity}")
-                
-                inventory_item.stock -= quantity
-                inventory_item.save()
-            print(f"Stock reduced for order {order.id} as status changed to 'validated'.")
-        
-        # When status changes to 'canceled', return stock
-        elif instance.status == "canceled":
-            for order_detail in order.order_details.all():
-                inventory_item = order_detail.inventory
-                quantity = order_detail.quantity
-                
-                inventory_item.stock += quantity
-                inventory_item.save()
-            print(f"Stock returned for order {order.id} as status changed to 'canceled'.")
-        
-        # When status changes to 'returned', process as necessary
-        elif instance.status == "returned":
-            for order_detail in order.order_details.all():
-                inventory_item = order_detail.inventory
-                quantity = order_detail.quantity
-                
-                inventory_item.stock += quantity
-                inventory_item.save()
-            print(f"Stock returned for order {order.id} as status changed to 'returned'.")
+
+@receiver(post_save, sender=OrderTracking)
+def update_stock_based_on_status(sender, instance, created, **kwargs):
+    try:
+        if not created:
+            order = instance.order
+            
+            if instance.status == "validated":
+                for order_detail in order.order_details.all():
+                    inventory_item = order_detail.inventory
+                    quantity = order_detail.quantity
+                    if inventory_item.stock < quantity:
+                        raise ValidationError(f"Not enough stock for {inventory_item.product.product_name}. Available: {inventory_item.stock}, Requested: {quantity}")
+                    
+                    inventory_item.stock -= quantity
+                    inventory_item.save()
+                print(f"Stock reduced for order {order.id} as status changed to 'validated'.")
+
+            if instance.status == "completed" and order.order_type == "Walkin":
+                for order_detail in order.order_details.all():
+                    inventory_item = order_detail.inventory
+                    quantity = order_detail.quantity
+                    if inventory_item.stock < quantity:
+                        raise ValidationError(f"Not enough stock for {inventory_item.product.product_name}. Available: {inventory_item.stock}, Requested: {quantity}")
+                    
+                    inventory_item.stock -= quantity
+                    inventory_item.save()
+                print(f"Stock reduced for order {order.id} as status changed to 'completed'.")
+            
+            elif instance.status == "canceled":
+                for order_detail in order.order_details.all():
+                    inventory_item = order_detail.inventory
+                    quantity = order_detail.quantity
+                    
+                    inventory_item.stock += quantity
+                    inventory_item.save()
+                print(f"Stock returned for order {order.id} as status changed to 'canceled'.")
+            
+            elif instance.status == "returned":
+                for order_detail in order.order_details.all():
+                    inventory_item = order_detail.inventory
+                    quantity = order_detail.quantity
+                    
+                    inventory_item.stock += quantity
+                    inventory_item.save()
+                print(f"Stock returned for order {order.id} as status changed to 'returned'.")
+    except ValidationError as e:
+        # Roll back the status to its previous value
+        previous_status = OrderTracking.objects.get(pk=instance.pk).status
+        instance.status = previous_status
+        instance.save(update_fields=["status"])
+        raise e

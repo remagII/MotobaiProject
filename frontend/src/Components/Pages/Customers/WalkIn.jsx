@@ -26,9 +26,9 @@ const WalkIn = () => {
       setRowToEdit(null);
     }
 
-    {
-      errorWindow ? toggleErrorWindow() : "";
-    }
+    // {
+    //   errorWindow ? toggleErrorWindow() : "";
+    // }
   };
 
   const [errorWindow, setErrorWindow] = useState(false);
@@ -37,15 +37,15 @@ const WalkIn = () => {
     setErrorWindow((e) => (e = !e));
   };
 
-  useEffect(() => {
-    if (errorWindow) {
-      const timer = setTimeout(() => {
-        setErrorWindow(false);
-      }, 5000); // Closes the error window after 5 seconds
+  // useEffect(() => {
+  //   if (errorWindow) {
+  //     const timer = setTimeout(() => {
+  //       setErrorWindow(false);
+  //     }, 5000); // Closes the error window after 5 seconds
 
-      return () => clearTimeout(timer); // Cleanup if component unmounts
-    }
-  }, [errorWindow]);
+  //     return () => clearTimeout(timer); // Cleanup if component unmounts
+  //   }
+  // }, [errorWindow]);
 
   const [errors, setErrors] = useState("");
   var errorFields = [];
@@ -112,18 +112,17 @@ const WalkIn = () => {
           "There was an error creating the customer.",
           toggleModal
         );
-        errorFields = [];
-        for (const [key, value] of Object.entries(form)) {
-          if (!value) {
-            errorFields.push(key);
-          }
-        }
-        setErrors((e) => errorFields.join(", "));
-        {
-          !errorWindow ? toggleErrorWindow() : "";
-        }
+        // errorFields = [];
+        // for (const [key, value] of Object.entries(form)) {
+        //   if (!value) {
+        //     errorFields.push(key);
+        //   }
+        // }
+        // setErrors((e) => errorFields.join(", "));
+        // {
+        //   !errorWindow ? toggleErrorWindow() : "";
+        // }
       }
-
       triggerRefresh();
       callback && callback();
       setRowToEdit(null);
@@ -139,7 +138,6 @@ const WalkIn = () => {
         "There was an error updating the customer.",
         toggleModal
       );
-
       triggerRefresh();
       callback && callback();
       setRowToEdit(null);
