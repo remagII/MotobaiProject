@@ -4,10 +4,11 @@ import Table from "../../DynamicComponents/DynamicTable.jsx";
 import Overview from "../../Overview.jsx";
 import DynamicForm from "../../DynamicComponents/DynamicForm.jsx";
 import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
-import api from "../../../api.js";
 import DynamicCustomLink from "../../DynamicComponents/DynamicCustomLink.jsx";
 import { useFetchData } from "../../Hooks/useFetchData.js";
 import { useDeleteData } from "../../Hooks/useDeleteData.js";
+import { useCreateData } from "../../Hooks/useCreateData.js";
+import { useUpdateData } from "../../Hooks/useUpdateData.js";
 
 export default function Accounts() {
   const [method, setMethod] = useState("");
@@ -162,57 +163,14 @@ export default function Accounts() {
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
   const overviewArr = [{ title: "Accounts", quantity: `${account.length}` }];
 
-  const [loading, setLoading] = useState(false);
+  const { createData, loading: createLoading } = useCreateData();
+  const { updateData, loading: updateLoading } = useUpdateData();
 
-  const onSubmitHandler = async (form, callback) => {
-    setLoading(true);
+  const onSubmitHandler = async (form) => {
     if (method === "create") {
-      ////////////////////////////////////////// CODE FOR SAVING DATA
       if (rowToEdit === null) {
-        try {
-          const res = await api.post(
-            "http://127.0.0.1:8000/api/account/create/",
-            {
-              account: form.account,
-              representative_name: form.representative_name,
-              representative_position: form.representative_position,
-              city: form.city,
-              barangay: form.barangay,
-              street: form.street,
-              phone_number: form.phone_number,
-              email: form.email,
-            }
-          );
-          {
-            errorWindow ? toggleErrorWindow() : "";
-          }
-          triggerRefresh();
-          toggleModal();
-          callback();
-          setSuccessMethod("Added");
-          toggleSuccessWindow();
-          setRowToEdit(null);
-          errorFields = [];
-        } catch (error) {
-          for (const [key, value] of Object.entries(form)) {
-            if (!value) {
-              errorFields.push(key);
-            }
-          }
-          setErrors((e) => errorFields.join(", "));
-          {
-            !errorWindow ? toggleErrorWindow() : "";
-          }
-        } finally {
-          setLoading(false);
-        }
-      }
-    } else if (method === "edit") {
-      console.log(`edit method, id: ` + rowIdEdit);
-      ////////////////////////////////////////// CODE FOR EDITING DATA
-      try {
-        const res = await api.put(
-          `http://127.0.0.1:8000/api/account/update/${rowIdEdit}/`,
+        await createData(
+          "account",
           {
             account: form.account,
             representative_name: form.representative_name,
@@ -222,36 +180,128 @@ export default function Accounts() {
             street: form.street,
             phone_number: form.phone_number,
             email: form.email,
-          }
+          },
+          "Account Created Successfully",
+          toggleModal
         );
-        {
-          errorWindow ? toggleErrorWindow() : "";
-        }
-        triggerRefresh();
-        toggleModal();
-        callback();
-        setSuccessMethod("Edited");
-        toggleSuccessWindow();
-        setRowToEdit(null);
-        errorFields = [];
-      } catch (error) {
-        for (const [key, value] of Object.entries(form)) {
-          if (!value) {
-            if (key !== "is_deleted") {
-              errorFields.push(key);
-            }
-          }
-        }
-
-        setErrors((e) => errorFields.join(", "));
-        {
-          !errorWindow ? toggleErrorWindow() : "";
-        }
-      } finally {
-        setLoading(false);
       }
+      triggerRefresh();
+      setRowToEdit(null);
+
+    } else if (method === "edit") {
+      await updateData(
+        `account`,
+        rowIdEdit,
+        {
+          account: form.account,
+          representative_name: form.representative_name,
+          representative_position: form.representative_position,
+          city: form.city,
+          barangay: form.barangay,
+          street: form.street,
+          phone_number: form.phone_number,
+          email: form.email,
+        },
+        "Customer Updated Successfully",
+        toggleModal
+      );
+      triggerRefresh();
+      setRowToEdit(null);
     }
   };
+
+  // const [loading, setLoading] = useState(false);
+
+  // const onSubmitHandler = async (form, callback) => {
+  //   setLoading(true);
+  //   if (method === "create") {
+  //     ////////////////////////////////////////// CODE FOR SAVING DATA
+  //     if (rowToEdit === null) {
+  //       try {
+  //         const res = await api.post(
+  //           "http://127.0.0.1:8000/api/account/create/",
+  //           {
+  //             account: form.account,
+  //             representative_name: form.representative_name,
+  //             representative_position: form.representative_position,
+  //             city: form.city,
+  //             barangay: form.barangay,
+  //             street: form.street,
+  //             phone_number: form.phone_number,
+  //             email: form.email,
+  //           }
+  //         );
+  //         {
+  //           errorWindow ? toggleErrorWindow() : "";
+  //         }
+  //         triggerRefresh();
+  //         toggleModal();
+  //         callback();
+  //         setSuccessMethod("Added");
+  //         toggleSuccessWindow();
+  //         setRowToEdit(null);
+  //         errorFields = [];
+  //       } catch (error) {
+  //         for (const [key, value] of Object.entries(form)) {
+  //           if (!value) {
+  //             errorFields.push(key);
+  //           }
+  //         }
+  //         setErrors((e) => errorFields.join(", "));
+  //         {
+  //           !errorWindow ? toggleErrorWindow() : "";
+  //         }
+  //       } finally {
+  //         setLoading(false);
+  //       }
+  //     }
+  //   } else if (method === "edit") {
+  //     console.log(`edit method, id: ` + rowIdEdit);
+  //     ////////////////////////////////////////// CODE FOR EDITING DATA
+  //     try {
+  //       const res = await api.put(
+  //         `http://127.0.0.1:8000/api/account/update/${rowIdEdit}/`,
+  //         {
+  //           account: form.account,
+  //           representative_name: form.representative_name,
+  //           representative_position: form.representative_position,
+  //           city: form.city,
+  //           barangay: form.barangay,
+  //           street: form.street,
+  //           phone_number: form.phone_number,
+  //           email: form.email,
+  //         }
+  //       );
+  //       {
+  //         errorWindow ? toggleErrorWindow() : "";
+  //       }
+  //       triggerRefresh();
+  //       toggleModal();
+  //       callback();
+  //       setSuccessMethod("Edited");
+  //       toggleSuccessWindow();
+  //       setRowToEdit(null);
+  //       errorFields = [];
+  //     } catch (error) {
+  //       for (const [key, value] of Object.entries(form)) {
+  //         if (!value) {
+  //           if (key !== "is_deleted") {
+  //             errorFields.push(key);
+  //           }
+  //         }
+  //       }
+
+  //       setErrors((e) => errorFields.join(", "));
+  //       {
+  //         !errorWindow ? toggleErrorWindow() : "";
+  //       }
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }
+  // };
+
+
   const [deleteBtn, setDeleteBtn] = useState(""); // HANDLES DELETE BUTTON STATE
   const [rowToEdit, setRowToEdit] = useState(null);
   const [rowIdEdit, setRowIdEdit] = useState(null);

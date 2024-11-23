@@ -11,6 +11,8 @@ import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
 import api from "../../../api";
 import { useFetchData } from "../../Hooks/useFetchData.js";
 import { useDeleteData } from "../../Hooks/useDeleteData.js";
+import { useCreateData } from "../../Hooks/useCreateData.js";
+import { useUpdateData } from "../../Hooks/useUpdateData.js";
 
 export default function Products() {
   const [method, setMethod] = useState("");
@@ -169,101 +171,148 @@ export default function Products() {
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
   const overviewArr = [{ title: "Products", quantity: `${product.length}` }];
 
-  const [loading, setLoading] = useState(false);
+  const { createData, loading: createLoading } = useCreateData();
+  const { updateData, loading: updateLoading } = useUpdateData();
 
-  const onSubmitHandler = async (form, callback) => {
-    setLoading(true);
+  const onSubmitHandler = async (form) => {
     if (method === "create") {
-      console.log(form);
-      console.log("create method");
-      ////////////////////////////////////////// CODE FOR SAVING DATA
       if (rowToEdit === null) {
-        try {
-          const res = await api.post(
-            "http://127.0.0.1:8000/api/product/create/",
-            {
-              product_name: form.product.product_name,
-              product_type: form.product.product_type,
-              price: form.product.price,
-              description: form.product.description,
-              vehicle_type: form.product.vehicle_type,
-              brand: form.product.brand,
-              stock_minimum_threshold: form.stock_minimum_threshold,
-            }
-          );
-
-          {
-            errorWindow ? toggleErrorWindow() : "";
-          }
-          triggerRefresh();
-          toggleModal();
-          callback();
-          setSuccessMethod("Added");
-          toggleSuccessWindow();
-          setRowToEdit(null);
-          errorFields = [];
-        } catch (error) {
-          for (const [key, value] of Object.entries(form.product)) {
-            if (!value) {
-              errorFields.push(key);
-            }
-          }
-          if (!form.stock_minimum_threshold) {
-            errorFields.push("stock_minimum_threshold");
-          }
-          setErrors((e) => errorFields.join(", "));
-          {
-            !errorWindow ? toggleErrorWindow() : "";
-          }
-        } finally {
-          setLoading(false);
-        }
-      }
-    } else if (method === "edit") {
-      console.log(`edit method, id: ` + rowIdEdit);
-      try {
-        const res = await api.put(
-          `http://127.0.0.1:8000/api/product/update/${rowIdEdit}/`,
+        await createData(
+          "product",
           {
             product_name: form.product.product_name,
+            sku: 1, // please change this
             product_type: form.product.product_type,
             price: form.product.price,
             description: form.product.description,
             vehicle_type: form.product.vehicle_type,
             brand: form.product.brand,
             stock_minimum_threshold: form.stock_minimum_threshold,
-          }
+          },
+          "Product Created Successfully",
+          toggleModal
         );
-        {
-          errorWindow ? toggleErrorWindow() : "";
-        }
-        triggerRefresh();
-        toggleModal();
-        callback();
-        setSuccessMethod("Edited");
-        toggleSuccessWindow();
-        setRowToEdit(null);
-        errorFields = [];
-      } catch (error) {
-        for (const [key, value] of Object.entries(form.product)) {
-          if (!value) {
-            if (key !== "is_deleted") {
-              errorFields.push(key);
-            }
-          }
-        }
-        if (!form.stock_minimum_threshold) {
-          errorFields.push("stock_minimum_threshold");
-        }
-        setErrors((e) => errorFields.join(", "));
-        {
-          !errorWindow ? toggleErrorWindow() : "";
-        }
-      } finally {
-        setLoading(false);
       }
+      triggerRefresh();
+      setRowToEdit(null);
+
+    } else if (method === "edit") {
+      await updateData(
+        `product`,
+        rowIdEdit,
+        {
+          product_name: form.product.product_name,
+          sku: `edit me please`, // please change this
+          product_type: form.product.product_type,
+          price: form.product.price,
+          description: form.product.description,
+          vehicle_type: form.product.vehicle_type,
+          brand: form.product.brand,
+          stock_minimum_threshold: form.stock_minimum_threshold,
+        },
+        "Product Updated Successfully",
+        toggleModal
+      );
+      triggerRefresh();
+      setRowToEdit(null);
     }
   };
+
+  // const [loading, setLoading] = useState(false);
+
+  // const onSubmitHandler = async (form, callback) => {
+  //   setLoading(true);
+  //   if (method === "create") {
+  //     console.log(form);
+  //     console.log("create method");
+  //     ////////////////////////////////////////// CODE FOR SAVING DATA
+  //     if (rowToEdit === null) {
+  //       try {
+  //         const res = await api.post(
+  //           "http://127.0.0.1:8000/api/product/create/",
+  //           {
+  //             product_name: form.product.product_name,
+  //             product_type: form.product.product_type,
+  //             price: form.product.price,
+  //             description: form.product.description,
+  //             vehicle_type: form.product.vehicle_type,
+  //             brand: form.product.brand,
+  //             stock_minimum_threshold: form.stock_minimum_threshold,
+  //           }
+  //         );
+
+  //         {
+  //           errorWindow ? toggleErrorWindow() : "";
+  //         }
+  //         triggerRefresh();
+  //         toggleModal();
+  //         callback();
+  //         setSuccessMethod("Added");
+  //         toggleSuccessWindow();
+  //         setRowToEdit(null);
+  //         errorFields = [];
+  //       } catch (error) {
+  //         for (const [key, value] of Object.entries(form.product)) {
+  //           if (!value) {
+  //             errorFields.push(key);
+  //           }
+  //         }
+  //         if (!form.stock_minimum_threshold) {
+  //           errorFields.push("stock_minimum_threshold");
+  //         }
+  //         setErrors((e) => errorFields.join(", "));
+  //         {
+  //           !errorWindow ? toggleErrorWindow() : "";
+  //         }
+  //       } finally {
+  //         setLoading(false);
+  //       }
+  //     }
+  //   } else if (method === "edit") {
+  //     console.log(`edit method, id: ` + rowIdEdit);
+  //     try {
+  //       const res = await api.put(
+  //         `http://127.0.0.1:8000/api/product/update/${rowIdEdit}/`,
+  //         {
+  //           product_name: form.product.product_name,
+  //           product_type: form.product.product_type,
+  //           price: form.product.price,
+  //           description: form.product.description,
+  //           vehicle_type: form.product.vehicle_type,
+  //           brand: form.product.brand,
+  //           stock_minimum_threshold: form.stock_minimum_threshold,
+  //         }
+  //       );
+  //       {
+  //         errorWindow ? toggleErrorWindow() : "";
+  //       }
+  //       triggerRefresh();
+  //       toggleModal();
+  //       callback();
+  //       setSuccessMethod("Edited");
+  //       toggleSuccessWindow();
+  //       setRowToEdit(null);
+  //       errorFields = [];
+  //     } catch (error) {
+  //       for (const [key, value] of Object.entries(form.product)) {
+  //         if (!value) {
+  //           if (key !== "is_deleted") {
+  //             errorFields.push(key);
+  //           }
+  //         }
+  //       }
+  //       if (!form.stock_minimum_threshold) {
+  //         errorFields.push("stock_minimum_threshold");
+  //       }
+  //       setErrors((e) => errorFields.join(", "));
+  //       {
+  //         !errorWindow ? toggleErrorWindow() : "";
+  //       }
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }
+  // };
   const [deleteBtn, setDeleteBtn] = useState(""); // HANDLES DELETE BUTTON STATE
   const [rowToEdit, setRowToEdit] = useState(null);
   const [rowIdEdit, setRowIdEdit] = useState(null);

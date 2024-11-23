@@ -96,13 +96,25 @@ class Customer(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
 
     is_deleted = models.BooleanField(default=False, null=False, blank=False)
+
+    def clean(self):
+        errors = {}
+        if len(self.customer_name) < 3:
+            errors["customer_name"] = "Customer name must be at least 3 characters long."
+
+        if errors:
+            raise ValidationError(errors)
+        
+    def save(self, *args, **kwargs):
+        # This ensures that validation is performed when saving
+        self.full_clean()  # This calls clean() and checks all model validation
+        super(Customer, self).save(*args, **kwargs)
     
     def __str__(self):
         return '{}'.format(self.customer_name)
 
 class Order(models.Model): 
-    account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True)  # one of only nullable fields in the system
-    # customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True) # one of only nullable fields in the system
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True)  
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=False, blank=False)
     order_type = models.CharField(max_length=64, null=False, blank=False, default="Delivery")
     order_date = models.DateTimeField(auto_now_add=True)

@@ -9,7 +9,6 @@ export function useCreateData() {
     info,
     formData,
     successMessage,
-    errorMessage,
     toggleModal
   ) => {
     const url = `http://127.0.0.1:8000/api/${info}/create/`;
@@ -36,13 +35,41 @@ export function useCreateData() {
           icon: "success",
         });
         toggleModal();
-        return res; // Optionally return the response
+        return res; 
       } catch (error) {
-        Swal.fire({
-          title: "Error!",
-          text: errorMessage,
-          icon: "error",
-        });
+        if (error.response) {
+          const errorMessages = error.response.data.errors; 
+      
+          // Check if errors exist and format them
+          if (errorMessages && typeof errorMessages === 'object') {
+            const formattedErrors = Object.entries(errorMessages)
+              .map(([field, messages]) => {
+                // Ensure messages is an array and join them if needed
+                return `${field}: ${Array.isArray(messages) ? messages.join(", ") : messages}`;
+              })
+              .join("\n");
+      
+            // Show the error message in a SweetAlert popup
+            Swal.fire({
+              title: "Validation Error!",
+              text: formattedErrors || "There was an issue creating the data.",
+              icon: "error",
+            });
+          } else {
+            Swal.fire({
+              title: "Error!",
+              text: "The server returned an unexpected response format.",
+              icon: "error",
+            });
+          }
+        } else {
+          Swal.fire({
+            title: "Error!",
+            text: "An unexpected error occurred. Please try again.",
+            icon: "error",
+          });
+        }
+      
       } finally {
         setLoading(false);
       }

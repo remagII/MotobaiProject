@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from rest_framework import generics, status
+from rest_framework import generics, status, serializers
 from rest_framework.response import Response
 from .serializers import (
         UserSerializer, ProductSerializer, InventorySerializer, 
@@ -16,7 +16,7 @@ from .models import (
         InboundStock, Payment
     )
 
-
+from django.core.exceptions import ValidationError as DjangoValidationError
 
 
 # USER
@@ -30,6 +30,49 @@ class ProductCreate(generics.CreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
+
+    def post(self, request):
+        product_name = request.data.get("product_name")
+        price = request.data.get("price")
+        product_type = request.data.get("product_type")
+        description = request.data.get("description")
+        brand = request.data.get("brand")
+        vehicle_type = request.data.get("vehicle_type")
+        stock_minimum_threshold = request.data.get("stock_minimum_threshold")
+
+        errors = []  # List to store validation errors
+
+        # Validate stock_minimum_threshold
+        if stock_minimum_threshold is None or stock_minimum_threshold == '':
+            errors.append("Please provide a valid stock minimum threshold.")
+        else:
+            try:
+                stock_minimum_threshold = int(stock_minimum_threshold)
+                if stock_minimum_threshold <= 0:
+                    errors.append("Stock minimum threshold must be greater than 0.")
+            except ValueError:
+                errors.append("Invalid stock minimum threshold. Please provide a valid number.")
+
+        # If there are any errors, return them
+        if errors:
+            return Response({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        
+        product = Product(
+            product_name=product_name,
+            price=price,
+            product_type=product_type,
+            description=description,
+            brand=brand,
+            vehicle_type=vehicle_type,
+        )
+        
+        try:
+            product.full_clean()
+            product.save()
+            return Response({"message": "Product created successfully!"}, status=status.HTTP_201_CREATED)
+        except DjangoValidationError as e:
+            return Response({"errors": e.message_dict}, status=status.HTTP_400_BAD_REQUEST)
 
 class ProductListView(generics.ListAPIView):
     queryset = Product.objects.all()
@@ -50,6 +93,37 @@ class ProductDeleteView(generics.DestroyAPIView):
 class AccountAdd(generics.CreateAPIView):
     serializer_class = AccountSerializer
     permission_classes = [AllowAny]
+
+    def post(self, request):
+        # Extract data from request
+        account = request.data.get("account")
+        phone_number = request.data.get("phone_number")
+        representative_name = request.data.get("representative_name")
+        representative_position = request.data.get("representative_position")
+        city = request.data.get("city")
+        barangay = request.data.get("barangay")
+        street = request.data.get("street")
+        email = request.data.get("email")
+        
+        # Create a new customer instance
+        account = Account(
+            account=account,
+            phone_number=phone_number, 
+            representative_name=representative_name, 
+            representative_position=representative_position, 
+            city=city, 
+            barangay=barangay, 
+            street=street, 
+            email=email,
+            )
+        
+        try:
+            account.full_clean()  # Calls clean() and validates the model
+            account.save()  # Save if validation passes
+            return Response({"message": "Account created successfully!"}, status=status.HTTP_201_CREATED)
+        except DjangoValidationError as e:
+            # Handle validation errors and return to frontend
+            return Response({"errors": e.message_dict}, status=status.HTTP_400_BAD_REQUEST)
 
 class AccountListView(generics.ListAPIView):
     queryset = Account.objects.all()
@@ -88,6 +162,23 @@ class CustomerAdd(generics.CreateAPIView):
     serializer_class = CustomerSerializer
     permission_classes = [AllowAny]
 
+    def post(self, request):
+        # Extract data from request
+        customer_name = request.data.get("customer_name")
+        phone_number = request.data.get("phone_number")
+        
+        # Create a new customer instance
+        customer = Customer(customer_name=customer_name, phone_number=phone_number)
+
+        try:
+            customer.full_clean()  # Calls clean() and validates the model
+            customer.save()  # Save if validation passes
+            return Response({"message": "Customer created successfully!"}, status=status.HTTP_201_CREATED)
+        except DjangoValidationError as e:
+            # Handle validation errors and return to frontend
+            return Response({"errors": e.message_dict}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class CustomerListView(generics.ListAPIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
@@ -97,6 +188,14 @@ class CustomerUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
     permission_classes = [AllowAny]
+
+    def perform_update(self, serializer):
+        try:
+            instance = serializer.save()  # Save the updated instance
+            instance.full_clean()  # Perform model-level validation
+        except DjangoValidationError as e:
+            # Raise DRF ValidationError with model validation errors
+            raise serializers.ValidationError(e.message_dict)
 
 class CustomerDeleteView(generics.DestroyAPIView):
     queryset = Customer.objects.all()
@@ -209,6 +308,39 @@ class EmployeeAdd(generics.CreateAPIView):
     serializer_class = EmployeeSerializer
     permission_classes = [AllowAny]
 
+    def post(self, request):
+        first_name = request.data.get("first_name")
+        middle_name = request.data.get("middle_name")
+        last_name = request.data.get("last_name")
+        city = request.data.get("city")
+        barangay = request.data.get("barangay")
+        street = request.data.get("street")
+        phone_number = request.data.get("phone_number")
+        email = request.data.get("email")
+        
+        new_employee = Employee(
+            first_name=first_name,
+            middle_name=middle_name,
+            last_name=last_name,
+            city=city,
+            barangay=barangay,
+            street=street,
+            phone_number=phone_number,
+            email=email,
+        )
+        
+        try:
+            new_employee.full_clean()  
+            new_employee.save()
+            
+            return Response({"message": "Employee created successfully!"}, status=status.HTTP_201_CREATED)
+        
+        except DjangoValidationError as e:
+            return Response({"errors": e.message_dict}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
 class EmployeeListView(generics.ListAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
@@ -244,6 +376,27 @@ class EmployeeSoftDeleteView(generics.UpdateAPIView):
 class SupplierAdd(generics.CreateAPIView):
     serializer_class = SupplierSerializer
     permission_classes = [AllowAny]
+
+    def post(self, request):
+        # Extract data from request
+        supplier_name = request.data.get("supplier_name")
+        phone_number = request.data.get("phone_number")
+        description = request.data.get("description")
+        
+        # Create a new customer instance
+        supplier = Supplier(
+            supplier_name=supplier_name,
+            phone_number=phone_number, 
+            description=description, 
+            )
+        
+        try:
+            supplier.full_clean()  # Calls clean() and validates the model
+            supplier.save()  # Save if validation passes
+            return Response({"message": "Supplier created successfully!"}, status=status.HTTP_201_CREATED)
+        except DjangoValidationError as e:
+            # Handle validation errors and return to frontend
+            return Response({"errors": e.message_dict}, status=status.HTTP_400_BAD_REQUEST)
 
 class SupplierListView(generics.ListAPIView):
     queryset = Supplier.objects.all()

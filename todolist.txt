@@ -1,75 +1,46 @@
 NOTES:
-- Order Walk-in create
 - packaged/set items
-- prompt order successful
 - make readme.md an actual good readme
-- delete/hide order and stock in logs?
 - peso sign for all prices and comma maybe
 - filter active/inactive/etc. when clicking on sidepanel
 - description box too small
-- stock logs modal lacks some information maybe
 - double clicking submission issue
-- details modal(see information of a row onclick)
 - Revert/Delete row in initial Stock-In
 - fix create order sorting of price
-- 800 ml? units? how?
-- some fields have input validation but wont tell which is wrong when inputting (ex. supplier phone number)
 - fix sorting button to be the whole header
 - sorting acting weird when editing
-- sort order history by last updated
-- SKU input and reference number input(2)
-- order type column for order management page table
-- add label identifier on create order (employee, account)
 - in stock in and in create order, list how much stock is in the selected product
-- change color of states in order history
 - "order again" with same items input etc.
-- quantity handling in create order can input negative or 0 or decimals
-- leave error handling for if quantity is 0 etc. , if stock is not enough to me in the backend
-- validation state check if stock is enough handler
 - edit order
 - updated_by fields per state, select employee
-- payment status ;-;
 - status not sorting properly in order
 - fix status sorting in inventory
 - sorting customer name
+- reference number input validation
+- stockin 0 input validation
+- employee and supplier stockin
+- show current stock in order
+- show order history status
+- return order function
+- payment fields
+- add more table columns and fields for inventory(liters,ml,etc., desc)
+- stocklogs needs more information
+- stockout
+- packaging
+- serial item number
+- code cleanup
 
 Added stuff:
-- customer walkin fix
-- added unique fields
-- walkin completed state auto
-- fixed validation and completed state update for when there is not enough stock
+- added swal to all pages for update and create(except walkin order)
+- added input validation to common inputs
+- error handling
 
 Todo Pages:
 - Dashboard/Landing Page
 
 MY QUESTIONS:
 - for backend when checking, what are the common questions or tasks that the panelists do to check the backend? 
-
 Current Issues:
 - when an order is created, so does invoice, tracking; the way it is set up is so that orderid = 1, then invoiceid, trackingid = 1; even though invoice and tacking cannot be made without an order, 
 if orderid != trackingi != invoiceid is not the same then most functions will not work
 - same for product -> inventory
-
-
-NEW THING TO DO (FRONTEND){
-  "Complete Order" button on order tracking must be a toggleModal form where the user can input the reference #
-
-  not sure yet sa concept watchu think? 
-
-  Wala pako nag deductions lmao
-
-  Create Walk-In on create Walk-In Order form
-  
-  
-}
-
-
-dont mind this
-  C:\Users\tyche\AppData\Local\Programs\Python\Python313\python.exe manage.py runserver
-
-
-  customRender: (item) => {
-        return <p>{item.order_tracking.status}</p>;
-      },
-
-  employee -> stock in

@@ -34,7 +34,10 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        stock_minimum_threshold = validated_data.pop('stock_minimum_threshold', 0)
+        stock_minimum_threshold = validated_data.pop('stock_minimum_threshold', None)
+
+        if stock_minimum_threshold is None or stock_minimum_threshold <= 0:
+            raise ValidationError("Please input a valid minimum stock threshold")
         
         # Create the product
         product = super().create(validated_data)
@@ -48,6 +51,9 @@ class ProductSerializer(serializers.ModelSerializer):
         instance = super().update(instance, validated_data)
 
         stock_minimum_threshold = validated_data.get('stock_minimum_threshold', None)
+
+        if stock_minimum_threshold is None or stock_minimum_threshold <= 0:
+            raise ValidationError("Please input a valid minimum stock threshold")
         
         if stock_minimum_threshold is not None:
             inventory_instance = instance.inventory_set.first()  

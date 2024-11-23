@@ -4,7 +4,6 @@ import Table from "../../DynamicComponents/DynamicTable.jsx";
 import Overview from "../../Overview.jsx";
 import DynamicForm from "../../DynamicComponents/DynamicForm.jsx";
 import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
-import api from "../../../api";
 import DynamicCustomLink from "../../DynamicComponents/DynamicCustomLink.jsx";
 import { useFetchData } from "../../Hooks/useFetchData.js";
 import { useDeleteData } from "../../Hooks/useDeleteData.js";
@@ -109,22 +108,10 @@ const WalkIn = () => {
             phone_number: form.phone_number,
           },
           "Customer Created Successfully",
-          "There was an error creating the customer.",
           toggleModal
         );
-        // errorFields = [];
-        // for (const [key, value] of Object.entries(form)) {
-        //   if (!value) {
-        //     errorFields.push(key);
-        //   }
-        // }
-        // setErrors((e) => errorFields.join(", "));
-        // {
-        //   !errorWindow ? toggleErrorWindow() : "";
-        // }
       }
       triggerRefresh();
-      callback && callback();
       setRowToEdit(null);
     } else if (method === "edit") {
       await updateData(
@@ -135,11 +122,9 @@ const WalkIn = () => {
           phone_number: form.phone_number,
         },
         "Customer Updated Successfully",
-        "There was an error updating the customer.",
         toggleModal
       );
       triggerRefresh();
-      callback && callback();
       setRowToEdit(null);
     }
   };

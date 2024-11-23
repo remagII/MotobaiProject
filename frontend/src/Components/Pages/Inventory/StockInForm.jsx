@@ -8,6 +8,7 @@ import {
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
 import { useFetchData } from "../../Hooks/useFetchData.js";
+import Swal from "sweetalert2";
 
 const StockInForm = ({ confirmHandler }) => {
   const [successWindow, setSuccessWindow] = useState(false);
@@ -96,40 +97,83 @@ const StockInForm = ({ confirmHandler }) => {
   };
 
   // send data to database
-  const confirmButton = async () => {
+  const confirmButton = () => {
+    
     console.log(initialStockIn);
     console.log(referenceNumber);
 
+    Swal.fire({
+      customClass: { container: "create-swal" },
+      title: `Are you sure you want to create order?`,
+      text: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#196e3a",
+      cancelButtonColor: "#d33",
+      confirmButtonText: `Yes, create order`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        createOrder();
+      }
+    });
+  };
+
+  const createOrder = async () => {
     if (initialStockIn.length > 0) {
       const inboundStockItems = initialStockIn.map((stockInItem) => ({
         inventory: stockInItem.inventory_id,
-        quantity: stockInItem.quantity || 0,
+        quantity: stockInItem.quantity, // must never be zero, need fix
       }));
 
       try {
         const res = await api.post(
           "http://127.0.0.1:8000/api/stockin/create/",
           {
-            inboundStockItems: inboundStockItems,
+            inboundStockItems: inboundStockItems, 
             supplier: 1, // replace SelectedSupplier or smth
             employee: 1, // same here
-            reference_number: referenceNumber,
+            reference_number: referenceNumber, // need inputvalidation, idk din kung ano actual input dito tho
           }
         );
 
         console.log("Stocking in successful:", res.data);
-        setSuccessMethod("Added");
-        toggleSuccessWindow();
-        setInitialStockIn([]);
-        console.log(initialStockIn);
+        // setSuccessMethod("Added");
+        // toggleSuccessWindow();
+        if (res.status === 201) {
+          Swal.fire({
+            title: "Success!",
+            text: "The operation was successful.",
+            icon: "success",
+          }).then(() => {
+            setInitialStockIn([]);
+            location.reload();
+          });  
+        
+        }
       } catch (error) {
-        console.error("Error stocking in:", error);
-        ``;
+        if (error.response) {
+          Swal.fire({
+            title: "Error!",
+            text:
+              error.response.data || "There was an issue stocking in.",
+            icon: "error",
+          });
+        } else {
+          Swal.fire({
+            title: "Error!",
+            text: "An unexpected error occurred. Please try again.",
+            icon: "error",
+          });
+        }
       }
     } else {
-      alert("Please add atleast one(1) item");
+      Swal.fire({
+        title: "Error!",
+        text: `Please add at least one product`,
+        icon: "warning",
+      });
     }
-  };
+  }
 
   const validateInput = (field, options, fieldName) => {
     // Normalize input and options for comparison

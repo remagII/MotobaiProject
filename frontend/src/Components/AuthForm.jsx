@@ -41,7 +41,11 @@ function Form({ route, method }) {
         
       }
     } catch (error) {
-      alert(error);
+      Swal.fire({
+        title: "Login Error!",
+        text: `${error}`,
+        icon: "error",
+      });
     } finally {
       setLoading(false);
     }
