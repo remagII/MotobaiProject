@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import Logo from "../../../assets/Logo.png";
 import "../../pages.css";
 import Table from "../../DynamicComponents/DynamicTable";
@@ -53,12 +53,11 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
       }
       const orderItems = initialOrder.map((item) => ({
         inventory: parseInt(item.inventory_id, 10),
-        quantity: parseInt(item.quantity, 10) || 0,
+        quantity: parseInt(item.quantity, 10),
         product_price: parseFloat(item.product_price),
       }));
 
       try {
-        console.log("orderitems", orderItems);
         const res = await api.post("http://127.0.0.1:8000/api/order/create/", {
           order_details: orderItems,
           order_type: "Delivery",
@@ -71,7 +70,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
           text: "The order has been created and saved successfully.",
           icon: "success",
           timer: 2000,
-        }).then((result) => {
+        }).then(() => {
           location.reload();
         });
         console.log("Order creation successful:", res.data);
@@ -111,8 +110,8 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
 
   const tableColumns = [
     {
-      header: "Product ID",
-      row: "id",
+      header: "SKU",
+      row: "sku",
     },
 
     {

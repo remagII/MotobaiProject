@@ -1,0 +1,31 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "start React (Frontend)",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": {
+        "cwd": "./frontend"  // Specify the path to the frontend folder
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "start Django (Backend)",
+      "type": "shell",
+      "command": "python manage.py runserver",
+      "options": {
+        "cwd": "${workspaceFolder}/backend"  // Specify the path to the backend folder
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    }
+  ]
+}

@@ -4,7 +4,7 @@ NOTES:
 - peso sign for all prices and comma maybe
 - filter active/inactive/etc. when clicking on sidepanel
 - description box too small
-- double clicking submission issue
+- dropdown for type
 - Revert/Delete row in initial Stock-In
 - fix create order sorting of price
 - fix sorting button to be the whole header
@@ -29,6 +29,12 @@ NOTES:
 - packaging
 - serial item number
 - code cleanup
+- phone number for create order walkin
+
+- usecase diagram
+- usecase tables
+- finalize erd
+- finalize capstones
 
 Added stuff:
 - added swal to all pages for update and create(except walkin order)

@@ -8,6 +8,7 @@ import {
   PlusCircleIcon,
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
+import Swal from "sweetalert2";
 
 import { useFetchData } from "../../Hooks/useFetchData.js";
 
@@ -23,17 +24,36 @@ const CreateWalkinOrderForm = ({ confirmHandler }) => {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   const confirmButton = async () => {
+    Swal.fire({
+      title: "Confirm Order Creation",
+      text: "You are about to create a new order with the provided details. Please ensure all information is accurate before proceeding.",
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Confirm and Create Order",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        createOrder();
+      }
+    });
+  };
+
+  const createOrder = async () => {
     const total_balance = totalPrice.toFixed(2);
 
     if (initialOrder.length > 0) {
-      // if (!selectedAccount || !selectedEmployee) {
-      //   alert("Please select an account and employee.");
-      //   return;
-      // }
-      
+      if (!selectedEmployee) {
+        Swal.fire({
+          title: "Error!",
+          text: `Please select an employee.`,
+          icon: "warning",
+        });
+        return;
+      }
       const orderItems = initialOrder.map((item) => ({
         inventory: parseInt(item.inventory_id, 10),
-        quantity: parseInt(item.quantity, 10) || 0,
+        quantity: parseInt(item.quantity, 10),
         product_price: parseFloat(item.product_price),
       }));
 
@@ -46,16 +66,40 @@ const CreateWalkinOrderForm = ({ confirmHandler }) => {
           customer_name: customerName,
           phone_number: phoneNumber,
         });
+        Swal.fire({
+          title: "Order Successfully Created!",
+          text: "The order has been created and saved successfully.",
+          icon: "success",
+          timer: 2000,
+        }).then(() => {
+          location.reload();
+        });
         console.log("Order creation successful:", res.data);
         setInitialOrder([]);
       } catch (error) {
-        console.error("Error Creating Order:", error);
-        ``;
+        if (error.response) {
+          Swal.fire({
+            title: "Error!",
+            text:
+              error.response.data || "There was an issue creating the order.",
+            icon: "error",
+          });
+        } else {
+          Swal.fire({
+            title: "Error!",
+            text: "An unexpected error occurred. Please try again.",
+            icon: "error",
+          });
+        }
       }
     } else {
-      alert("Please add atlesast one(1) product");
+      Swal.fire({
+        title: "Error!",
+        text: `Please add at least one product`,
+        icon: "warning",
+      });
     }
-  };
+  }
 
   const formArr = [
     {

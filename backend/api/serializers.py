@@ -179,8 +179,17 @@ class OrderSerializer(serializers.ModelSerializer):
         order_details_data = validated_data.pop('order_details')
 
         
-        if  validated_data.get('order_type') == "Walkin":
-            Customer.objects.create(customer_name = validated_data.get('customer_name'), phone_number=validated_data.get('phone_number'))
+        if validated_data.get('order_type') == "Walkin":
+            customer_name = validated_data.get('customer_name')
+            phone_number = validated_data.get('phone_number')
+            if customer_name is None or customer_name is "":
+                raise ValidationError("Please input customer name.") 
+            
+            if len(phone_number) != 11 and len(phone_number) > 0:
+                raise ValidationError("Phone number must be exactly 11 digits.")
+
+            
+            Customer.objects.create(customer_name = customer_name, phone_number=phone_number)
         
         for order_detail_data in order_details_data:
             inventory_item = order_detail_data['inventory']
