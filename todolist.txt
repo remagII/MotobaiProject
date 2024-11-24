@@ -30,6 +30,8 @@ NOTES:
 - serial item number
 - code cleanup
 - phone number for create order walkin
+- register and login button navigation when logging in/ registering
+- fix double products in 1 order
 
 - usecase diagram
 - usecase tables

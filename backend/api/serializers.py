@@ -94,7 +94,6 @@ class InboundStockItemSerializer(serializers.ModelSerializer):
     
 class InboundStockSerializer(serializers.ModelSerializer):
     inboundStockItems = InboundStockItemSerializer(many=True)
-
     supplier = serializers.PrimaryKeyRelatedField(queryset=Supplier.objects.all())
     employee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all())
     supplier_name = serializers.ReadOnlyField(source='supplier.supplier_name')
@@ -108,6 +107,12 @@ class InboundStockSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         inbound_stock_items_data = validated_data.pop('inboundStockItems')
+
+        for item_data in inbound_stock_items_data:
+            quantity = item_data['quantity']
+
+            if quantity is None or quantity <= 0 or quantity is "":
+                raise ValidationError("Please input a valid quantity")
 
         # Create the InboundStock object
         inbound_stock = InboundStock.objects.create(**validated_data)

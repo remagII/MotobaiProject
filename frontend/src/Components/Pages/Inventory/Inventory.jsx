@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CubeIcon } from "@heroicons/react/24/outline";
+import { ArchiveBoxArrowDownIcon, CubeIcon } from "@heroicons/react/24/outline";
 import Table from "../../DynamicComponents/DynamicTable.jsx";
 import Overview from "../../Overview.jsx";
 import StockInForm from "./StockInForm.jsx";
@@ -7,8 +7,8 @@ import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
 import { useFetchData } from "../../Hooks/useFetchData.js";
 
 export default function Inventory() {
-  const [method, setMethod] = useState("");
   const [stockInModal, setStockInModal] = useState(false);
+  // const [packageModal, setPackageModal] = useState(false);
 
   // MODAL TOGGLE
 
@@ -16,6 +16,12 @@ export default function Inventory() {
     setStockInModal((m) => (m = !m));
     triggerRefresh();
   };
+
+  // const togglePackageModal = () => {
+  //   setPackageModal((m) => (m = !m));
+    
+  //   triggerRefresh();
+  // };
 
   const [errorWindow, setErrorWindow] = useState(false);
 
@@ -29,6 +35,14 @@ export default function Inventory() {
   var errorFields = [];
 
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
+  const formArr = [
+    { label: "Customer Name", 
+      name: "customer_name" },
+    {
+      label: "Phone Number",
+      name: "phone_number",
+    },
+  ];
 
   const tableColumns = [
     {
@@ -140,6 +154,17 @@ export default function Inventory() {
                   </select>
                 </div>
                 <div>
+                  {/* <button
+                    onClick={togglePackageModal}
+                    className={`shadow-md text-black  border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700 hover:text-white  transition-all duration-100 flex gap-4 items-center`}
+                  >
+                    Create Package
+                    <div
+                      className={`text-white py-2 px-3 rounded-lg bg-red-800 hover:bg-red-800 transition-all duration-100`}
+                    >
+                      <ArchiveBoxArrowDownIcon className="size-5" />
+                    </div>
+                  </button> */}
                   <button
                     onClick={toggleStockInModal}
                     className={`bg-white border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700 hover:text-gray-100 transition-all duration-100 flex gap-4 items-center shadow-md`}
