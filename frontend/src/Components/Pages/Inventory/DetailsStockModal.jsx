@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import Logo from "../../../assets/Logo.png";
 import Table from "../../DynamicComponents/DynamicTable";
+import Swal from "sweetalert2";
 
 const DetailsStockModal = ({ logsData, supplierData }) => {
   const tableColumns = [
@@ -28,6 +29,10 @@ const DetailsStockModal = ({ logsData, supplierData }) => {
     },
   ];
 
+  const handleRowDetails = () => {
+    
+  };
+
   return (
     <section>
       <div
@@ -46,6 +51,7 @@ const DetailsStockModal = ({ logsData, supplierData }) => {
           <Table
             columnArr={tableColumns}
             dataArr={logsData}
+            editRow={handleRowDetails}
             sortField={null}
             sortDirection="asc"
           ></Table>

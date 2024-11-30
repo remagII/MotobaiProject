@@ -32,6 +32,7 @@ NOTES:
 - phone number for create order walkin
 - register and login button navigation when logging in/ registering
 - fix double products in 1 order
+- on return: hindi naka list kung ano na update, hindi pa mag refresh after complete update, and di rin naga reflect na ung new quantity during the return process
 
 - usecase diagram
 - usecase tables
@@ -39,9 +40,9 @@ NOTES:
 - finalize capstones
 
 Added stuff:
-- added swal to all pages for update and create(except walkin order)
-- added input validation to common inputs
-- error handling
+- no more sort in order details
+- added return/edit function unfinished
+- selecting the same row is now not allowed
 
 Todo Pages:
 - Dashboard/Landing Page

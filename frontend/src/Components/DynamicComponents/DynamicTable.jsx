@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../pages.css";
 
-export default function Table({ editRow, columnArr, dataArr, className, sortField, sortDirection}) {
+export default function Table({ editRow, columnArr, dataArr, className, sortField, sortDirection, allowSort=true}) {
   const getNestedValue = (obj, path) => {
     return (
       path.split(".").reduce((acc, part) => acc && acc[part], obj) || "N/A"
@@ -16,11 +16,13 @@ export default function Table({ editRow, columnArr, dataArr, className, sortFiel
   const [sortedDirection, setSortedDirection] = useState(sortDirection);
 
   const handleSort = (field) => {
-    if (sortedField === field) {
-      setSortedDirection(sortedDirection === "asc" ? "desc" : "asc");
-    } else {
-      setSortedField(field);
-      setSortedDirection("asc");
+    if (allowSort === true) {
+      if (sortedField === field) {
+        setSortedDirection(sortedDirection === "asc" ? "desc" : "asc");
+      } else {
+        setSortedField(field);
+        setSortedDirection("asc");
+      }
     }
   };
 

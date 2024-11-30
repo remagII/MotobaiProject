@@ -6,6 +6,10 @@ import Swal from 'sweetalert2'
 
 const DetailsOrderModal = ({ logsData, orderId }) => {
   const [orderDetails, setOrderDetails] = useState({});
+  const [orderDetailItems, setOrderDetailItems] = useState(null);
+  const [returnItems, setReturnItems] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
+
   const fetchOrderDetail = async (orderId) => {
     try {
       const response = await fetch(
@@ -21,10 +25,139 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
     }
   };
 
+  const fetchOrderDetailItems = async (orderDetailId) => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/orderdetails/view/${orderDetailId}/`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch order details");
+      }
+      const data = await response.json();
+      setOrderDetailItems(data);
+    } catch (error) {
+      console.error("Error fetching order details:", error);
+    }
+  };
+  
+
+  const updateOrderDetail = async (returnItems) => {
+    try {
+      // Loop through each item in the returnItems array
+      for (const item of returnItems) {
+        const url = `http://127.0.0.1:8000/api/orderdetails/update/${item.order_detail_id}/`; // Use the item's ID for the URL
+        const formData = {
+          order_detail_id: item.order_detail_id,
+          inventory: item.inventory_id,
+          product_name: item.product_name,
+          original_quantity: item.original_quantity,
+          quantity_to_return: item.quantity_to_return,
+          quantity: item.updated_quantity,
+        };
+  
+        const res = await api.put(url, formData); // Assuming you are using an Axios instance or any other HTTP client
+        
+        if (res.status === 200) {
+          // Success message after the request is completed successfully
+          Swal.fire({
+            title: "Return Success",
+            text: `Return, updated successfully!`,
+            icon: "success",
+          });
+        } else {
+          throw new Error(`Failed to update item with ID ${item.id}`);
+        }
+      }
+    } catch (error) {
+      console.error("Error updating order details:", error);
+      Swal.fire({
+        title: "Error",
+        text: "Failed to update the backend. Please try again.",
+        icon: "error",
+      });
+    }
+  
+  };  
+
+
+  const handleRowDetails = async (id) => {
+    await fetchOrderDetailItems(id);
+  };
+
+  useEffect(() => {
+    console.log(orderDetailItems);
+
+    if (!orderDetailItems || !orderDetailItems.id) {
+      return; 
+    }
+
+    if (selectedRows.includes(orderDetailItems.id)) {
+      Swal.fire({
+        title: "This row has already been selected.",
+        text: "You can't select the same row again.",
+        icon: "info",
+      });
+      return; 
+    }
+
+    if (orderDetailItems) {
+      Swal.fire({
+        title: `Return ${orderDetailItems.product_name}`,
+        input: "number",
+        showCancelButton: true,
+        confirmButtonText: "Confirm",
+        text: `Current quantity: ${orderDetailItems.quantity}`,
+        icon: "warning",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+
+          const quantityToReturn = parseInt(result.value, 10);
+    
+          if (quantityToReturn > 0 && quantityToReturn <= orderDetailItems.quantity) {
+            const updatedQuantity = orderDetailItems.quantity - quantityToReturn;
+    
+            // Create a new return item object
+            const newReturnItem = {
+              order_detail_id: orderDetailItems.id,
+              inventory_id: orderDetailItems.inventory,
+              product_name: orderDetailItems.product_name,
+              original_quantity: orderDetailItems.quantity,
+              quantity_to_return: quantityToReturn,
+              updated_quantity: updatedQuantity,
+            };
+
+            // Only then add to the returnItems state
+            setReturnItems((prevItems) => [...prevItems, newReturnItem]);
+
+            // Mark this row as selected
+            setSelectedRows((prev) => [...prev, orderDetailItems.id]);
+            Swal.fire({
+              title: `Added to return list`,
+              text: `Returning ${quantityToReturn} of ${orderDetailItems.product_name}, please confirm to update!`,
+              icon: "success",
+            });
+            
+          } else {
+            Swal.fire({
+              title: "Invalid quantity",
+              text: "The quantity entered is invalid. Please try again.",
+              icon: "error",
+            });
+          }
+        }
+      });
+    }
+  }, [orderDetailItems]);
+
+  useEffect(() => {
+    console.log(returnItems); // Log state after it has been updated
+  }, [returnItems]);
+
   useEffect(() => {
     console.log("Order ID in modal:", orderId); // Log Order ID when modal is opened
     fetchOrderDetail(orderId);
   }, [orderId]);
+
 
   const onClickUpdateStatus = async (status) => {
     let statusString = "";  // Local variable inside the function
@@ -186,7 +319,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
                 </div>
                 <div>
                   <h1 className=" text-md">Barangay</h1>
-                  <h1 className="font-bold text-lg">{orderDetails.barangay}</h1>
+                  <h1 className="font-bold text-lg">{orderDetails.barangay}</h1> 
                 </div>
                 <div>
                   <h1 className=" text-md">Street</h1>
@@ -212,9 +345,11 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
             <Table
               columnArr={tableColumns}
               dataArr={logsData}
+              editRow={(row) => handleRowDetails(row)}
               className={`!h-[45vh]`}
               sortField="id"
               sortDirection="asc"
+              allowSort={false}
             ></Table>
           </div>
           <div className="flex justify-end gap-4">
@@ -272,6 +407,11 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
                   buttonName={"Return Order"}
                 ></OrderModalButton>
               )}
+            <OrderModalButton
+                className={`text-green-800 border-green-800 hover:bg-green-800`}
+                onClick={() => updateOrderDetail(returnItems)}
+                buttonName={"TEST BUTTON"}
+              ></OrderModalButton>
           </div>
         </div>
       </div>

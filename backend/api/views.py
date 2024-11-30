@@ -243,6 +243,16 @@ class OrderDetailsListView(generics.ListAPIView):
     serializer_class = OrderDetailsSerializer
     permission_classes = [AllowAny]
 
+class OrderDetailDetailView(generics.RetrieveAPIView):
+    queryset = OrderDetails.objects.all()
+    serializer_class = OrderDetailsSerializer 
+    permission_classes = [AllowAny]
+
+class OrderDetailUpdateView(generics.RetrieveUpdateAPIView):
+    queryset = OrderDetails.objects.all()
+    serializer_class = OrderDetailsSerializer
+    permission_classes = [AllowAny]
+
 class OrderTrackingCreate(generics.CreateAPIView):
     serializer_class = OrderTrackingSerializer
     permission_classes = [AllowAny]
