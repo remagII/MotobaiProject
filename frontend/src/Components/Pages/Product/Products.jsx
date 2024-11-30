@@ -195,7 +195,6 @@ export default function Products() {
       }
       triggerRefresh();
       setRowToEdit(null);
-
     } else if (method === "edit") {
       await updateData(
         `product`,
@@ -218,101 +217,6 @@ export default function Products() {
     }
   };
 
-  // const [loading, setLoading] = useState(false);
-
-  // const onSubmitHandler = async (form, callback) => {
-  //   setLoading(true);
-  //   if (method === "create") {
-  //     console.log(form);
-  //     console.log("create method");
-  //     ////////////////////////////////////////// CODE FOR SAVING DATA
-  //     if (rowToEdit === null) {
-  //       try {
-  //         const res = await api.post(
-  //           "http://127.0.0.1:8000/api/product/create/",
-  //           {
-  //             product_name: form.product.product_name,
-  //             product_type: form.product.product_type,
-  //             price: form.product.price,
-  //             description: form.product.description,
-  //             vehicle_type: form.product.vehicle_type,
-  //             brand: form.product.brand,
-  //             stock_minimum_threshold: form.stock_minimum_threshold,
-  //           }
-  //         );
-
-  //         {
-  //           errorWindow ? toggleErrorWindow() : "";
-  //         }
-  //         triggerRefresh();
-  //         toggleModal();
-  //         callback();
-  //         setSuccessMethod("Added");
-  //         toggleSuccessWindow();
-  //         setRowToEdit(null);
-  //         errorFields = [];
-  //       } catch (error) {
-  //         for (const [key, value] of Object.entries(form.product)) {
-  //           if (!value) {
-  //             errorFields.push(key);
-  //           }
-  //         }
-  //         if (!form.stock_minimum_threshold) {
-  //           errorFields.push("stock_minimum_threshold");
-  //         }
-  //         setErrors((e) => errorFields.join(", "));
-  //         {
-  //           !errorWindow ? toggleErrorWindow() : "";
-  //         }
-  //       } finally {
-  //         setLoading(false);
-  //       }
-  //     }
-  //   } else if (method === "edit") {
-  //     console.log(`edit method, id: ` + rowIdEdit);
-  //     try {
-  //       const res = await api.put(
-  //         `http://127.0.0.1:8000/api/product/update/${rowIdEdit}/`,
-  //         {
-  //           product_name: form.product.product_name,
-  //           product_type: form.product.product_type,
-  //           price: form.product.price,
-  //           description: form.product.description,
-  //           vehicle_type: form.product.vehicle_type,
-  //           brand: form.product.brand,
-  //           stock_minimum_threshold: form.stock_minimum_threshold,
-  //         }
-  //       );
-  //       {
-  //         errorWindow ? toggleErrorWindow() : "";
-  //       }
-  //       triggerRefresh();
-  //       toggleModal();
-  //       callback();
-  //       setSuccessMethod("Edited");
-  //       toggleSuccessWindow();
-  //       setRowToEdit(null);
-  //       errorFields = [];
-  //     } catch (error) {
-  //       for (const [key, value] of Object.entries(form.product)) {
-  //         if (!value) {
-  //           if (key !== "is_deleted") {
-  //             errorFields.push(key);
-  //           }
-  //         }
-  //       }
-  //       if (!form.stock_minimum_threshold) {
-  //         errorFields.push("stock_minimum_threshold");
-  //       }
-  //       setErrors((e) => errorFields.join(", "));
-  //       {
-  //         !errorWindow ? toggleErrorWindow() : "";
-  //       }
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   }
-  // };
   const [deleteBtn, setDeleteBtn] = useState(""); // HANDLES DELETE BUTTON STATE
   const [rowToEdit, setRowToEdit] = useState(null);
   const [rowIdEdit, setRowIdEdit] = useState(null);

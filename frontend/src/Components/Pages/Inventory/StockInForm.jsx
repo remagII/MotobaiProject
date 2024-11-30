@@ -85,20 +85,34 @@ const StockInForm = ({ confirmHandler }) => {
   };
 
   //SET FORM BACK TO OLD STATE
-  const onSubmitHandler = () => {
+  const onSubmitHandler = (e) => {
     if (form && form.quantity && form.product_name) {
+      e.preventDefault();
       setInitialStockIn((prevStock) => {
-        const updatedStock = [...prevStock, form]; // Update stock
-        setForm(initialForm); // Reset the form
-        console.log(updatedStock); // This will now correctly log the updated stock
-        return updatedStock; // Return updated state
+        // Check if a product with the same name already exists in the stock
+        const isDuplicate = prevStock.some(
+          (item) => item.product_name === form.product_name
+        );
+
+        if (isDuplicate) {
+          Swal.fire({
+            title: "Error",
+            text: `You added a duplicate ${form.product_name}`,
+            icon: "error",
+          });
+          return prevStock;
+        } else {
+          const updatedStock = [...prevStock, form];
+          setForm(initialForm); // Reset the form
+          console.log(updatedStock); // This will now correctly log the updated stock
+          return updatedStock; // Return updated state
+        }
       });
     }
   };
 
   // send data to database
   const confirmButton = () => {
-    
     console.log(initialStockIn);
     console.log(referenceNumber);
 
@@ -129,7 +143,7 @@ const StockInForm = ({ confirmHandler }) => {
         const res = await api.post(
           "http://127.0.0.1:8000/api/stockin/create/",
           {
-            inboundStockItems: inboundStockItems, 
+            inboundStockItems: inboundStockItems,
             supplier: 1, // replace SelectedSupplier or smth
             employee: 1, // same here
             reference_number: referenceNumber, // need inputvalidation, idk din kung ano actual input dito tho
@@ -147,15 +161,13 @@ const StockInForm = ({ confirmHandler }) => {
           }).then(() => {
             setInitialStockIn([]);
             location.reload();
-          });  
-        
+          });
         }
       } catch (error) {
         if (error.response) {
           Swal.fire({
             title: "Error!",
-            text:
-              error.response.data || "There was an issue stocking in.",
+            text: error.response.data || "There was an issue stocking in.",
             icon: "error",
           });
         } else {
@@ -173,7 +185,7 @@ const StockInForm = ({ confirmHandler }) => {
         icon: "warning",
       });
     }
-  }
+  };
 
   const validateInput = (field, options, fieldName) => {
     // Normalize input and options for comparison
@@ -317,7 +329,7 @@ const StockInForm = ({ confirmHandler }) => {
                       onClick={(e) => {
                         onSubmitHandler();
                       }}
-                      type="submit"
+                      type="button"
                       className={`shadow-md bg-white border-2 border-red-700 rounded px-4 py-2 hover:bg-red-700 hover:text-white transition-all duration-100 flex gap-4 items-center`}
                     >
                       Add Product to Stock In
@@ -343,8 +355,10 @@ const StockInForm = ({ confirmHandler }) => {
                         onChange={(e) => setReferenceNumber(e.target.value)}
                         required
                         name="reference"
+                        id="reference"
                       />
                       <label
+                        htmlFor={"reference"}
                         className={`text-base absolute transition-all duration-100 ease-in px-4 py-2 text-gray-600 label-line`}
                       >
                         Reference Number

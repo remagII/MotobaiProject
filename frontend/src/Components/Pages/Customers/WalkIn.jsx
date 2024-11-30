@@ -124,9 +124,10 @@ const WalkIn = () => {
         "Customer Updated Successfully",
         toggleModal
       );
-      triggerRefresh();
-      setRowToEdit(null);
     }
+    triggerRefresh();
+    callback && callback();
+    setRowToEdit(null);
   };
 
   const [deleteBtn, setDeleteBtn] = useState(""); // HANDLES DELETE BUTTON STATE

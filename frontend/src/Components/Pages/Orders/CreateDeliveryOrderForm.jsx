@@ -121,6 +121,9 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
     {
       header: "Quantity",
       row: "quantity",
+      customRender: (item) => {
+        return <p>{item.quantity}</p>;
+      },
     },
     {
       header: "Unit Price",
@@ -160,16 +163,29 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
   });
 
   //SET FORM BACK TO OLD STATE
-  const onSubmitHandler = () => {
+  const onSubmitHandler = (e) => {
     delete form.account_id;
     delete form.employee_id;
 
-    if (form.quantity && form.product_name) {
+    if (form && form.quantity && form.product_name) {
       setInitialOrder((prevOrder) => {
-        const updatedOrder = [...prevOrder, form]; // Update order
-        setForm(initialForm); // Reset the form
-        console.log("updated order", updatedOrder); // This will now correctly log the updated order
-        return updatedOrder; // Return updated state
+        const isDuplicate = prevOrder.some(
+          (item) => item.product_name === form.product_name
+        );
+
+        if (isDuplicate) {
+          Swal.fire({
+            title: "Error",
+            text: `You added a duplicate ${form.product_name}`,
+            icon: "error",
+          });
+          return prevOrder;
+        } else {
+          const updatedOrder = [...prevOrder, form]; // Update order
+          setForm(initialForm); // Reset the form
+          console.log("updated order", updatedOrder); // This will now correctly log the updated order
+          return updatedOrder; // Return updated state
+        }
       });
     }
   };
@@ -235,6 +251,9 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                               : null,
                             product_price: selectedProduct
                               ? selectedProduct.product.price
+                              : null,
+                            inventory_stock: selectedProduct
+                              ? selectedProduct.stock
                               : null,
                           });
                         }}
@@ -321,7 +340,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                     onClick={(e) => {
                       onSubmitHandler();
                     }}
-                    type="submit"
+                    type="button"
                     className={`shadow-md bg-white border-2 border-red-700 rounded px-4 py-2 hover:bg-red-700 hover:text-white transition-all duration-100 flex gap-4 items-center`}
                   >
                     Add Product to Order

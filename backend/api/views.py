@@ -31,48 +31,48 @@ class ProductCreate(generics.CreateAPIView):
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
 
-    def post(self, request):
-        product_name = request.data.get("product_name")
-        price = request.data.get("price")
-        product_type = request.data.get("product_type")
-        description = request.data.get("description")
-        brand = request.data.get("brand")
-        vehicle_type = request.data.get("vehicle_type")
-        stock_minimum_threshold = request.data.get("stock_minimum_threshold")
+    # def post(self, request):
+    #     product_name = request.data.get("product_name")
+    #     price = request.data.get("price")
+    #     product_type = request.data.get("product_type")
+    #     description = request.data.get("description")
+    #     brand = request.data.get("brand")
+    #     vehicle_type = request.data.get("vehicle_type")
+    #     stock_minimum_threshold = request.data.get("stock_minimum_threshold")
 
-        errors = []  # List to store validation errors
+    #     errors = []  # List to store validation errors
 
-        # Validate stock_minimum_threshold
-        if stock_minimum_threshold is None or stock_minimum_threshold == '':
-            errors.append("Please provide a valid stock minimum threshold.")
-        else:
-            try:
-                stock_minimum_threshold = int(stock_minimum_threshold)
-                if stock_minimum_threshold <= 0:
-                    errors.append("Stock minimum threshold must be greater than 0.")
-            except ValueError:
-                errors.append("Invalid stock minimum threshold. Please provide a valid number.")
+    #     # Validate stock_minimum_threshold
+    #     if stock_minimum_threshold is None or stock_minimum_threshold == '':
+    #         errors.append("Please provide a valid stock minimum threshold.")
+    #     else:
+    #         try:
+    #             stock_minimum_threshold = int(stock_minimum_threshold)
+    #             if stock_minimum_threshold <= 0:
+    #                 errors.append("Stock minimum threshold must be greater than 0.")
+    #         except ValueError:
+    #             errors.append("Invalid stock minimum threshold. Please provide a valid number.")
 
-        # If there are any errors, return them
-        if errors:
-            return Response({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+    #     # If there are any errors, return them
+    #     if errors:
+    #         return Response({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
 
         
-        product = Product(
-            product_name=product_name,
-            price=price,
-            product_type=product_type,
-            description=description,
-            brand=brand,
-            vehicle_type=vehicle_type,
-        )
+    #     product = Product(
+    #         product_name=product_name,
+    #         price=price,
+    #         product_type=product_type,
+    #         description=description,
+    #         brand=brand,
+    #         vehicle_type=vehicle_type,
+    #     )
         
-        try:
-            product.full_clean()
-            product.save()
-            return Response({"message": "Product created successfully!"}, status=status.HTTP_201_CREATED)
-        except DjangoValidationError as e:
-            return Response({"errors": e.message_dict}, status=status.HTTP_400_BAD_REQUEST)
+    #     try:
+    #         product.full_clean()
+    #         product.save()
+    #         return Response({"message": "Product created successfully!"}, status=status.HTTP_201_CREATED)
+    #     except DjangoValidationError as e:
+    #         return Response({"errors": e.message_dict}, status=status.HTTP_400_BAD_REQUEST)
 
 class ProductListView(generics.ListAPIView):
     queryset = Product.objects.all()

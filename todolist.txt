@@ -16,6 +16,7 @@ NOTES:
 - status not sorting properly in order
 - fix status sorting in inventory
 - sorting customer name
+- no select multiple of same product in order
 - reference number input validation
 - stockin 0 input validation
 - employee and supplier stockin
@@ -29,7 +30,6 @@ NOTES:
 - packaging
 - serial item number
 - code cleanup
-- phone number for create order walkin
 - register and login button navigation when logging in/ registering
 - fix double products in 1 order
 - on return: hindi naka list kung ano na update, hindi pa mag refresh after complete update, and di rin naga reflect na ung new quantity during the return process

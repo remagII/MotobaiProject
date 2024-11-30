@@ -35,7 +35,14 @@ export default function OrderHistory() {
 
     {
       header: "Customer",
-      row: "account_name",
+      customRender: (item) => {
+        const orderType = item.order_type;
+        if (orderType === "Delivery") {
+          return <p>{item.account_name}</p>;
+        } else {
+          return <p>{item.customer_name}</p>;
+        }
+      },
     },
     {
       header: "Employee",

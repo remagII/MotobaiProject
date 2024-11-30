@@ -19,7 +19,7 @@ export default function Inventory() {
 
   // const togglePackageModal = () => {
   //   setPackageModal((m) => (m = !m));
-    
+
   //   triggerRefresh();
   // };
 
@@ -36,8 +36,7 @@ export default function Inventory() {
 
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
   const formArr = [
-    { label: "Customer Name", 
-      name: "customer_name" },
+    { label: "Customer Name", name: "customer_name" },
     {
       label: "Phone Number",
       name: "phone_number",
@@ -66,6 +65,17 @@ export default function Inventory() {
     {
       header: "Vehicle type",
       row: "product.vehicle_type",
+    },
+    {
+      header: "Description",
+      row: "product.description",
+      customRender: (item) => {
+        return (
+          <p className="overflow-y-auto max-w-[300px] max-h-[100px]">
+            {item.product.description}
+          </p>
+        );
+      },
     },
     {
       header: "Status",
@@ -146,25 +156,14 @@ export default function Inventory() {
               <h1 className={`text-3xl font-bold`}>Inventory</h1>
 
               <div className="flex mr-24">
-                <div className="flex gap-4 mr-32 items-center">
+                {/* <div className="flex gap-4 mr-32 items-center">
                   <label className="font-bold ">Status</label>
                   <select className={`min-w-[10vw] max-h-4 rounded-lg p-4`}>
                     <option>Price</option>
                     <option>Quantity</option>
                   </select>
-                </div>
+                </div> */}
                 <div>
-                  {/* <button
-                    onClick={togglePackageModal}
-                    className={`shadow-md text-black  border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700 hover:text-white  transition-all duration-100 flex gap-4 items-center`}
-                  >
-                    Create Package
-                    <div
-                      className={`text-white py-2 px-3 rounded-lg bg-red-800 hover:bg-red-800 transition-all duration-100`}
-                    >
-                      <ArchiveBoxArrowDownIcon className="size-5" />
-                    </div>
-                  </button> */}
                   <button
                     onClick={toggleStockInModal}
                     className={`bg-white border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700 hover:text-gray-100 transition-all duration-100 flex gap-4 items-center shadow-md`}

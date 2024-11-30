@@ -10,7 +10,7 @@ class Product(models.Model):
     product_name = models.CharField(max_length=100, unique=True)
     price = models.DecimalField(decimal_places=2, max_digits=10, null=False, blank=False, validators=[MinValueValidator(1)])
     product_type = models.CharField(max_length=100, null=False, blank=False, default='')
-    description = models.TextField(max_length=150, null=False, blank=False, default='')
+    description = models.TextField(max_length=150, null=False, blank=False, default='') 
     brand = models.CharField(max_length=64, null=False, blank=False, default='')
     vehicle_type = models.CharField(max_length=32, null=False, blank=False, default='')
     
@@ -181,6 +181,7 @@ class OrderTracking(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_validated = models.DateTimeField(null=True, blank=True)
     date_shipped = models.DateTimeField(null=True, blank=True)
+    date_received = models.DateTimeField(null=True, blank=True)
     date_completed = models.DateTimeField(null=True, blank=True)
     date_cancelled = models.DateTimeField(null=True, blank=True)
 
