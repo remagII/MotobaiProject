@@ -12,17 +12,11 @@ import {
 import { useFetchData } from "../../Hooks/useFetchData.js";
 import Swal from "sweetalert2";
 
-const StockInForm = ({ confirmHandler }) => {
-  const [successWindow, setSuccessWindow] = useState(false);
-  const [referenceNumber, setReferenceNumber] = useState("");
-
-  const [selectedSupplier, setSelectedSupplier] = useState(null);
+const StockOutForm = ({ confirmHandler }) => {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-
-  const [initialStockIn, setInitialStockIn] = useState([]);
+  const [initialStockOut, setInitialStockOut] = useState([]);
 
   const { data: productOptions } = useFetchData("inventory");
-  const { data: supplierOptions } = useFetchData("supplier");
   const { data: employeeOptions } = useFetchData("employee");
 
   const formArr = [
@@ -53,7 +47,6 @@ const StockInForm = ({ confirmHandler }) => {
     return formArr.reduce((r, v) => ({ ...r, [v.name]: "" }), {
       product_name: "",
       supplier_name: "",
-      reference_number: "",
     });
   };
   const [form, setForm] = useState(prepareForm(formArr));
@@ -72,7 +65,7 @@ const StockInForm = ({ confirmHandler }) => {
   //SET FORM BACK TO OLD STATE
   const onSubmitHandler = (e) => {
     if (form && form.quantity && form.product_name) {
-      setInitialStockIn((prevStock) => {
+      setInitialStockOut((prevStock) => {
         // Check if a product with the same name already exists in the stock
         const isDuplicate = prevStock.some(
           (item) => item.product_name === form.product_name
@@ -99,7 +92,7 @@ const StockInForm = ({ confirmHandler }) => {
   const confirmButton = () => {
     Swal.fire({
       customClass: { container: "create-swal" },
-      title: `Are you sure you want to Stock In?`,
+      title: `Are you sure you want to Stock Out?`,
       text: "This action cannot be undone.",
       icon: "warning",
       showCancelButton: true,
@@ -108,16 +101,16 @@ const StockInForm = ({ confirmHandler }) => {
       confirmButtonText: `Yes, create order`,
     }).then((result) => {
       if (result.isConfirmed) {
-        createStockIn();
+        createStockOut();
       }
     });
   };
 
-  const createStockIn = async () => {
-    if (initialStockIn.length > 0) {
-      const inboundStockItems = initialStockIn.map((stockInItem) => ({
-        inventory: stockInItem.inventory_id,
-        quantity: stockInItem.quantity, // must never be zero, need fix
+  const createStockOut = async () => {
+    if (initialStockOut.length > 0) {
+      const inboundStockItems = initialStockOut.map((stockOutItem) => ({
+        inventory: stockOutItem.inventory_id,
+        quantity: stockOutItem.quantity,
       }));
 
       try {
@@ -125,13 +118,11 @@ const StockInForm = ({ confirmHandler }) => {
           "http://127.0.0.1:8000/api/stockin/create/",
           {
             inboundStockItems: inboundStockItems,
-            supplier: selectedSupplier, // replace SelectedSupplier or smth
-            employee: selectedEmployee, // same here
-            reference_number: referenceNumber, // need inputvalidation, idk din kung ano actual input dito tho
+            employee: selectedEmployee,
           }
         );
 
-        console.log("Stocking in successful:", res.data);
+        console.log("Stock Out in successful:", res.data);
         // setSuccessMethod("Added");
         // toggleSuccessWindow();
         if (res.status === 201) {
@@ -140,7 +131,7 @@ const StockInForm = ({ confirmHandler }) => {
             text: "The operation was successful.",
             icon: "success",
           }).then(() => {
-            setInitialStockIn([]);
+            setInitialStockOut([]);
             location.reload();
           });
         }
@@ -148,7 +139,7 @@ const StockInForm = ({ confirmHandler }) => {
         if (error.response) {
           Swal.fire({
             title: "Error!",
-            text: error.response.data || "There was an issue stocking in.",
+            text: error.response.data || "There was an issue stocking out.",
             icon: "error",
           });
         } else {
@@ -204,7 +195,7 @@ const StockInForm = ({ confirmHandler }) => {
             </div>
             <form onSubmit={confirmHandler} className={`min-w-[70vw]`}>
               <div className={`bg-gray-100 py-10 px-8 h-full  rounded-b-lg`}>
-                <h1 className="font-bold text-2xl mb-10">Stock In</h1>
+                <h1 className="font-bold text-2xl mb-10">Stock Out</h1>
                 <div className="mb-12 ml-4 h-[45vh] md:h-[40vh] sm:h-[20vh] overflow-y-hidden">
                   <div className="flex items-center gap-4">
                     <label className="font-bold">Product</label>
@@ -315,13 +306,13 @@ const StockInForm = ({ confirmHandler }) => {
                       type="button"
                       className={`shadow-md bg-white border-2 border-red-700 rounded px-4 py-2 hover:bg-red-700 hover:text-white transition-all duration-100 flex gap-4 items-center`}
                     >
-                      Add Product to Stock In
+                      Add Product to Stock Out
                       <PlusCircleIcon className={`size-6`} />
                     </button>
                   </div>
                   <Table
                     columnArr={tableColumns}
-                    dataArr={initialStockIn}
+                    dataArr={initialStockOut}
                     className={`!max-h-[40vh]`}
                     sortField={null}
                     sortDirection="asc"
@@ -330,98 +321,6 @@ const StockInForm = ({ confirmHandler }) => {
 
                 <div className={`gap-x-6 gap-y-8 flex flex-wrap `}>
                   <div className={`flex gap-4 items-center mb-4`}>
-                    <div className="flex items-center gap-4 ml-4">
-                      <input
-                        className={`text-lg border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none shadow-sm`}
-                        type="number"
-                        value={referenceNumber}
-                        onChange={(e) => setReferenceNumber(e.target.value)}
-                        required
-                        name="reference"
-                        id="reference"
-                      />
-                      <label
-                        htmlFor={"reference"}
-                        className={`text-base absolute transition-all duration-100 ease-in px-4 py-2 text-gray-600 label-line`}
-                      >
-                        Reference Number
-                      </label>
-                    </div>
-                    <label className="font-bold">Supplier</label>
-                    <div className={`flex justify-center relative`}>
-                      <div className={`border-2 rounded-md`}>
-                        <input
-                          placeholder="Search for Supplier"
-                          autoComplete="off"
-                          className="text-lg p-2 min-w-[350px]"
-                          type="text"
-                          onChange={(e) =>
-                            onChangeHandler(e, "supplier_name", {
-                              supplier_id:
-                                supplierOptions.find(
-                                  (item) =>
-                                    item.supplier_name === e.target.value
-                                ) || null,
-                            })
-                          }
-                          onBlur={() => {
-                            if (form.supplier_name) {
-                              validateInput(
-                                "supplier_name",
-                                supplierOptions,
-                                "supplier_name"
-                              );
-                            }
-                          }}
-                          name="supplier_name"
-                          value={form.supplier_name || ""}
-                        />
-                        <div
-                          className={`flex flex-col absolute bg-gray-50 overflow-y-auto max-h-[180px] min-w-[450px] shadow-md rounded-md z-50`}
-                        >
-                          {supplierOptions
-                            .filter((item) => {
-                              const searchTerm = (
-                                form.supplier_name || ""
-                              ).toLowerCase();
-                              const fullName = item.supplier_name.toLowerCase();
-
-                              return (
-                                searchTerm &&
-                                fullName.startsWith(searchTerm) &&
-                                fullName !== searchTerm
-                              );
-                            })
-                            .map((item) => {
-                              return (
-                                <div
-                                  onMouseDown={(e) => {
-                                    e.preventDefault();
-                                  }}
-                                  onClick={() => {
-                                    setForm({
-                                      ...form,
-                                      supplier_name: item.supplier_name,
-                                      supplier_id: item.id,
-                                    });
-                                    setSelectedSupplier(item.id); // Update state
-                                  }}
-                                  data-id={item.id}
-                                  key={item.id}
-                                  className={`hover:bg-red-700 hover:text-white p-4 rounded-sm transition-all duration-100 cursor-pointer`}
-                                >
-                                  {item.supplier_name}
-                                </div>
-                              );
-                            })}
-                        </div>
-                      </div>
-                      <div>
-                        <ChevronDownIcon
-                          className={` size-4 h-full mr-2  absolute flex right-0 items-center justify-center`}
-                        />
-                      </div>
-                    </div>
                     {/* EMPLOYEE SELECTION */}
                     <label className="font-bold ">Employee</label>
                     <div className={`flex justify-center relative`}>
@@ -528,7 +427,7 @@ const StockInForm = ({ confirmHandler }) => {
                     }}
                     className={` shadow-md bg-white border-2 border-red-700 rounded px-4 py-2 hover:bg-red-700 hover:text-white transition-all duration-100 flex gap-4 items-center `}
                   >
-                    Confirm Stock-In
+                    Confirm Stock-Out
                     <CheckCircleIcon className={`size-6`} />
                   </button>
                 </div>
@@ -541,4 +440,4 @@ const StockInForm = ({ confirmHandler }) => {
   );
 };
 
-export default StockInForm;
+export default StockOutForm;

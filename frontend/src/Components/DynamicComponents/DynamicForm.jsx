@@ -92,7 +92,8 @@ export default function DynamicForm({
                         key={index}
                       >
                         <input
-                          className={`shadow-inner text-base border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none`}
+                          className={`shadow-inner text-base border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none
+                          }`}
                           readOnly={readOnly}
                           label={label}
                           id={name}

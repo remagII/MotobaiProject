@@ -18,8 +18,9 @@ class Product(models.Model):
         return '{}: {}'.format(self.product_name, self.product_type)
 
 class Inventory(models.Model):
+    
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    sku = models.CharField(max_length=64, unique=True, null=True, blank=True)
+    sku = models.CharField(max_length=64, unique=True, null=False, blank=False)
     stock = models.PositiveIntegerField(null=False, blank=False, default=0)
     stock_minimum_threshold = models.PositiveIntegerField(null=False, blank=False, default=0)
     date_added = models.DateTimeField(auto_now_add=True)

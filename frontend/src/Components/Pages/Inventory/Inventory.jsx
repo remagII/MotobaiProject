@@ -1,13 +1,16 @@
-import React, { useState } from "react";
-import { ArchiveBoxArrowDownIcon, CubeIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
+import { MinusCircleIcon, CubeIcon } from "@heroicons/react/24/outline";
 import Table from "../../DynamicComponents/DynamicTable.jsx";
 import Overview from "../../Overview.jsx";
 import StockInForm from "./StockInForm.jsx";
 import DynamicModal from "../../DynamicComponents/DynamicModal.jsx";
 import { useFetchData } from "../../Hooks/useFetchData.js";
+import StockOutForm from "./StockOutForm.jsx";
 
 export default function Inventory() {
   const [stockInModal, setStockInModal] = useState(false);
+  const [stockOutModal, setStockOutModal] = useState(false);
+
   // const [packageModal, setPackageModal] = useState(false);
 
   // MODAL TOGGLE
@@ -17,31 +20,10 @@ export default function Inventory() {
     triggerRefresh();
   };
 
-  // const togglePackageModal = () => {
-  //   setPackageModal((m) => (m = !m));
-
-  //   triggerRefresh();
-  // };
-
-  const [errorWindow, setErrorWindow] = useState(false);
-
-  // ERROR WINDOW TOGGLE
-  const toggleErrorWindow = () => {
-    setErrorWindow((e) => (e = !e));
+  const toggleStockOutModal = () => {
+    setStockOutModal((m) => (m = !m));
+    triggerRefresh();
   };
-
-  // ERROR TEXT
-  const [errors, setErrors] = useState("");
-  var errorFields = [];
-
-  //DISPLAY TEMPLATE ON <TABLE></TABLE>
-  const formArr = [
-    { label: "Customer Name", name: "customer_name" },
-    {
-      label: "Phone Number",
-      name: "phone_number",
-    },
-  ];
 
   const tableColumns = [
     {
@@ -108,8 +90,6 @@ export default function Inventory() {
 
   const { data: inventory, triggerRefresh } = useFetchData("inventory");
 
-  const [loading, setLoading] = useState(false);
-
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
   let inactiveCount = 0;
   let lowStockCount = 0;
@@ -156,13 +136,19 @@ export default function Inventory() {
               <h1 className={`text-3xl font-bold`}>Inventory</h1>
 
               <div className="flex mr-24">
-                {/* <div className="flex gap-4 mr-32 items-center">
-                  <label className="font-bold ">Status</label>
-                  <select className={`min-w-[10vw] max-h-4 rounded-lg p-4`}>
-                    <option>Price</option>
-                    <option>Quantity</option>
-                  </select>
-                </div> */}
+                <div>
+                  <button
+                    onClick={toggleStockOutModal}
+                    className={`bg-white border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700 hover:text-gray-100 transition-all duration-100 flex gap-4 items-center shadow-md`}
+                  >
+                    Stock Out
+                    <div
+                      className={`text-gray-100 py-2 px-3 rounded-lg bg-red-800 hover:bg-red-800 transition-all duration-100`}
+                    >
+                      <MinusCircleIcon className="size-5" />
+                    </div>
+                  </button>
+                </div>
                 <div>
                   <button
                     onClick={toggleStockInModal}
@@ -183,25 +169,13 @@ export default function Inventory() {
             <DynamicModal modal={stockInModal} toggleModal={toggleStockInModal}>
               <StockInForm />
             </DynamicModal>
-
-            <div className="absolute top-50 z-10 shadow-xl">
-              {errorWindow && (
-                <div
-                  className={`rounded mt-8 p-4 text-lg font-bold text-red-600  shadow-shadowTable bg-red-200 flex justify-between transition-all`}
-                >
-                  <h1>
-                    <span className="text-red-700">Please fill in the: </span>
-                    {errors}
-                  </h1>
-                  <button
-                    onClick={toggleErrorWindow}
-                    className={`p-2 hover:text-red-700 text-xl`}
-                  >
-                    Close
-                  </button>
-                </div>
-              )}
-            </div>
+            {/* STOCK OUT FORM */}
+            <DynamicModal
+              modal={stockOutModal}
+              toggleModal={toggleStockOutModal}
+            >
+              <StockOutForm />
+            </DynamicModal>
           </div>
           <Table
             columnArr={tableColumns}

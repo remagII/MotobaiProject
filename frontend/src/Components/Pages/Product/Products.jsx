@@ -17,7 +17,6 @@ import { useUpdateData } from "../../Hooks/useUpdateData.js";
 export default function Products() {
   const [method, setMethod] = useState("");
   const [modal, setModal] = useState(false);
-  const [packageModal, setPackageModal] = useState(false);
 
   // MODAL TOGGLE
   const toggleModal = () => {
@@ -29,53 +28,7 @@ export default function Products() {
     if (method === "edit") {
       setRowToEdit(null);
     }
-
-    {
-      errorWindow ? toggleErrorWindow() : "";
-    }
   };
-
-  const packageModalToggle = () => {
-    setPackageModal((p) => (p = !p));
-    setDeleteBtn("inactive");
-  };
-
-  const [errorWindow, setErrorWindow] = useState(false);
-  const toggleErrorWindow = () => {
-    setErrorWindow((e) => (e = !e));
-  };
-
-  useEffect(() => {
-    if (errorWindow) {
-      const timer = setTimeout(() => {
-        setErrorWindow(false);
-      }, 5000); // Closes the error window after 5 seconds
-
-      return () => clearTimeout(timer); // Cleanup if component unmounts
-    }
-  }, [errorWindow]);
-
-  // ERROR TEXT
-  const [errors, setErrors] = useState("");
-  var errorFields = [];
-
-  // SUCCESS WINDOW TOGGLE
-  const [successWindow, setSuccessWindow] = useState(false);
-  const toggleSuccessWindow = () => {
-    setSuccessWindow((e) => (e = !e));
-  };
-
-  useEffect(() => {
-    if (successWindow) {
-      const timer = setTimeout(() => {
-        setSuccessWindow(false);
-      }, 2000); // Closes the error window after 2 seconds
-
-      return () => clearTimeout(timer); // Cleanup if component unmounts
-    }
-  }, [successWindow]);
-
-  const [successMethod, setSuccessMethod] = useState("");
 
   //PROPS FOR <INPUT>
   const formArr = [
@@ -108,28 +61,22 @@ export default function Products() {
       label: "Stock Minimum Threshold",
       name: "stock_minimum_threshold",
     },
+    {
+      label: "SKU",
+      name: "sku",
+      type: "number",
+    },
   ];
 
-  //PROPS FOR <INPUT>
-  const packageFormArr = [
-    {
-      label: "Search Product (Searchbar)",
-      name: "product.product_name",
-    },
-    {
-      label: "Package Name",
-      name: "package_name",
-    },
-    {
-      label: "Quantity",
-      name: "quantity",
-    },
-  ];
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
   const tableColumns = [
     {
       header: "Product ID",
       row: "product.id",
+    },
+    {
+      header: "SKU",
+      row: "sku",
     },
 
     {
@@ -175,13 +122,26 @@ export default function Products() {
   const { updateData, loading: updateLoading } = useUpdateData();
 
   const onSubmitHandler = async (form) => {
+    const info = {
+      product_name: form.product.product_name,
+      sku: form.sku,
+      product_type: form.product.product_type,
+      price: form.product.price,
+      description: form.product.description,
+      vehicle_type: form.product.vehicle_type,
+      brand: form.product.brand,
+      stock_minimum_threshold: form.stock_minimum_threshold,
+    };
+
+    console.log("form being sent to backend:", info);
+
     if (method === "create") {
       if (rowToEdit === null) {
         await createData(
           "product",
           {
             product_name: form.product.product_name,
-            sku: 1, // please change this
+            sku: form.sku,
             product_type: form.product.product_type,
             price: form.product.price,
             description: form.product.description,
@@ -201,7 +161,7 @@ export default function Products() {
         rowIdEdit,
         {
           product_name: form.product.product_name,
-          sku: `edit me please`, // please change this
+          sku: form.sku,
           product_type: form.product.product_type,
           price: form.product.price,
           description: form.product.description,
@@ -241,17 +201,6 @@ export default function Products() {
               <h1 className={`text-3xl font-bold`}>Products</h1>
               <div className={`flex gap-4`}>
                 <button
-                  onClick={packageModalToggle}
-                  className={`shadow-md text-black  border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700 hover:text-white  transition-all duration-100 flex gap-4 items-center`}
-                >
-                  Create Package
-                  <div
-                    className={`text-white py-2 px-3 rounded-lg bg-red-800 hover:bg-red-800 transition-all duration-100`}
-                  >
-                    <ArchiveBoxArrowDownIcon className="size-5" />
-                  </div>
-                </button>
-                <button
                   onClick={toggleModal}
                   className={`shadow-md text-white bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center`}
                 >
@@ -266,26 +215,6 @@ export default function Products() {
             </div>
 
             <DynamicModal modal={modal} toggleModal={toggleModal}>
-              <div className="absolute z-20 top-20  left-1/2 transform -translate-x-1/2  ">
-                {errorWindow && (
-                  <div
-                    className={`rounded mt-8 p-4 text-lg font-bold text-red-600   bg-red-200 flex justify-between transition-all w-[70vw] shadow-2xl`}
-                  >
-                    <h1>
-                      <span className="text-red-700">
-                        Please fill in properly the:{" "}
-                      </span>
-                      {errors}
-                    </h1>
-                    <button
-                      onClick={toggleErrorWindow}
-                      className={`p-2 hover:text-red-700 text-xl`}
-                    >
-                      Close
-                    </button>
-                  </div>
-                )}
-              </div>
               <DynamicForm
                 btnTitle={btnTitle}
                 title={"Product"}
@@ -299,37 +228,6 @@ export default function Products() {
                 icon={<ArrowDownTrayIcon className="size-5" />}
               />
             </DynamicModal>
-
-            <DynamicModal modal={packageModal} toggleModal={packageModalToggle}>
-              <DynamicForm
-                btnTitle={"Create Package"}
-                deleteBtn={deleteBtn}
-                title={"Package"}
-                formArr={packageFormArr}
-                onSubmit={onSubmitHandler}
-                defaultValue={rowToEdit !== null ? product[rowToEdit] : ""}
-                icon={<ArrowDownTrayIcon className="size-5" />}
-              ></DynamicForm>
-            </DynamicModal>
-            <div className="absolute z-20 top-20  left-1/2 transform -translate-x-1/2">
-              {successWindow && (
-                <div
-                  className={`rounded p-4 text-lg font-bold text-green-600 bg-green-200 flex justify-between  transition-all w-[30vw] shadow-2xl`}
-                >
-                  <h1>
-                    <span className="text-green-700">
-                      Successfully {successMethod}!
-                    </span>
-                  </h1>
-                  <button
-                    onClick={toggleSuccessWindow}
-                    className={`p-2 hover:text-green-700 text-xl`}
-                  >
-                    Close
-                  </button>
-                </div>
-              )}
-            </div>
           </div>
           <Table
             columnArr={tableColumns}

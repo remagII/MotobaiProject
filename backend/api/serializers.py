@@ -43,7 +43,8 @@ class ProductSerializer(serializers.ModelSerializer):
         product = super().create(validated_data)
 
         # Add the product to the inventory with default values
-        Inventory.objects.create(product=product, stock=0, stock_minimum_threshold=stock_minimum_threshold)
+        sku = validated_data.pop('sku', None)
+        Inventory.objects.create(product=product, sku=sku,  stock=0, stock_minimum_threshold=stock_minimum_threshold)
 
         return product
     
