@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Logo from "../../../assets/Logo.png";
 import Table from "../../DynamicComponents/DynamicTable";
 import api from "../../../api";
@@ -541,11 +541,6 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
                   buttonName={"Proceed to Shipping"}
                 ></OrderModalButton>
               )}
-              <OrderModalButton
-                className={`text-green-800 border-green-800 hover:bg-green-800`}
-                onClick={() => updateOrderDetail(returnItems)}
-                buttonName={"TEST BUTTON"}
-              ></OrderModalButton>
 
               {orderTrackingStatus === "shipped" && (
                 <OrderModalButton
@@ -579,22 +574,17 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
               )}
 
               {orderTrackingStatus !== "completed" &&
-                orderTrackingStatus === "recved" &&
+                orderTrackingStatus === "received" &&
                 orderTrackingStatus !== "cancelled" &&
                 orderTrackingStatus !== "returned" &&
                 orderDetails.order_type !== "Walkin" && (
                   <OrderModalButton
                     className={`text-orange-500 border-orange-500`}
-                    onClick={() => onClickUpdateStatus("returned")}
+                    onClick={() => updateOrderDetail(returnItems)}
                     buttonName={"Return Order"}
                   ></OrderModalButton>
                 )}
             </div>
-            <OrderModalButton
-              className={`text-green-800 border-green-800 hover:bg-green-800`}
-              onClick={() => updateOrderDetail(returnItems)}
-              buttonName={"TEST BUTTON"}
-            ></OrderModalButton>
           </div>
         </div>
       </div>

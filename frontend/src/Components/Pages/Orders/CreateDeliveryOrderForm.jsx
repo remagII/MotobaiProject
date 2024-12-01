@@ -1,13 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Logo from "../../../assets/Logo.png";
 import "../../pages.css";
 import Table from "../../DynamicComponents/DynamicTable";
 import api from "../../../api";
-import {
-  ChevronDownIcon,
-  PlusCircleIcon,
-  CheckCircleIcon,
-} from "@heroicons/react/24/outline";
+import { PlusCircleIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
 import Swal from "sweetalert2";
 
 import { useFetchData } from "../../Hooks/useFetchData.js";
@@ -163,7 +159,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
   });
 
   //SET FORM BACK TO OLD STATE
-  const onSubmitHandler = (e) => {
+  const onSubmitHandler = () => {
     delete form.account_id;
     delete form.employee_id;
 
@@ -337,7 +333,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                   ))}
                   {/* CREATE ROW BUTTON */}
                   <button
-                    onClick={(e) => {
+                    onClick={() => {
                       onSubmitHandler();
                     }}
                     type="button"
@@ -542,7 +538,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                 <div className={`flex justify-end gap-4 mt-12`}>
                   <button
                     type="button"
-                    onClick={(e) => {
+                    onClick={() => {
                       {
                         confirmButton();
                       }

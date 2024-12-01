@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Logo from "../../../assets/Logo.png";
 import Table from "../../DynamicComponents/DynamicTable";
 import api from "../../../api";
@@ -13,11 +13,9 @@ import Swal from "sweetalert2";
 const StockInForm = ({ confirmHandler }) => {
   const [successWindow, setSuccessWindow] = useState(false);
   const [referenceNumber, setReferenceNumber] = useState("");
-  const toggleSuccessWindow = () => {
-    setSuccessWindow((e) => (e = !e));
-  };
 
-  const [successMethod, setSuccessMethod] = useState("");
+  const [selectedSupplier, setSelectedSupplier] = useState(null);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   useEffect(() => {
     if (successWindow) {
@@ -33,6 +31,7 @@ const StockInForm = ({ confirmHandler }) => {
 
   const { data: productOptions } = useFetchData("inventory");
   const { data: supplierOptions } = useFetchData("supplier");
+  const { data: employeeOptions } = useFetchData("employee");
 
   const formArr = [
     {
@@ -76,18 +75,11 @@ const StockInForm = ({ confirmHandler }) => {
       [fieldName]: value,
       ...extraData,
     }));
-
-    if (fieldName === "product") {
-      setSelectedAccount(extraData.account_id);
-    } else if (fieldName === "first_name") {
-      setSelectedEmployee(extraData.employee_id);
-    }
   };
 
   //SET FORM BACK TO OLD STATE
   const onSubmitHandler = (e) => {
     if (form && form.quantity && form.product_name) {
-      e.preventDefault();
       setInitialStockIn((prevStock) => {
         // Check if a product with the same name already exists in the stock
         const isDuplicate = prevStock.some(
@@ -113,9 +105,6 @@ const StockInForm = ({ confirmHandler }) => {
 
   // send data to database
   const confirmButton = () => {
-    console.log(initialStockIn);
-    console.log(referenceNumber);
-
     Swal.fire({
       customClass: { container: "create-swal" },
       title: `Are you sure you want to create order?`,
@@ -144,8 +133,8 @@ const StockInForm = ({ confirmHandler }) => {
           "http://127.0.0.1:8000/api/stockin/create/",
           {
             inboundStockItems: inboundStockItems,
-            supplier: 1, // replace SelectedSupplier or smth
-            employee: 1, // same here
+            supplier: selectedSupplier, // replace SelectedSupplier or smth
+            employee: selectedEmployee, // same here
             reference_number: referenceNumber, // need inputvalidation, idk din kung ano actual input dito tho
           }
         );
@@ -203,6 +192,8 @@ const StockInForm = ({ confirmHandler }) => {
       alert(`Please input the correct ${fieldName.replace("_", " ")}`);
     }
   };
+
+  const [searchInput, setSearchInput] = useState("");
 
   return (
     <section>
@@ -421,6 +412,7 @@ const StockInForm = ({ confirmHandler }) => {
                                       supplier_name: item.supplier_name,
                                       supplier_id: item.id,
                                     });
+                                    setSelectedSupplier(item.id); // Update state
                                   }}
                                   data-id={item.id}
                                   key={item.id}
@@ -436,6 +428,100 @@ const StockInForm = ({ confirmHandler }) => {
                         <ChevronDownIcon
                           className={` size-4 h-full mr-2  absolute flex right-0 items-center justify-center`}
                         />
+                      </div>
+                    </div>
+                    {/* EMPLOYEE SELECTION */}
+                    <label className="font-bold ">Employee</label>
+                    <div className={`flex justify-center relative`}>
+                      <div className={`border-2 rounded-md`}>
+                        <input
+                          autoComplete="off"
+                          placeholder="Search for Employee"
+                          className="text-lg p-2 min-w-[350px]"
+                          type="text"
+                          onChange={(e) => {
+                            setSearchInput(e.target.value); // Update the search input value
+                          }}
+                          onBlur={() => {
+                            // Validate the input only if the user hasn't selected from the dropdown
+                            const matchedEmployee = employeeOptions.find(
+                              (employee) => {
+                                const fullName = [
+                                  employee.first_name,
+                                  employee.middle_name,
+                                  employee.last_name,
+                                ]
+                                  .join(" ")
+                                  .toLowerCase();
+                                return fullName === searchInput.toLowerCase();
+                              }
+                            );
+
+                            if (!matchedEmployee) {
+                              alert("Please select a valid employee.");
+                              setSearchInput(""); // Reset input
+                              setForm({
+                                ...form,
+                                employee_name: "",
+                                employee_id: null,
+                              });
+                              setSelectedEmployee(null);
+                            }
+                          }}
+                          name="employee_name"
+                          value={searchInput} // Bind to the search input state
+                        />
+                        <div
+                          className={`flex flex-col absolute bg-gray-50 overflow-y-auto max-h-[180px] min-w-[450px] shadow-md rounded-md z-50`}
+                        >
+                          {employeeOptions
+                            .filter((employee) => {
+                              const searchTerm = searchInput.toLowerCase();
+                              const fullName = [
+                                employee.first_name,
+                                employee.middle_name,
+                                employee.last_name,
+                              ]
+                                .join(" ")
+                                .toLowerCase();
+
+                              return (
+                                searchTerm &&
+                                fullName.startsWith(searchTerm) &&
+                                fullName !== searchTerm
+                              );
+                            })
+                            .map((employee) => (
+                              <div
+                                key={employee.id}
+                                onMouseDown={(e) => e.preventDefault()}
+                                onClick={() => {
+                                  // Update the form when an option is clicked
+                                  setForm({
+                                    ...form,
+                                    employee_name: [
+                                      employee.first_name,
+                                      employee.middle_name,
+                                      employee.last_name,
+                                    ].join(" "),
+                                    employee_id: employee.id,
+                                  });
+                                  setSelectedEmployee(employee.id); // Update state
+                                  setSearchInput(
+                                    [
+                                      employee.first_name,
+                                      employee.middle_name,
+                                      employee.last_name,
+                                    ].join(" ")
+                                  ); // Set the input value to the selected employee
+                                }}
+                                className={`hover:bg-red-700 hover:text-white p-4 rounded-sm transition-all duration-100 cursor-pointer`}
+                              >
+                                {employee.first_name} {employee.middle_name}{" "}
+                                {employee.last_name}
+                              </div>
+                            ))}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -458,25 +544,6 @@ const StockInForm = ({ confirmHandler }) => {
             </form>
           </div>
         </div>
-      </div>
-      <div className="absolute z-20 top-20  left-1/2 transform -translate-x-1/2">
-        {successWindow && (
-          <div
-            className={`rounded p-4 text-lg font-bold text-green-600 bg-green-200 flex justify-between  transition-all w-[30vw] shadow-2xl`}
-          >
-            <h1>
-              <span className="text-green-700">
-                Successfully {successMethod}!
-              </span>
-            </h1>
-            <button
-              onClick={toggleSuccessWindow}
-              className={`p-2 hover:text-green-700 text-xl`}
-            >
-              Close
-            </button>
-          </div>
-        )}
       </div>
     </section>
   );
