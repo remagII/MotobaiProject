@@ -41,6 +41,10 @@ export default function Orders() {
     },
 
     {
+      header: "Reference #",
+      row: "reference_number",
+    },
+    {
       header: "Number of Products",
       row: "order_details.length",
       customRender: (item) => {
@@ -59,7 +63,7 @@ export default function Orders() {
         } else {
           return <p>Unknown</p>; // Fallback case
         }
-      },      
+      },
     },
     {
       header: "Employee",

@@ -18,6 +18,8 @@ const CreateWalkinOrderForm = ({ confirmHandler }) => {
   const { data: productOptions } = useFetchData("inventory");
   const { data: employeeOptions } = useFetchData("employee");
 
+  const [referenceNumber, setReferenceNumber] = useState("");
+  const [deduction, setDeduction] = useState("");
   // const { data: accountOptions } = useFetchData("account");
 
   // const [selectedAccount, setSelectedAccount] = useState(null);
@@ -65,6 +67,7 @@ const CreateWalkinOrderForm = ({ confirmHandler }) => {
           total_balance: total_balance,
           customer_name: customerName,
           phone_number: phoneNumber,
+          reference_number: referenceNumber,
         });
         Swal.fire({
           title: "Order Successfully Created!",
@@ -99,7 +102,7 @@ const CreateWalkinOrderForm = ({ confirmHandler }) => {
         icon: "warning",
       });
     }
-  }
+  };
 
   const formArr = [
     {
@@ -488,8 +491,44 @@ const CreateWalkinOrderForm = ({ confirmHandler }) => {
                       </div>
                     </div>
                   </div>
+                  <div className="flex">
+                    <input
+                      className={`text-lg border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none shadow-sm`}
+                      type="text"
+                      value={referenceNumber}
+                      onChange={(e) => setReferenceNumber(e.target.value)}
+                      required
+                      name="reference"
+                      id="reference"
+                    />
 
-                  <div className="ml-44 mt-2">
+                    <label
+                      htmlFor={"reference"}
+                      className={`text-base absolute transition-all duration-100 ease-in px-4 py-2 text-gray-600 label-line`}
+                    >
+                      Reference #
+                    </label>
+                  </div>
+                  <div className="flex">
+                    <input
+                      className={`text-lg border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none shadow-sm`}
+                      type="text"
+                      value={deduction}
+                      onChange={(e) => setDeduction(e.target.value)}
+                      required
+                      name="deduction"
+                      id="deduction"
+                    />
+
+                    <label
+                      htmlFor={"deduction"}
+                      className={`text-base absolute transition-all duration-100 ease-in px-4 py-2 text-gray-600 label-line`}
+                    >
+                      Deduction
+                    </label>
+                  </div>
+
+                  <div className="auto">
                     <span className=" text-xl">{`TOTAL PRICE: `}</span>
                     <span className="text-2xl font-bold">{`${totalPrice.toFixed(
                       2

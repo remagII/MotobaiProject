@@ -253,6 +253,15 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
 
   const tableColumns = [
     {
+      header: "Inventory ID",
+      row: "id",
+    },
+    {
+      header: "SKU",
+      row: "sku",
+    },
+
+    {
       header: "Product Name",
       row: "product_name",
       customRender: (item) => {
@@ -535,19 +544,32 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
                   )}
 
                 {orderTrackingStatus !== "cancelled" && (
-                  <StatusDates
-                    statusName={`Completed`}
-                    statusDateName={"date_completed"}
-                    className={`${
-                      dateStateChecker("date_completed")
-                        ? "text-green-200"
-                        : "text-green-500"
-                    }`}
-                    stateCheck={`Completed`}
-                    colorState={`${
-                      dateStateChecker("date_completed") ? "completed" : ""
-                    }`}
-                  />
+                  <>
+                    <StatusDates
+                      statusName={`Completed`}
+                      statusDateName={"date_completed"}
+                      className={`${
+                        dateStateChecker("date_completed")
+                          ? "text-green-200"
+                          : "text-green-500"
+                      }`}
+                      stateCheck={`Completed`}
+                      colorState={`${
+                        dateStateChecker("date_completed") ? "completed" : ""
+                      }`}
+                    />
+                  </>
+                )}
+
+                {orderTrackingStatus === "completed" && (
+                  <div
+                    className={`bg-white py-2 px-4 rounded-md hover:-translate-y-1 hover:bg-gray-200 shadow-md transition-all duration-150 cursor-default`}
+                  >
+                    <p className={`font-semibold `}>Bill Reference #</p>
+                    <span className="font-bold text-lg">
+                      insert bill reference here
+                    </span>
+                  </div>
                 )}
 
                 {orderTrackingStatus === "cancelled" && (

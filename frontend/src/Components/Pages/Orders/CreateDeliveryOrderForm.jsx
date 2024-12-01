@@ -18,6 +18,9 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
 
+  const [referenceNumber, setReferenceNumber] = useState("");
+  const [deduction, setDeduction] = useState("");
+
   const confirmButton = () => {
     Swal.fire({
       title: "Confirm Order Creation",
@@ -58,6 +61,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
           order_details: orderItems,
           order_type: "Delivery",
           account: selectedAccount,
+          reference_number: referenceNumber,
           employee: selectedEmployee,
           total_balance: total_balance,
         });
@@ -220,7 +224,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                 alt="Motobai-Logo"
               />
             </div>
-            <form onSubmit={confirmHandler} className={`min-w-[80vw] `}>
+            <form onSubmit={confirmHandler} className={`min-w-[90vw] `}>
               <div className={`bg-gray-100 py-10 px-8 h-full rounded-b-lg`}>
                 <h1 className="font-bold text-2xl mb-10">
                   Create Order Delivery
@@ -353,100 +357,134 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                     sortDirection="asc"
                   />
                 </div>
-                <div className={`gap-x-6 gap-y-8 flex flex-wrap `}>
+                <div className={`gap-x-6 gap-y-8 flex flex-wrap mt-2`}>
                   <div className="flex items-center gap-4">
                     {/* ACCOUNT SELECTION */}
-                    <div
-                      className={`flex justify-center relative items-center gap-4`}
-                    >
+                    <div className="flex flex-col gap-2">
                       <label className="font-bold">Account</label>
-                      <div className={`flex justify-center relative`}>
-                        <div className={`border-2 rounded-md`}>
-                          <input
-                            placeholder="Search for Account"
-                            autoComplete="off"
-                            className="text-lg p-2 min-w-[350px]"
-                            type="text"
-                            onChange={(e) =>
-                              onChangeHandler(e, "account", {
-                                account_id:
-                                  accountOptions.find(
-                                    (item) =>
-                                      item.account.toLowerCase ===
-                                      e.target.value.toLowerCase
-                                  ) || null,
-                              })
-                            }
-                            onBlur={() => {
-                              if (form.account) {
-                                validateInput(
-                                  "account",
-                                  accountOptions,
-                                  "account"
-                                );
+                      <div
+                        className={`flex justify-center relative items-center gap-4`}
+                      >
+                        <div className={`flex justify-center relative`}>
+                          <div className={`border-2 rounded-md`}>
+                            <input
+                              placeholder="Search for Account"
+                              autoComplete="off"
+                              className="text-lg p-2 min-w-[350px]"
+                              type="text"
+                              onChange={(e) =>
+                                onChangeHandler(e, "account", {
+                                  account_id:
+                                    accountOptions.find(
+                                      (item) =>
+                                        item.account.toLowerCase ===
+                                        e.target.value.toLowerCase
+                                    ) || null,
+                                })
                               }
-                            }}
-                            name="account"
-                            value={form.account || ""}
-                          />
-                          <div
-                            className={`flex flex-col absolute bg-gray-50 overflow-y-auto max-h-[180px] min-w-[450px] shadow-md rounded-md z-50`}
-                          >
-                            {accountOptions
-                              .filter((item) => {
-                                const searchTerm = (
-                                  form.account || ""
-                                ).toLowerCase();
-                                const fullName = item.account.toLowerCase();
+                              onBlur={() => {
+                                if (form.account) {
+                                  validateInput(
+                                    "account",
+                                    accountOptions,
+                                    "account"
+                                  );
+                                }
+                              }}
+                              name="account"
+                              value={form.account || ""}
+                            />
+                            <div
+                              className={`flex flex-col absolute bg-gray-50 overflow-y-auto max-h-[180px] min-w-[450px] shadow-md rounded-md z-50`}
+                            >
+                              {accountOptions
+                                .filter((item) => {
+                                  const searchTerm = (
+                                    form.account || ""
+                                  ).toLowerCase();
+                                  const fullName = item.account.toLowerCase();
 
-                                return (
-                                  searchTerm &&
-                                  fullName.startsWith(searchTerm) &&
-                                  fullName !== searchTerm
-                                );
-                              })
-                              .map((item) => {
-                                return (
-                                  <div
-                                    onMouseDown={(e) => {
-                                      e.preventDefault();
-                                    }}
-                                    onClick={() => {
-                                      setForm({
-                                        ...form,
-                                        account: item.account,
-                                        account_id: item.id,
-                                      });
-                                      setSelectedAccount(item.id); // Update state
-                                    }}
-                                    data-id={item.id}
-                                    key={item.id}
-                                    className={`hover:bg-red-700 hover:text-white p-4 rounded-sm transition-all duration-100 cursor-pointer`}
-                                  >
-                                    {item.account}
-                                  </div>
-                                );
-                              })}
+                                  return (
+                                    searchTerm &&
+                                    fullName.startsWith(searchTerm) &&
+                                    fullName !== searchTerm
+                                  );
+                                })
+                                .map((item) => {
+                                  return (
+                                    <div
+                                      onMouseDown={(e) => {
+                                        e.preventDefault();
+                                      }}
+                                      onClick={() => {
+                                        setForm({
+                                          ...form,
+                                          account: item.account,
+                                          account_id: item.id,
+                                        });
+                                        setSelectedAccount(item.id); // Update state
+                                      }}
+                                      data-id={item.id}
+                                      key={item.id}
+                                      className={`hover:bg-red-700 hover:text-white p-4 rounded-sm transition-all duration-100 cursor-pointer`}
+                                    >
+                                      {item.account}
+                                    </div>
+                                  );
+                                })}
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                     {/* EMPLOYEE SELECTION */}
-                    <label className="font-bold ">Employee</label>
-                    <div className={`flex justify-center relative`}>
-                      <div className={`border-2 rounded-md`}>
-                        <input
-                          autoComplete="off"
-                          placeholder="Search for Employee"
-                          className="text-lg p-2 min-w-[350px]"
-                          type="text"
-                          onChange={(e) => {
-                            setSearchInput(e.target.value); // Update the search input value
-                          }}
-                          onBlur={() => {
-                            // Validate the input only if the user hasn't selected from the dropdown
-                            const matchedEmployee = employeeOptions.find(
-                              (employee) => {
+                    <div className="flex flex-col gap-2">
+                      <label className="font-bold ">Employee</label>
+                      <div className={`flex justify-center relative`}>
+                        <div className={`border-2 rounded-md`}>
+                          <input
+                            autoComplete="off"
+                            placeholder="Search for Employee"
+                            className="text-lg p-2 min-w-[350px]"
+                            type="text"
+                            onChange={(e) => {
+                              setSearchInput(e.target.value); // Update the search input value
+                            }}
+                            onBlur={() => {
+                              // Validate the input only if the user hasn't selected from the dropdown
+                              const matchedEmployee = employeeOptions.find(
+                                (employee) => {
+                                  const fullName = [
+                                    employee.first_name,
+                                    employee.middle_name,
+                                    employee.last_name,
+                                  ]
+                                    .join(" ")
+                                    .toLowerCase();
+                                  return fullName === searchInput.toLowerCase();
+                                }
+                              );
+
+                              if (!matchedEmployee) {
+                                alert("Please select a valid employee.");
+                                setSearchInput(""); // Reset input
+                                setForm({
+                                  ...form,
+                                  employee_name: "",
+                                  employee_id: null,
+                                });
+                                setSelectedEmployee(null);
+                              }
+                            }}
+                            name="employee_name"
+                            value={searchInput} // Bind to the search input state
+                          />
+                          <div
+                            className={`flex flex-col absolute bg-gray-50 overflow-y-auto max-h-[180px] min-w-[450px] shadow-md rounded-md z-50`}
+                          >
+                            {employeeOptions
+                              .filter((employee) => {
+                                const searchTerm = searchInput.toLowerCase();
                                 const fullName = [
                                   employee.first_name,
                                   employee.middle_name,
@@ -454,81 +492,86 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                                 ]
                                   .join(" ")
                                   .toLowerCase();
-                                return fullName === searchInput.toLowerCase();
-                              }
-                            );
 
-                            if (!matchedEmployee) {
-                              alert("Please select a valid employee.");
-                              setSearchInput(""); // Reset input
-                              setForm({
-                                ...form,
-                                employee_name: "",
-                                employee_id: null,
-                              });
-                              setSelectedEmployee(null);
-                            }
-                          }}
-                          name="employee_name"
-                          value={searchInput} // Bind to the search input state
-                        />
-                        <div
-                          className={`flex flex-col absolute bg-gray-50 overflow-y-auto max-h-[180px] min-w-[450px] shadow-md rounded-md z-50`}
-                        >
-                          {employeeOptions
-                            .filter((employee) => {
-                              const searchTerm = searchInput.toLowerCase();
-                              const fullName = [
-                                employee.first_name,
-                                employee.middle_name,
-                                employee.last_name,
-                              ]
-                                .join(" ")
-                                .toLowerCase();
-
-                              return (
-                                searchTerm &&
-                                fullName.startsWith(searchTerm) &&
-                                fullName !== searchTerm
-                              );
-                            })
-                            .map((employee) => (
-                              <div
-                                key={employee.id}
-                                onMouseDown={(e) => e.preventDefault()}
-                                onClick={() => {
-                                  // Update the form when an option is clicked
-                                  setForm({
-                                    ...form,
-                                    employee_name: [
-                                      employee.first_name,
-                                      employee.middle_name,
-                                      employee.last_name,
-                                    ].join(" "),
-                                    employee_id: employee.id,
-                                  });
-                                  setSelectedEmployee(employee.id); // Update state
-                                  setSearchInput(
-                                    [
-                                      employee.first_name,
-                                      employee.middle_name,
-                                      employee.last_name,
-                                    ].join(" ")
-                                  ); // Set the input value to the selected employee
-                                }}
-                                className={`hover:bg-red-700 hover:text-white p-4 rounded-sm transition-all duration-100 cursor-pointer`}
-                              >
-                                {employee.first_name} {employee.middle_name}{" "}
-                                {employee.last_name}
-                              </div>
-                            ))}
+                                return (
+                                  searchTerm &&
+                                  fullName.startsWith(searchTerm) &&
+                                  fullName !== searchTerm
+                                );
+                              })
+                              .map((employee) => (
+                                <div
+                                  key={employee.id}
+                                  onMouseDown={(e) => e.preventDefault()}
+                                  onClick={() => {
+                                    // Update the form when an option is clicked
+                                    setForm({
+                                      ...form,
+                                      employee_name: [
+                                        employee.first_name,
+                                        employee.middle_name,
+                                        employee.last_name,
+                                      ].join(" "),
+                                      employee_id: employee.id,
+                                    });
+                                    setSelectedEmployee(employee.id); // Update state
+                                    setSearchInput(
+                                      [
+                                        employee.first_name,
+                                        employee.middle_name,
+                                        employee.last_name,
+                                      ].join(" ")
+                                    ); // Set the input value to the selected employee
+                                  }}
+                                  className={`hover:bg-red-700 hover:text-white p-4 rounded-sm transition-all duration-100 cursor-pointer`}
+                                >
+                                  {employee.first_name} {employee.middle_name}{" "}
+                                  {employee.last_name}
+                                </div>
+                              ))}
+                          </div>
                         </div>
                       </div>
                     </div>
-                    {/* PRODUCT SELECT */}
+                    <div className="flex mt-8">
+                      <input
+                        className={`text-lg border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none shadow-sm`}
+                        type="text"
+                        value={referenceNumber}
+                        onChange={(e) => setReferenceNumber(e.target.value)}
+                        required
+                        name="reference"
+                        id="reference"
+                      />
+
+                      <label
+                        htmlFor={"reference"}
+                        className={`text-base absolute transition-all duration-100 ease-in px-4 py-2 text-gray-600 label-line`}
+                      >
+                        Reference #
+                      </label>
+                    </div>
+                    <div className="flex mt-8">
+                      <input
+                        className={`text-lg border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none shadow-sm`}
+                        type="text"
+                        value={deduction}
+                        onChange={(e) => setDeduction(e.target.value)}
+                        required
+                        name="deduction"
+                        id="deduction"
+                      />
+
+                      <label
+                        htmlFor={"deduction"}
+                        className={`text-base absolute transition-all duration-100 ease-in px-4 py-2 text-gray-600 label-line`}
+                      >
+                        Deduction
+                      </label>
+                    </div>
                   </div>
 
-                  <div className="ml-44 mt-2">
+                  <div className="auto">
                     <span className=" text-xl">{`TOTAL PRICE: `}</span>
                     <span className="text-2xl font-bold">{`${totalPrice.toFixed(
                       2
