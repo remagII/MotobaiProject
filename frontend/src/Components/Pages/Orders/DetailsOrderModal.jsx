@@ -166,12 +166,22 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
     } else if (status === "received") {
       statusString = "Receive";
     } else if (status === "completed") {
-      statusString = "Complete, this should also open a modal first";
+      if (referenceNumber === "") {
+        Swal.fire({
+          title: "Error",
+          text: `Please input a Reference Number`,
+          icon: "error",
+        });
+        return;
+      } else {
+        statusString = "Complete Order";
+      }
     } else if (status === "cancelled") {
       statusString = "Cancel";
     } else if (status === "returned") {
       statusString = "Return";
     }
+
     Swal.fire({
       title: `Confirm ${statusString}`,
       text: "This process is irreversible!",
@@ -335,6 +345,30 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
     return orderState;
   }
 
+  const [referenceNumber, setReferenceNumber] = useState("");
+
+  function ReferenceNumberField() {
+    return (
+      <div className="flex items-center gap-4 ml-4">
+        <input
+          className={`text-lg border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none shadow-sm`}
+          type="number"
+          value={referenceNumber}
+          onChange={(e) => setReferenceNumber(e.target.value)}
+          required
+          name="reference"
+          id="reference"
+        />
+        <label
+          htmlFor={"reference"}
+          className={`text-base absolute transition-all duration-100 ease-in px-4 py-2 text-gray-600 label-line`}
+        >
+          Payment Reference #
+        </label>
+      </div>
+    );
+  }
+
   return (
     <section>
       <div
@@ -411,34 +445,50 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
               </h1>
             </div>
           </div>
-          <div>
+          <div className={`flex gap-4`}>
             <Table
               columnArr={tableColumns}
               dataArr={logsData}
               editRow={(row) => handleRowDetails(row)}
-              className={`!h-[45vh]`}
+              className={` !h-[380px] !w-[1000px]`}
               sortField="id"
               sortDirection="asc"
               allowSort={false}
             ></Table>
+            <div className="flex gap-2"></div>
+            <div className="flex flex-col gap-4 min-w-[400px]">
+              <h1 className="text-2xl font-bold">Order Summary</h1>
+              <StatusDates
+                statusName={`Created`}
+                statusDateName={"date_created"}
+                className={`${
+                  dateStateChecker("date_created")
+                    ? "text-red-200"
+                    : "text-red-500"
+                }`}
+                stateCheck={`Created`}
+                colorState={`${
+                  dateStateChecker("date_created") ? "created" : ""
+                }`}
+              />
+              <p className="hover:-translate-y-1 transition-all duration-100 text-lg font-semibold p-3 shadow-md rounded-md">
+                Order Reference #:
+              </p>
+              <p className="hover:-translate-y-1 transition-all duration-100 text-lg font-semibold p-3 shadow-md rounded-md">
+                Initial Price:{" "}
+              </p>
+              <p className="hover:-translate-y-1 transition-all duration-100 text-lg font-semibold p-3 shadow-md rounded-md">
+                Deductions:{" "}
+              </p>
+              <p className="hover:-translate-y-1 transition-all duration-100 text-lg font-semibold p-3 shadow-md rounded-md">
+                Total Price:{" "}
+              </p>
+            </div>
           </div>
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-2xl font-bold">Status History</h1>
               <div className="flex mt-4 gap-6">
-                <StatusDates
-                  statusName={`Created`}
-                  statusDateName={"date_created"}
-                  className={`${
-                    dateStateChecker("date_created")
-                      ? "text-red-200"
-                      : "text-red-500"
-                  }`}
-                  stateCheck={`Created`}
-                  colorState={`${
-                    dateStateChecker("date_created") ? "created" : ""
-                  }`}
-                />
                 {orderType === "Delivery" &&
                   orderTrackingStatus !== "cancelled" && (
                     <>
@@ -551,11 +601,21 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
               )}
 
               {orderTrackingStatus === "received" && (
-                <OrderModalButton
-                  className={`text-green-800 border-green-800 hover:bg-green-800`}
-                  onClick={() => onClickUpdateStatus("completed")}
-                  buttonName={"Complete Order"}
-                ></OrderModalButton>
+                <div className={`flex flex-col gap-4`}>
+                  <ReferenceNumberField></ReferenceNumberField>
+                  <div className="flex gap-4">
+                    <OrderModalButton
+                      className={`text-green-800 border-green-800 hover:bg-green-800`}
+                      onClick={() => onClickUpdateStatus("completed")}
+                      buttonName={"Complete Order"}
+                    ></OrderModalButton>
+                    <OrderModalButton
+                      className={`text-orange-500 border-orange-500`}
+                      onClick={() => updateOrderDetail(returnItems)}
+                      buttonName={"Return Order"}
+                    ></OrderModalButton>
+                  </div>
+                </div>
               )}
               {orderTrackingStatus === "unvalidated" && (
                 <OrderModalButton
@@ -572,18 +632,6 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
                   buttonName={"Cancel Order"}
                 ></OrderModalButton>
               )}
-
-              {orderTrackingStatus !== "completed" &&
-                orderTrackingStatus === "received" &&
-                orderTrackingStatus !== "cancelled" &&
-                orderTrackingStatus !== "returned" &&
-                orderDetails.order_type !== "Walkin" && (
-                  <OrderModalButton
-                    className={`text-orange-500 border-orange-500`}
-                    onClick={() => updateOrderDetail(returnItems)}
-                    buttonName={"Return Order"}
-                  ></OrderModalButton>
-                )}
             </div>
           </div>
         </div>
