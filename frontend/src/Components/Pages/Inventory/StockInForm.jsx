@@ -54,6 +54,7 @@ const StockInForm = ({ confirmHandler }) => {
       product_name: "",
       supplier_name: "",
       reference_number: "",
+      sku: "",
     });
   };
   const [form, setForm] = useState(prepareForm(formArr));
@@ -120,6 +121,15 @@ const StockInForm = ({ confirmHandler }) => {
         quantity: stockInItem.quantity, // must never be zero, need fix
       }));
 
+      const items = {
+            inboundStockItems: inboundStockItems,
+            supplier: selectedSupplier, // replace SelectedSupplier or smth
+            employee: selectedEmployee, // same here
+            reference_number: String(referenceNumber),
+      }
+
+      console.log(items);
+
       try {
         const res = await api.post(
           "http://127.0.0.1:8000/api/stockin/create/",
@@ -127,7 +137,7 @@ const StockInForm = ({ confirmHandler }) => {
             inboundStockItems: inboundStockItems,
             supplier: selectedSupplier, // replace SelectedSupplier or smth
             employee: selectedEmployee, // same here
-            reference_number: referenceNumber, // need inputvalidation, idk din kung ano actual input dito tho
+            reference_number: String(referenceNumber), // need inputvalidation, idk din kung ano actual input dito tho
           }
         );
 
@@ -145,6 +155,7 @@ const StockInForm = ({ confirmHandler }) => {
           });
         }
       } catch (error) {
+        console.error("Backend Error:", error.response.data);
         if (error.response) {
           Swal.fire({
             title: "Error!",
@@ -264,6 +275,7 @@ const StockInForm = ({ confirmHandler }) => {
                                       ...form,
                                       product_name: item.product.product_name,
                                       inventory_id: item.product.id,
+                                      sku: item.product.sku,
                                     })
                                   }
                                   data-id={item.product.id}

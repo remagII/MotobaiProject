@@ -59,6 +59,8 @@ const CreateWalkinOrderForm = ({ confirmHandler }) => {
         product_price: parseFloat(item.product_price),
       }));
 
+      const deduction2 = parseFloat(deduction);
+
       try {
         const res = await api.post("http://127.0.0.1:8000/api/order/create/", {
           order_details: orderItems,
@@ -68,6 +70,7 @@ const CreateWalkinOrderForm = ({ confirmHandler }) => {
           customer_name: customerName,
           phone_number: phoneNumber,
           reference_number: referenceNumber,
+          deduction: deduction2,
         });
         Swal.fire({
           title: "Order Successfully Created!",
@@ -290,6 +293,9 @@ const CreateWalkinOrderForm = ({ confirmHandler }) => {
                                 product_price: selectedProduct
                                   ? selectedProduct.product.price
                                   : null,
+                                sku: selectedProduct
+                                  ? selectedProduct.product.sku
+                                  : null,
                               });
                             }}
                             onBlur={() => {
@@ -333,6 +339,7 @@ const CreateWalkinOrderForm = ({ confirmHandler }) => {
                                         product_name: item.product.product_name,
                                         product_price: item.product.price,
                                         inventory_id: item.product.id,
+                                        sku: item.product.id,
                                       })
                                     }
                                     data-id={item.product.id}

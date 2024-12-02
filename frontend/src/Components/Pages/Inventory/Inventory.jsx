@@ -27,14 +27,10 @@ export default function Inventory() {
 
   const tableColumns = [
     {
-      header: "Inventory ID",
-      row: "id",
-    },
-    {
       header: "SKU",
-      row: "",
+      row: "product.sku",
       customRender: (item) => {
-        return <p className="overflow-y-auto max-w-[200px]">N/A</p>;
+        return <p className="overflow-y-auto max-w-[200px]">{item.product.sku}</p>;
       },
     },
 

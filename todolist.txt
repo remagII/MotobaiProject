@@ -33,6 +33,12 @@ NOTES:
 - register and login button navigation when logging in/ registering
 - fix double products in 1 order
 - on return: hindi naka list kung ano na update, hindi pa mag refresh after complete update, and di rin naga reflect na ung new quantity during the return process
+- payment reference number on detailsorder modal, cannot type consecutively
+- no reference number for walkin order
+- reference number input validation prompt backend
+- input validation for deductions
+- stockin supplier and employee and reference number check if blank
+- order reference number check if blank
 
 - usecase diagram
 - usecase tables
@@ -40,9 +46,8 @@ NOTES:
 - finalize capstones
 
 Added stuff:
-- no more sort in order details
-- added return/edit function unfinished
-- selecting the same row is now not allowed
+- sku added
+- 
 
 Todo Pages:
 - Dashboard/Landing Page

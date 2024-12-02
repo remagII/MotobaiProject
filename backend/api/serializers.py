@@ -26,7 +26,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 # PRODUCT
 class ProductSerializer(serializers.ModelSerializer):
-    stock_minimum_threshold = serializers.IntegerField(write_only=True, required=False, default=0)
+    stock_minimum_threshold = serializers.IntegerField(write_only=True, required=True)
     product_price = serializers.DecimalField(decimal_places=2, max_digits=10, required=False)
 
     class Meta:
@@ -43,7 +43,7 @@ class ProductSerializer(serializers.ModelSerializer):
         product = super().create(validated_data)
 
         # Add the product to the inventory with default values
-        Inventory.objects.create(product=product,  stock=0, stock_minimum_threshold=stock_minimum_threshold)
+        Inventory.objects.create(product=product, stock=0, stock_minimum_threshold=stock_minimum_threshold)
 
         return product
     
@@ -167,6 +167,41 @@ class OrderDetailsSerializer(serializers.ModelSerializer):
         model = OrderDetails
         fields = '__all__'
 
+    def update(self, instance, validated_data):
+        # Update the quantity
+        instance.quantity = validated_data.get('quantity', instance.quantity)
+
+        # Ensure product_price exists and is updated in the order details
+        if 'product_price' in validated_data:
+            instance.product_price = validated_data.get('product_price', instance.product_price)
+        
+        # Recalculate the balance after the update
+        order = instance.order
+        order_details = OrderDetails.objects.filter(order=order)
+
+        # Recalculate initial_balance, including updated prices and quantities
+        initial_balance = sum(detail.product_price * detail.quantity for detail in order_details)
+
+        # Check for any deductions that need to be applied
+        deductions = order.payment.deductions
+        if deductions >= initial_balance:
+            raise ValidationError("Deductions must be less than the total price.")
+
+        # Calculate the new total balance
+        total_balance = initial_balance - deductions if deductions > 0 else initial_balance
+
+        # Update the order's payment balance fields
+        order.payment.initial_balance = initial_balance
+        order.payment.total_balance = total_balance
+        order.payment.save()
+
+        # Save the updated order detail
+        instance.save()
+        order.save()  # Ensure the order is saved after the changes
+
+        return instance
+
+
 class OrderSerializer(serializers.ModelSerializer):
     account = serializers.PrimaryKeyRelatedField(queryset=Account.objects.all(), required=False)
     customer = serializers.PrimaryKeyRelatedField(queryset=Customer.objects.all(), required=False)
@@ -176,6 +211,7 @@ class OrderSerializer(serializers.ModelSerializer):
     order_tracking = OrderTrackingSerializer(read_only=True)
     payment = PaymentSerializer(read_only=True)
 
+
     class Meta:
         model = Order
         fields = '__all__'
@@ -183,7 +219,6 @@ class OrderSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         order_details_data = validated_data.pop('order_details')
 
-        
         if validated_data.get('order_type') == "Walkin":
             customer_name = validated_data.get('customer_name')
             phone_number = validated_data.get('phone_number')
@@ -205,23 +240,32 @@ class OrderSerializer(serializers.ModelSerializer):
 
             if inventory_item.stock < quantity:
                 raise ValidationError(f"Not enough stock for {inventory_item.product.product_name}. Available: {inventory_item.stock}, Requested: {quantity}")
-        
-        order = Order.objects.create(**validated_data)
-        total_balance = 0
+            
+        deductions = validated_data.get('deductions', 0)  
 
+        print(deductions)
+
+        initial_balance = 0
+        total_balance = 0
         for order_detail_data in order_details_data:
             inventory_item = order_detail_data['inventory']
             quantity = order_detail_data['quantity']
             product_price = order_detail_data.get('product_price')
 
-            total_balance += product_price * quantity
+            initial_balance += product_price * quantity
 
-            # Create the order details
+        if deductions >= initial_balance:
+            raise ValidationError("Deductions must be less than the total price.")
+
+        total_balance = initial_balance - deductions if deductions > 0 else initial_balance
+
+        order = Order.objects.create(**validated_data)
+        for order_detail_data in order_details_data:
             OrderDetails.objects.create(order=order, **order_detail_data)
-        
+
         
         OrderTracking.objects.create(order=order, status="unvalidated")
-        Payment.objects.create(order=order, total_balance=total_balance)
+        Payment.objects.create(order=order, total_balance=total_balance, initial_balance=initial_balance, deductions=deductions)
 
         return order
 

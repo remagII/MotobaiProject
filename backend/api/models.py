@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.db.models.signals import pre_save
 
 class Product(models.Model):
+    sku = models.CharField(max_length=64, unique=True, null=False, blank=False)
     product_name = models.CharField(max_length=100, unique=True)
     price = models.DecimalField(decimal_places=2, max_digits=10, null=False, blank=False, validators=[MinValueValidator(1)])
     product_type = models.CharField(max_length=100, null=False, blank=False, default='')
@@ -18,9 +19,7 @@ class Product(models.Model):
         return '{}: {}'.format(self.product_name, self.product_type)
 
 class Inventory(models.Model):
-    
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    sku = models.CharField(max_length=64, unique=True, null=True, blank=True)
     stock = models.PositiveIntegerField(null=False, blank=False, default=0)
     stock_minimum_threshold = models.PositiveIntegerField(null=False, blank=False, default=0)
     date_added = models.DateTimeField(auto_now_add=True)
@@ -162,6 +161,7 @@ class OrderDetails(models.Model):
     inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE, null=False, blank=False)
     quantity = models.PositiveIntegerField(null=False, blank=False, default=0)
     # for information integrity
+    sku_hold = models.CharField(max_length=64, null=True, blank=True)
     product_price = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
     product_name = models.CharField(max_length=64, null=True, blank=True)
 
@@ -172,6 +172,7 @@ class OrderDetails(models.Model):
         if self.inventory:
             self.product_name = self.inventory.product.product_name
             self.product_price = self.inventory.product.price
+            self.sku_hold = self.inventory.product.sku
         
         super(OrderDetails, self).save(*args, **kwargs)
 
@@ -207,7 +208,8 @@ class Payment(models.Model):
     order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='payment', null=True, blank=True)
     
     total_balance = models.DecimalField(decimal_places=2, max_digits=10, null=False, blank=False)
-    discounted_amount = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True) 
+    initial_balance = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
+    deductions = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True) 
     payment_method = models.CharField(max_length=64, default='Cash')
     total_amount_paid = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
     date_due = models.DateTimeField(null=True, blank=True)

@@ -42,31 +42,49 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
 
   const updateOrderDetail = async (returnItems) => {
     try {
-      // Loop through each item in the returnItems array
+      // Log the current returnItems to check what is being sent
+      console.log("Updated Return Items: ", returnItems);
+  
+      // Loop through each item in returnItems
       for (const item of returnItems) {
-        const url = `http://127.0.0.1:8000/api/orderdetails/update/${item.order_detail_id}/`; // Use the item's ID for the URL
+        const url = `http://127.0.0.1:8000/api/orderdetails/update/${item.order_detail_id}/`;
+        
         const formData = {
           order_detail_id: item.order_detail_id,
           inventory: item.inventory_id,
           product_name: item.product_name,
           original_quantity: item.original_quantity,
           quantity_to_return: item.quantity_to_return,
-          quantity: item.updated_quantity,
+          quantity: item.updated_quantity, // ensure the updated quantity is correct here
         };
-
-        const res = await api.put(url, formData); // Assuming you are using an Axios instance or any other HTTP client
-
+  
+        // Send the PUT request
+        const res = await api.put(url, formData);
+  
+        // Check the response
         if (res.status === 200) {
-          // Success message after the request is completed successfully
           Swal.fire({
             title: "Return Success",
-            text: `Return, updated successfully!`,
+            text: `Order updated successfully!`,
             icon: "success",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Reload the page or update table after success
+              location.reload(); // You might want to use this cautiously (could be optimized later)
+            }
           });
         } else {
-          throw new Error(`Failed to update item with ID ${item.id}`);
+          Swal.fire({
+            title: "Error",
+            text: `Failed to update Order. Please try again.`,
+            icon: "error",
+          });
         }
       }
+  
+      // Fetch updated order details (optional)
+      fetchOrderDetail(orderId);
+  
     } catch (error) {
       console.error("Error updating order details:", error);
       Swal.fire({
@@ -76,6 +94,8 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
       });
     }
   };
+  
+  
 
   const handleRowDetails = async (id) => {
     await fetchOrderDetailItems(id);
@@ -127,7 +147,26 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
             };
 
             // Only then add to the returnItems state
-            setReturnItems((prevItems) => [...prevItems, newReturnItem]);
+            setReturnItems((prevItems) => {
+              const itemIndex = prevItems.findIndex(
+                (item) => item.order_detail_id === orderDetailItems.id
+              );
+            
+              if (itemIndex > -1) {
+                // Update the existing item
+                const updatedItems = [...prevItems];
+                updatedItems[itemIndex] = {
+                  ...updatedItems[itemIndex],
+                  quantity_to_return: updatedQuantity,
+                  updated_quantity: updatedQuantity,
+                };
+                return updatedItems;
+              } else {
+                // Add a new item if it doesn't exist
+                return [...prevItems, newReturnItem];
+              }
+            });
+            
 
             // Mark this row as selected
             setSelectedRows((prev) => [...prev, orderDetailItems.id]);
@@ -147,10 +186,6 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
       });
     }
   }, [orderDetailItems]);
-
-  useEffect(() => {
-    console.log(returnItems); // Log state after it has been updated
-  }, [returnItems]);
 
   useEffect(() => {
     console.log("Order ID in modal:", orderId); // Log Order ID when modal is opened
@@ -177,7 +212,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
         statusString = "Complete Order";
       }
     } else if (status === "cancelled") {
-      statusString = "Cancel";
+      statusString = "Cancel Order";
     } else if (status === "returned") {
       statusString = "Return";
     }
@@ -220,6 +255,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
       statusString = "Returned";
       date_field = "date_returned";
     }
+    
 
     try {
       const currentDate = new Date().toISOString();
@@ -253,12 +289,11 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
 
   const tableColumns = [
     {
-      header: "Inventory ID",
-      row: "id",
-    },
-    {
       header: "SKU",
-      row: "sku",
+      row: "sku_hold",
+      customRender: (item) => {
+        return <p>{item.sku_hold}</p>;
+      },
     },
 
     {
@@ -270,7 +305,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
     },
 
     {
-      header: "Quantity Added",
+      header: "Quantity",
       row: "quantity",
       customRender: (item) => {
         return <p>{item.quantity}</p>;
@@ -294,6 +329,9 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
 
   // Define tracking status when orderDetailsObj is fetched
   const orderTrackingStatus = orderDetails?.order_tracking?.status;
+  const orderPayment = orderDetails?.payment?.total_balance;
+  const orderDeductions = orderDetails?.payment?.deductions;
+  const orderInitialBalance = orderDetails?.payment?.initial_balance;
   const orderType = orderDetails?.order_type;
 
   // REUSABLE BUTTON
@@ -458,7 +496,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
             <Table
               columnArr={tableColumns}
               dataArr={logsData}
-              editRow={(row) => handleRowDetails(row)}
+              editRow={["unvalidated", "received", "completed"].includes(orderTrackingStatus) ? (row) => handleRowDetails(row) : null}
               className={` !h-[380px] !w-[1000px]`}
               sortField="id"
               sortDirection="asc"
@@ -481,16 +519,16 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
                 }`}
               />
               <p className="hover:-translate-y-1 transition-all duration-100 text-lg font-semibold p-3 shadow-md rounded-md">
-                Order Reference #:
+                Order Reference #: {orderDetails.reference_number}
               </p>
               <p className="hover:-translate-y-1 transition-all duration-100 text-lg font-semibold p-3 shadow-md rounded-md">
-                Initial Price:{" "}
+                Initial Balance: {orderInitialBalance}
               </p>
               <p className="hover:-translate-y-1 transition-all duration-100 text-lg font-semibold p-3 shadow-md rounded-md">
-                Deductions:{" "}
+                Deductions:{orderDeductions}
               </p>
               <p className="hover:-translate-y-1 transition-all duration-100 text-lg font-semibold p-3 shadow-md rounded-md">
-                Total Price:{" "}
+                Total Balance: {orderPayment}
               </p>
             </div>
           </div>
@@ -652,6 +690,21 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
                   className={`text-red-600`}
                   onClick={() => onClickUpdateStatus("cancelled")}
                   buttonName={"Cancel Order"}
+                ></OrderModalButton>
+              )}
+
+              {orderTrackingStatus === "unvalidated" && (
+                <OrderModalButton
+                  className={`text-red-600`}
+                  onClick={() => updateOrderDetail(returnItems)}
+                  buttonName={"Edit Order"}
+                ></OrderModalButton>
+              )}
+              {orderTrackingStatus === "completed" && (
+                <OrderModalButton
+                  className={`text-red-600`}
+                  onClick={() => updateOrderDetail(returnItems)}
+                  buttonName={"Return Items"}
                 ></OrderModalButton>
               )}
             </div>

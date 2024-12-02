@@ -63,7 +63,7 @@ export default function Products() {
     },
     {
       label: "SKU",
-      name: "sku",
+      name: "product.sku",
       type: "number",
     },
   ];
@@ -71,12 +71,8 @@ export default function Products() {
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
   const tableColumns = [
     {
-      header: "Product ID",
-      row: "product.id",
-    },
-    {
       header: "SKU",
-      row: "sku",
+      row: "product.sku",
     },
 
     {
@@ -118,13 +114,13 @@ export default function Products() {
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
   const overviewArr = [{ title: "Products", quantity: `${product.length}` }];
 
-  const { createData, loading: createLoading } = useCreateData();
+  const { createData, loading: createLoading } = useCreateData(); 
   const { updateData, loading: updateLoading } = useUpdateData();
 
   const onSubmitHandler = async (form) => {
     const info = {
       product_name: form.product.product_name,
-      sku: form.sku,
+      sku: form.product.sku,
       product_type: form.product.product_type,
       price: form.product.price,
       description: form.product.description,
@@ -141,7 +137,7 @@ export default function Products() {
           "product",
           {
             product_name: form.product.product_name,
-            sku: form.sku,
+            sku: form.product.sku,
             product_type: form.product.product_type,
             price: form.product.price,
             description: form.product.description,
@@ -161,7 +157,7 @@ export default function Products() {
         rowIdEdit,
         {
           product_name: form.product.product_name,
-          sku: form.sku,
+          sku: form.product.sku,
           product_type: form.product.product_type,
           price: form.product.price,
           description: form.product.description,

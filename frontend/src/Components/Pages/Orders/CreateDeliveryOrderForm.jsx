@@ -56,6 +56,8 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
         product_price: parseFloat(item.product_price),
       }));
 
+      const deductions = parseFloat(deduction);
+
       try {
         const res = await api.post("http://127.0.0.1:8000/api/order/create/", {
           order_details: orderItems,
@@ -64,6 +66,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
           reference_number: referenceNumber,
           employee: selectedEmployee,
           total_balance: total_balance,
+          deductions: deductions,
         });
         Swal.fire({
           title: "Order Successfully Created!",
@@ -76,6 +79,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
         console.log("Order creation successful:", res.data);
         setInitialOrder([]);
       } catch (error) {
+        console.log(error);
         if (error.response) {
           Swal.fire({
             title: "Error!",
@@ -255,6 +259,9 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                             inventory_stock: selectedProduct
                               ? selectedProduct.stock
                               : null,
+                            sku: selectedProduct
+                              ? selectedProduct.product.sku
+                              : null,
                           });
                         }}
                         onBlur={() => {
@@ -298,6 +305,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                                     product_name: item.product.product_name,
                                     product_price: item.product.price,
                                     inventory_id: item.product.id,
+                                    sku: item.product.id,
                                   })
                                 }
                                 data-id={item.product.id}
