@@ -378,6 +378,8 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
     );
   }
 
+  const [payBeforeDate, setPayBeforeDate] = useState("");
+
   function StatusDates({
     statusName,
     statusDateName,
@@ -390,6 +392,22 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
     const createdAtDate = new Date(
       orderDetails?.order_tracking?.[statusDateName]
     );
+
+    if (statusDateName === "date_received") {
+      // Add 30 days to the date
+      createdAtDate.setDate(createdAtDate.getDate() + 30);
+      const options = { hour: "numeric", minute: "numeric", hour12: true }; // Options for formatting time
+      const formattedTime = createdAtDate.toLocaleString("en-US", options); // Format the time
+
+      // Format the updated date
+      const formattedPayDate = `${
+        createdAtDate.getMonth() + 1
+      }/${createdAtDate.getDate()}/${createdAtDate.getFullYear()} - ${formattedTime}`;
+
+      // Update the state with the formatted date
+      setPayBeforeDate(formattedPayDate);
+    }
+
     const options = { hour: "numeric", minute: "numeric", hour12: true }; // Options for formatting time
     const formattedTime = createdAtDate.toLocaleString("en-US", options); // Format the time
     const formattedDate = `${
@@ -555,6 +573,12 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
               <p className="hover:-translate-y-1 transition-all duration-100 text-lg font-semibold p-3 shadow-md rounded-md">
                 Total Balance: {orderPayment}
               </p>
+              {orderTrackingStatus === "received" && (
+                <p className="bg-red-800 hover:-translate-y-1 transition-all duration-100 text-lg font-semibold p-3 shadow-md rounded-md">
+                  <span className="text-red-200">Must pay before: </span>{" "}
+                  <span className="text-white">{payBeforeDate}</span>
+                </p>
+              )}
             </div>
           </div>
           <div className="flex justify-between items-center">
@@ -677,39 +701,40 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
                 ></OrderModalButton>
               )}
 
-              {orderTrackingStatus === "received" && (
-                <div className={`flex flex-col gap-4`}>
-                  <div className="flex gap-4">
-                    <div className="flex items-center gap-4 ml-4">
-                      <input
-                        className="text-lg border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none shadow-sm"
-                        type="number"
-                        value={referenceNumber}
-                        onChange={(e) => setReferenceNumber(e.target.value)}
-                        required
-                        name="reference"
-                        id="reference"
-                      />
-                      <label
-                        htmlFor="reference"
-                        className="text-base absolute transition-all duration-100 ease-in px-4 py-2 text-gray-600 label-line"
-                      >
-                        Payment Reference #
-                      </label>
+              {orderTrackingStatus === "received" &&
+                orderType === "Delivery" && (
+                  <div className={`flex flex-col gap-4`}>
+                    <div className="flex gap-4">
+                      <div className="flex items-center gap-4 ml-4">
+                        <input
+                          className="text-lg border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none shadow-sm"
+                          type="number"
+                          value={referenceNumber}
+                          onChange={(e) => setReferenceNumber(e.target.value)}
+                          required
+                          name="reference"
+                          id="reference"
+                        />
+                        <label
+                          htmlFor="reference"
+                          className="text-base absolute transition-all duration-100 ease-in px-4 py-2 text-gray-600 label-line"
+                        >
+                          Payment Reference #
+                        </label>
+                      </div>
+                      <OrderModalButton
+                        className={`text-green-800 border-green-800 hover:bg-green-800`}
+                        onClick={() => onClickUpdateStatus("completed")}
+                        buttonName={"Complete Order"}
+                      ></OrderModalButton>
+                      <OrderModalButton
+                        className={`text-orange-500 border-orange-500`}
+                        onClick={() => updateOrderDetail(returnItems)}
+                        buttonName={"Return Order"}
+                      ></OrderModalButton>
                     </div>
-                    <OrderModalButton
-                      className={`text-green-800 border-green-800 hover:bg-green-800`}
-                      onClick={() => onClickUpdateStatus("completed")}
-                      buttonName={"Complete Order"}
-                    ></OrderModalButton>
-                    <OrderModalButton
-                      className={`text-orange-500 border-orange-500`}
-                      onClick={() => updateOrderDetail(returnItems)}
-                      buttonName={"Return Order"}
-                    ></OrderModalButton>
                   </div>
-                </div>
-              )}
+                )}
               {orderType === "Walkin" &&
                 orderTrackingStatus !== "cancelled" &&
                 orderTrackingStatus !== "completed" && (
@@ -761,13 +786,6 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
                   className={`text-red-600`}
                   onClick={() => updateOrderDetail(returnItems)}
                   buttonName={"Edit Order"}
-                ></OrderModalButton>
-              )}
-              {orderTrackingStatus === "completed" && (
-                <OrderModalButton
-                  className={`text-red-600`}
-                  onClick={() => updateOrderDetail(returnItems)}
-                  buttonName={"Return Items"}
                 ></OrderModalButton>
               )}
             </div>

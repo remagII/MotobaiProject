@@ -30,26 +30,15 @@ export default function Inventory() {
       header: "SKU",
       row: "product.sku",
       customRender: (item) => {
-        return <p className="overflow-y-auto max-w-[200px]">{item.product.sku}</p>;
+        return (
+          <p className="overflow-y-auto max-w-[200px]">{item.product.sku}</p>
+        );
       },
     }, 
 
     {
       header: "Product Name",
       row: "product.product_name",
-    },
-    {
-      header: "Price",
-      row: "product.price",
-    },
-    {
-      header: "Product Type",
-      row: "product.product_type",
-    },
-
-    {
-      header: "Vehicle type",
-      row: "product.vehicle_type",
     },
     {
       header: "Description",
@@ -62,19 +51,21 @@ export default function Inventory() {
         );
       },
     },
+
     {
-      header: "Status",
-      row: "stock",
-      customRender: (item) => {
-        if (item.stock === 0) {
-          return <p className={`text-orange-500 font-bold`}>INACTIVE</p>;
-        } else if (item.stock < item.stock_minimum_threshold) {
-          return <p className={`text-yellow-500 font-bold`}>LOW STOCK</p>;
-        } else {
-          return <p className={`text-green-500 font-bold`}>ACTIVE</p>;
-        }
-      },
+      header: "Product Type",
+      row: "product.product_type",
     },
+
+    {
+      header: "Vehicle type",
+      row: "product.vehicle_type",
+    },
+    {
+      header: "Price",
+      row: "product.price",
+    },
+
     {
       header: "Threshold",
       row: "stock_minimum_threshold",
@@ -87,6 +78,20 @@ export default function Inventory() {
       row: "stock",
       customRender: (item) => {
         return <p className="font-bold">{item.stock}</p>;
+      },
+    },
+
+    {
+      header: "Status",
+      row: "stock",
+      customRender: (item) => {
+        if (item.stock === 0) {
+          return <p className={`text-orange-500 font-bold`}>INACTIVE</p>;
+        } else if (item.stock < item.stock_minimum_threshold) {
+          return <p className={`text-yellow-500 font-bold`}>LOW STOCK</p>;
+        } else {
+          return <p className={`text-green-500 font-bold`}>ACTIVE</p>;
+        }
       },
     },
   ];
