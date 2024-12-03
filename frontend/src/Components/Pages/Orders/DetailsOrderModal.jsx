@@ -255,13 +255,26 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
     try {
       const currentDate = new Date().toISOString();
 
-      const res = await api.put(
-        `http://127.0.0.1:8000/api/ordertracking/update/${orderId}/`,
-        {
-          status: status,
-          [date_field]: currentDate,
-        }
-      );
+      if (status === received) {
+        const res = await api.put( // marami pa ako gawin dito
+          `http://127.0.0.1:8000/api/ordertracking/update/${orderId}/`,
+          {
+            status: status,
+            [date_field]: currentDate,
+            reference_number: referenceNumber,
+          }
+        );
+      } else {
+        const res = await api.put(
+          `http://127.0.0.1:8000/api/ordertracking/update/${orderId}/`,
+          {
+            status: status,
+            [date_field]: currentDate,
+          }
+        );
+      }
+
+      
       Swal.fire({
         title: `Order has been ${statusString}!`,
         text: "The order has been updated.",

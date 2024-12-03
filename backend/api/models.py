@@ -228,6 +228,7 @@ class OrderTracking(models.Model):
 class Payment(models.Model):
     order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='payment', null=True, blank=True)
     
+    reference_number = models.CharField(max_length=64, unique=True, null=True, blank=True) 
     total_balance = models.DecimalField(decimal_places=2, max_digits=10, null=False, blank=False)
     initial_balance = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
     deductions = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True) 
