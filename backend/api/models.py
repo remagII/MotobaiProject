@@ -194,8 +194,27 @@ class OrderDetails(models.Model):
             self.product_name = self.inventory.product.product_name
             self.product_price = self.inventory.product.price
             self.sku_hold = self.inventory.product.sku
+
+        if self.pk:  # Ensure this is an update, not creation
+            previous_instance = OrderTracking.objects.get(pk=self.pk)
+
+            # Check stock only if the status is being changed to "validated"
+            # or if it's being changed to "completed" AND the order type is "Walk-in"
+            if (self.status == "validated" or 
+                (self.status == "completed" and self.order.order_type.lower() == "walk-in")) and self.status != previous_instance.status:
+                
+                for order_detail in self.order.order_details.all():
+                    inventory_item = order_detail.inventory
+                    quantity = order_detail.quantity
+
+                    if inventory_item.stock < quantity:
+                        raise ValidationError(
+                            f"Not enough stock for {inventory_item.product.product_name}. "
+                            f"Available: {inventory_item.stock}, Requested: {quantity}"
+                        )
+
         
-        super(OrderDetails, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 class OrderTracking(models.Model):
     order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='order_tracking', null=True, blank=True)
