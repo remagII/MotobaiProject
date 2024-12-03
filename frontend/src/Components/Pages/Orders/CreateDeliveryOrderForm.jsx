@@ -66,7 +66,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
           reference_number: referenceNumber,
           employee: selectedEmployee,
           total_balance: total_balance,
-          deductions: deductions,
+          deductions: deductions || 0,
         });
         Swal.fire({
           title: "Order Successfully Created!",

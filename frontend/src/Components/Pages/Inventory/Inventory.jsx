@@ -32,7 +32,7 @@ export default function Inventory() {
       customRender: (item) => {
         return <p className="overflow-y-auto max-w-[200px]">{item.product.sku}</p>;
       },
-    },
+    }, 
 
     {
       header: "Product Name",

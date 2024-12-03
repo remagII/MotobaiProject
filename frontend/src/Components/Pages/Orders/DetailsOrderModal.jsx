@@ -258,9 +258,19 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
         [date_field]: currentDate,
       };
 
-      if (status === "received") {
+      if (status === "completed" && referenceNumber) {
         payload.reference_number = referenceNumber;
+      } else if (status === "completed" && !referenceNumber) {
+        // If referenceNumber is not available yet, handle it (e.g., fetch it from another source or create it)
+        console.error("Reference number is required but not available.");
+        Swal.fire({
+          title: "Error!",
+          text: "Reference number is required but not available.",
+          icon: "error",
+        });
+        return;
       }
+  
 
       const res = await api.put(
         `http://127.0.0.1:8000/api/ordertracking/update/${orderId}/`,
@@ -334,7 +344,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
   const orderDeductions = orderDetails?.payment?.deductions;
   const orderInitialBalance = orderDetails?.payment?.initial_balance;
   const orderType = orderDetails?.order_type;
-  const orderPaymentRefNum = orderDetails?.payment?.reference_number;
+  const orderPaymentRefNum = orderDetails?.order_tracking?.reference_number;
 
   const dateCreated = pdfDateSet("date_created");
   const dateValidated = pdfDateSet("date_validated");

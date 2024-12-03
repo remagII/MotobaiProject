@@ -310,7 +310,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
             
             Customer.objects.create(customer_name = customer_name, phone_number=phone_number)
-        
+         
         for order_detail_data in order_details_data:
             inventory_item = order_detail_data['inventory']
             quantity = order_detail_data['quantity']

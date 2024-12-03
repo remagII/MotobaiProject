@@ -70,7 +70,7 @@ const CreateWalkinOrderForm = ({ confirmHandler }) => {
           customer_name: customerName,
           phone_number: phoneNumber,
           reference_number: referenceNumber,
-          deduction: deduction2,
+          deduction: deduction2 || 0,
         });
         Swal.fire({
           title: "Order Successfully Created!",

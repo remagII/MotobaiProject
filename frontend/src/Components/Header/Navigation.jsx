@@ -7,6 +7,9 @@ import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline";
 import { BuildingStorefrontIcon } from "@heroicons/react/24/outline";
 import NavDropDown from "./NavDropDown";
 import DynamicCustomLink from "../DynamicComponents/DynamicCustomLink";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants";
+import Swal from 'sweetalert2'
+import { useNavigate } from "react-router-dom";
 
 function Navigation() {
   const [accountDropDown, setAccountDropDown] = useState(false);
@@ -17,6 +20,23 @@ function Navigation() {
   };
   const onHoverInventory = () => {
     setInventoryDropDown((d) => (d = !d));
+  };
+
+  const navigate = useNavigate();
+  const logout = () => {
+    // Clear tokens from localStorage
+    localStorage.removeItem(ACCESS_TOKEN);
+    localStorage.removeItem(REFRESH_TOKEN);
+  
+    // Show success message
+    Swal.fire({
+      title: "Logged out!",
+      icon: "success",
+      timer: 1000,
+    }).then(() => {
+      // Redirect to login page or another route
+      navigate("/login");
+    });
   };
 
   // DROPWDOWN TEMPLATE
@@ -82,7 +102,7 @@ function Navigation() {
         </div>
         <p>Suppliers</p>
       </DynamicCustomLink>
-
+      
       <div
         className={`relative `}
         onMouseEnter={onHoverInventory}
@@ -117,6 +137,13 @@ function Navigation() {
         </div>
         <p>Order History</p>
       </DynamicCustomLink>
+
+        <button
+          onClick={logout}
+          className="ml-auto flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+        >
+          Logout
+        </button>
     </nav>
   );
 }
