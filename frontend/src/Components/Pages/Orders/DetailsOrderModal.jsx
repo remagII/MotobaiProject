@@ -335,11 +335,25 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
   const orderInitialBalance = orderDetails?.payment?.initial_balance;
   const orderType = orderDetails?.order_type;
   const orderPaymentRefNum = orderDetails?.payment?.reference_number;
-  const [dateCreated, setDateCreated] = useState("");
-  const [dateValidated, setDateValidated] = useState("");
-  const [dateShipped, setDateShipped] = useState("");
-  const [dateReceived, setDateReceived] = useState("");
-  const [dateCompleted, setDateCompleted] = useState("");
+
+  const dateCreated = pdfDateSet("date_created");
+  const dateValidated = pdfDateSet("date_validated");
+  const dateShipped = pdfDateSet("date_shipped");
+  const dateReceived = pdfDateSet("date_received");
+  const dateCompleted = pdfDateSet("date_completed");
+
+  function pdfDateSet(statusDateName) {
+    const createdAtDate = new Date(
+      orderDetails?.order_tracking?.[statusDateName]
+    );
+    const options = { hour: "numeric", minute: "numeric", hour12: true }; // Options for formatting time
+    const formattedTime = createdAtDate.toLocaleString("en-US", options); // Format the time
+    const formattedDate = `${
+      createdAtDate.getMonth() + 1
+    }/${createdAtDate.getDate()}/${createdAtDate.getFullYear()} - ${formattedTime}`;
+
+    return formattedDate;
+  }
 
   //PDF things
 
@@ -383,18 +397,6 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
     };
 
     const statusColorClass = colorMap[colorState];
-
-    if (statusDateName === "date_created") {
-      setDateCreated(formattedDate);
-    } else if (statusDateName === "date_validated") {
-      setDateValidated(formattedDate);
-    } else if (statusDateName === "date_shipped") {
-      setDateShipped(formattedDate);
-    } else if (statusDateName === "date_received") {
-      setDateReceived(formattedDate);
-    } else if (statusDateName === "date_completed") {
-      setDateCompleted(formattedDate);
-    }
 
     return (
       <div

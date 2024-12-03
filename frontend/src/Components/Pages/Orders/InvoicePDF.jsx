@@ -10,8 +10,15 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: 15,
   },
+  bigSection: {
+    display: "flex",
+    gap: 12,
+  },
+  span: {
+    fontWeight: 700,
+  },
   heading: {
-    fontSize: 16,
+    fontSize: 14,
     marginBottom: 10,
     fontWeight: "bold",
   },
@@ -20,6 +27,8 @@ const styles = StyleSheet.create({
   },
   logItem: {
     marginBottom: 5,
+    display: "flex",
+    gap: 4,
   },
 });
 
@@ -33,54 +42,62 @@ const InvoicePDF = ({
   orderTrackingStatus,
   orderPaymentRefNum,
   dateCreated,
+  dateValidated,
+  dateShipped,
+  dateReceived,
+  dateCompleted,
 }) => (
   <Document>
     <Page style={styles.page}>
-      {/* Order Details Section */}
-      <View style={styles.section}>
-        <Text style={styles.heading}>Order Details</Text>
-        <Text>Order Type: {orderDetails.order_type || "N/A"}</Text>
-        <Text>
-          Account Name:{" "}
-          {orderDetails.account_name || orderDetails.customer_name || "N/A"}
-        </Text>
-        <Text>Phone Number: {orderDetails.phone_number || "N/A"}</Text>
-        <Text>
-          Employee: {orderDetails.employee_first_name}{" "}
-          {orderDetails.employee_last_name}
-        </Text>
-      </View>
-
-      {/* Address Section */}
-      {orderDetails.order_type === "Delivery" && (
+      <View style={styles.bigSection}>
+        {/* Order Details Section */}
         <View style={styles.section}>
-          <Text style={styles.heading}>Address</Text>
-          <Text>City: {orderDetails.city || "N/A"}</Text>
-          <Text>Barangay: {orderDetails.barangay || "N/A"}</Text>
-          <Text>Street: {orderDetails.street || "N/A"}</Text>
+          <Text style={styles.heading}>Order Details</Text>
+          <Text>Order Type: {orderDetails.order_type || "N/A"}</Text>
+          <Text>
+            Account Name:{" "}
+            {orderDetails.account_name || orderDetails.customer_name || "N/A"}
+          </Text>
+          <Text>Phone Number: {orderDetails.phone_number || "N/A"}</Text>
+          <Text>
+            Employee: {orderDetails.employee_first_name}{" "}
+            {orderDetails.employee_last_name}
+          </Text>
         </View>
-      )}
-
-      {/* Order Summary Section */}
-      <View style={styles.section}>
-        <Text style={styles.heading}>Order Summary</Text>
-        <Text>Sales Reference #: {orderDetails.reference_number || "N/A"}</Text>
-        <Text>Initial Balance: {orderInitialBalance || "N/A"}</Text>
-        <Text>Deductions: {orderDeductions || "N/A"}</Text>
-        <Text>Total Balance: {orderPayment || "N/A"}</Text>
-        {orderTrackingStatus === "completed" && (
-          <Text>Payment Reference #: {orderPaymentRefNum || "N/A"}</Text>
+        {/* Address Section */}
+        {orderDetails.order_type === "Delivery" && (
+          <View style={styles.section}>
+            <Text style={styles.heading}>Address</Text>
+            <Text>City: {orderDetails.city || "N/A"}</Text>
+            <Text>Barangay: {orderDetails.barangay || "N/A"}</Text>
+            <Text>Street: {orderDetails.street || "N/A"}</Text>
+          </View>
         )}
       </View>
 
-      {/* Status History Section */}
-      <View style={styles.section}>
-        <Text style={styles.heading}>Status History</Text>
-        <Text>Date Created: {dateCreated}</Text>
-        <Text>Date Validated: {dateCreated}</Text>
-        <Text>Date Shipped: {dateCreated}</Text>
-        <Text>Date Received: {dateCreated}</Text>
-        <Text>Date Completed: {dateCreated}</Text>
+      <View style={styles.bigSection}>
+        {/* Order Summary Section */}
+        <View style={styles.section}>
+          <Text style={styles.heading}>Order Summary</Text>
+          <Text>
+            Sales Reference #: {orderDetails.reference_number || "N/A"}
+          </Text>
+          <Text>Initial Balance: {orderInitialBalance || "N/A"}</Text>
+          <Text>Deductions: {orderDeductions || "N/A"}</Text>
+          <Text>Total Balance: {orderPayment || "N/A"}</Text>
+          {orderTrackingStatus === "completed" && (
+            <Text>Payment Reference #: {orderPaymentRefNum || "N/A"}</Text>
+          )}
+        </View>
+        {/* Status History Section */}
+        <View style={styles.section}>
+          <Text style={styles.heading}>Status History</Text>
+          <Text>Date Created: {dateCreated}</Text>
+          <Text>Date Validated: {dateValidated}</Text>
+          <Text>Date Shipped: {dateShipped}</Text>
+          <Text>Date Received: {dateReceived}</Text>
+          <Text>Date Completed: {dateCompleted}</Text>
+        </View>
       </View>
 
       {/* Logs Section */}
@@ -89,7 +106,10 @@ const InvoicePDF = ({
           <Text style={styles.heading}>Logs</Text>
           {logsData.map((log, index) => (
             <Text key={index} style={styles.logItem}>
-              {log.id}: {log.description || "No description available"}
+              SKU: {log.sku_hold}, Product Name:{" "}
+              {log.product_name || "No description available"}, Quantity:{" "}
+              {log.quantity} X {log.product_price}, Total Price:{" "}
+              {log.quantity * log.product_price}
             </Text>
           ))}
         </View>

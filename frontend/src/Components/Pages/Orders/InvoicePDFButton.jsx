@@ -42,9 +42,9 @@ const InvoicePDFButton = ({
   return (
     <button
       onClick={generatePdfDocument}
-      className="bg-white p-4 transition-all duration-100 hover:bg-red-700 border-2 border-red-700 hover:text-red-200 rounded-md"
+      className="bg-white p-4 transition-all duration-100 hover:bg-red-700 border-2 border-red-700 hover:text-red-100 rounded-md"
     >
-      Download PDF
+      Download Invoice
     </button>
   );
 };
