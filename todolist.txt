@@ -44,7 +44,7 @@ INPUT VALIDATION ISSUES:
 - finalize capstones
 
 Added stuff:
-- sku added
+- AAAAAAAAAAA
 - 
 
 Todo Pages:

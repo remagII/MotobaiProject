@@ -239,6 +239,7 @@ class OrderDetailsSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         # Update the quantity
         instance.quantity = validated_data.get('quantity', instance.quantity)
+        print(instance.quantity)
 
         # Ensure product_price exists and is updated in the order details
         if 'product_price' in validated_data:
@@ -249,7 +250,12 @@ class OrderDetailsSerializer(serializers.ModelSerializer):
         order_details = OrderDetails.objects.filter(order=order)
 
         # Recalculate initial_balance, including updated prices and quantities
-        initial_balance = sum(detail.product_price * detail.quantity for detail in order_details)
+        initial_balance = sum(
+            detail.product_price * (detail.quantity if detail.id != instance.id else instance.quantity)
+            for detail in order_details
+        )
+
+        print("initial Balance: ", initial_balance)
 
         # Check for any deductions that need to be applied
         deductions = order.payment.deductions
@@ -258,6 +264,7 @@ class OrderDetailsSerializer(serializers.ModelSerializer):
 
         # Calculate the new total balance
         total_balance = initial_balance - deductions if deductions > 0 else initial_balance
+        print("Total Balance: ", total_balance)
 
         # Update the order's payment balance fields
         order.payment.initial_balance = initial_balance
@@ -267,6 +274,9 @@ class OrderDetailsSerializer(serializers.ModelSerializer):
         # Save the updated order detail
         instance.save()
         order.save()  # Ensure the order is saved after the changes
+
+        if hasattr(order, 'order_tracking'):
+            order.order_tracking.save()
 
         return instance
 

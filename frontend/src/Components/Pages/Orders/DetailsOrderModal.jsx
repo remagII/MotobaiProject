@@ -255,24 +255,20 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
     try {
       const currentDate = new Date().toISOString();
 
-      if (status === received) {
-        const res = await api.put( // marami pa ako gawin dito
-          `http://127.0.0.1:8000/api/ordertracking/update/${orderId}/`,
-          {
-            status: status,
-            [date_field]: currentDate,
-            reference_number: referenceNumber,
-          }
-        );
-      } else {
-        const res = await api.put(
-          `http://127.0.0.1:8000/api/ordertracking/update/${orderId}/`,
-          {
-            status: status,
-            [date_field]: currentDate,
-          }
-        );
+      const payload = {
+        status: status,
+        [date_field]: currentDate,
+      };
+  
+      if (status === "received") {
+        payload.reference_number = referenceNumber; 
       }
+  
+      const res = await api.put(
+        `http://127.0.0.1:8000/api/ordertracking/update/${orderId}/`,
+        payload
+      );
+  
 
       
       Swal.fire({
@@ -285,10 +281,11 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
       });
       console.log(`Order status updated to: ${status}`);
     } catch (error) {
+      console.log(error)
       Swal.fire({
         title: "Error!",
         text:
-          error.response.data.detail ||
+          error.response?.data?.detail ||
           "There was an issue updating the order.",
         icon: "error",
       });
@@ -453,7 +450,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
                 <div>
                   <h1 className=" text-md">Phone Number</h1>
                   <h1 className="font-bold text-lg">
-                    {orderDetails.phone_number}
+                    {orderDetails.phone_number ? orderDetails.phone_number : "N/A"}
                   </h1>
                 </div>
               </div>
@@ -505,7 +502,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
                 Initial Balance: {orderInitialBalance}
               </p>
               <p className="hover:-translate-y-1 transition-all duration-100 text-lg font-semibold p-3 shadow-md rounded-md">
-                Deductions:{orderDeductions}
+                Deductions: {orderDeductions}
               </p>
               <p className="hover:-translate-y-1 transition-all duration-100 text-lg font-semibold p-3 shadow-md rounded-md">
                 Total Balance: {orderPayment}
