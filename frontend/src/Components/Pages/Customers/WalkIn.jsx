@@ -160,17 +160,6 @@ const WalkIn = () => {
                   </div>
                   <p>Accounts</p>
                 </DynamicCustomLink>
-                <button
-                  onClick={toggleModal}
-                  className={`text-white bg-red-600 border-2 border-red-800 rounded-lg px-4 py-2 mx-4 hover:bg-red-700  transition-all duration-100 flex gap-4 items-center`}
-                >
-                  <div
-                    className={`py-2 px-3 rounded-lg bg-red-700  transition-all duration-100`}
-                  >
-                    <UserPlusIcon className="size-5" />
-                  </div>
-                  Create Walk-In
-                </button>
               </div>
             </div>
 

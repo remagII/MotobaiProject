@@ -64,7 +64,6 @@ export default function Products() {
     {
       label: "SKU",
       name: "product.sku",
-      type: "number",
     },
   ];
 
@@ -114,7 +113,7 @@ export default function Products() {
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
   const overviewArr = [{ title: "Products", quantity: `${product.length}` }];
 
-  const { createData, loading: createLoading } = useCreateData(); 
+  const { createData, loading: createLoading } = useCreateData();
   const { updateData, loading: updateLoading } = useUpdateData();
 
   const onSubmitHandler = async (form) => {

@@ -69,7 +69,6 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
             icon: "success",
           }).then((result) => {
             if (result.isConfirmed) {
-              // Reload the page or update table after success
               location.reload(); // You might want to use this cautiously (could be optimized later)
             }
           });
@@ -116,7 +115,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
 
     if (orderDetailItems) {
       Swal.fire({
-        title: `Return ${orderDetailItems.product_name}`,
+        title: `Edit ${orderDetailItems.product_name}?`,
         input: "number",
         showCancelButton: true,
         confirmButtonText: "Confirm",
@@ -167,7 +166,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
             // Mark this row as selected
             setSelectedRows((prev) => [...prev, orderDetailItems.id]);
             Swal.fire({
-              title: `Added to return list`,
+              title: `Update Success`,
               text: `Returning ${quantityToReturn} of ${orderDetailItems.product_name}, please confirm to update!`,
               icon: "success",
             });
@@ -259,18 +258,16 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
         status: status,
         [date_field]: currentDate,
       };
-  
+
       if (status === "received") {
-        payload.reference_number = referenceNumber; 
+        payload.reference_number = referenceNumber;
       }
-  
+
       const res = await api.put(
         `http://127.0.0.1:8000/api/ordertracking/update/${orderId}/`,
         payload
       );
-  
 
-      
       Swal.fire({
         title: `Order has been ${statusString}!`,
         text: "The order has been updated.",
@@ -281,7 +278,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
       });
       console.log(`Order status updated to: ${status}`);
     } catch (error) {
-      console.log(error)
+      console.log(error);
       Swal.fire({
         title: "Error!",
         text:
@@ -338,6 +335,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
   const orderDeductions = orderDetails?.payment?.deductions;
   const orderInitialBalance = orderDetails?.payment?.initial_balance;
   const orderType = orderDetails?.order_type;
+  const orderPaymentRefNum = orderDetails?.payment?.reference_number;
 
   // REUSABLE BUTTON
   function OrderModalButton({ onClick, buttonName, className }) {
@@ -450,7 +448,9 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
                 <div>
                   <h1 className=" text-md">Phone Number</h1>
                   <h1 className="font-bold text-lg">
-                    {orderDetails.phone_number ? orderDetails.phone_number : "N/A"}
+                    {orderDetails.phone_number
+                      ? orderDetails.phone_number
+                      : "N/A"}
                   </h1>
                 </div>
               </div>
@@ -582,7 +582,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
                   >
                     <p className={`font-semibold `}>Bill Reference #</p>
                     <span className="font-bold text-lg">
-                      insert bill reference here
+                      {orderPaymentRefNum}
                     </span>
                   </div>
                 )}
@@ -632,6 +632,23 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
               {orderTrackingStatus === "received" && (
                 <div className={`flex flex-col gap-4`}>
                   <div className="flex gap-4">
+                    <div className="flex items-center gap-4 ml-4">
+                      <input
+                        className="text-lg border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none shadow-sm"
+                        type="number"
+                        value={referenceNumber}
+                        onChange={(e) => setReferenceNumber(e.target.value)}
+                        required
+                        name="reference"
+                        id="reference"
+                      />
+                      <label
+                        htmlFor="reference"
+                        className="text-base absolute transition-all duration-100 ease-in px-4 py-2 text-gray-600 label-line"
+                      >
+                        Payment Reference #
+                      </label>
+                    </div>
                     <OrderModalButton
                       className={`text-green-800 border-green-800 hover:bg-green-800`}
                       onClick={() => onClickUpdateStatus("completed")}
