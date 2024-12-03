@@ -3,11 +3,16 @@ import Logo from "../../../assets/Logo.png";
 import Table from "../../DynamicComponents/DynamicTable";
 import Swal from "sweetalert2";
 
-const DetailsStockModal = ({ logsData, supplierData }) => {
+const DetailsStockModal = ({
+  logsData,
+  supplierData,
+  employeeData,
+  referenceNumberData,
+}) => {
   const tableColumns = [
     {
       header: "SKU",
-      row: "sku",
+      row: "product.sku",
     },
     {
       header: "Product Name",
@@ -15,12 +20,7 @@ const DetailsStockModal = ({ logsData, supplierData }) => {
         return <p>{item.product.product_name}</p>;
       },
     },
-    {
-      header: "Supplier Name",
-      customRender: () => {
-        return <p>{supplierData}</p>;
-      },
-    },
+
     {
       header: "Quantity Added",
       customRender: (item) => {
@@ -28,10 +28,6 @@ const DetailsStockModal = ({ logsData, supplierData }) => {
       },
     },
   ];
-
-  const handleRowDetails = () => {
-    
-  };
 
   return (
     <section>
@@ -48,10 +44,30 @@ const DetailsStockModal = ({ logsData, supplierData }) => {
         </div>
 
         <div className={`bg-gray-100 p-12 pr-6 h-[75vh] w-[65vw] rounded-b-lg`}>
+          <div className="mb-6 flex gap-12 ">
+            <h1 className="text-2xl font-bold">Stock In</h1>
+            <div className="flex flex-col gap-2">
+              <h1 className="text-md ">Employee</h1>
+              <p className="text-lg font-bold">{employeeData}</p>
+            </div>
+            {referenceNumberData && (
+              <>
+                <div className="flex flex-col gap-2">
+                  <h1 className="text-md ">Supplier</h1>
+                  <p className="text-lg font-bold">{supplierData}</p>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <h1 className="text-md ">Reference #</h1>
+                  <p className="text-lg font-bold">{referenceNumberData}</p>
+                </div>
+              </>
+            )}
+          </div>
+
           <Table
             columnArr={tableColumns}
             dataArr={logsData}
-            editRow={handleRowDetails}
             sortField={null}
             sortDirection="asc"
           ></Table>

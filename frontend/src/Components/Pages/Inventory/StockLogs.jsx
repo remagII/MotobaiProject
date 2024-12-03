@@ -9,6 +9,8 @@ export default function Inventory() {
   const [inboundStockItem, setInboundStockItem] = useState([]);
   const { data: logs } = useFetchData("stockin");
   const [supplier, setSupplier] = useState("");
+  const [employee, setEmployee] = useState("");
+  const [referenceNumber, setReferenceNumber] = useState("");
 
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
   const tableColumns = [
@@ -27,7 +29,7 @@ export default function Inventory() {
       customRender: (item) => {
         return (
           <p>
-            {item.employee_fname} {item.employee_lname}
+            {item.employee_fname} {item.employee_mname} {item.employee_lname}
           </p>
         );
       },
@@ -76,6 +78,13 @@ export default function Inventory() {
     if (selectedLog) {
       setInboundStockItem(selectedLog.inboundStockItems);
       setSupplier(selectedLog.supplier_name);
+      setReferenceNumber(selectedLog.reference_number);
+      const employeeFullName = [
+        selectedLog.employee_fname,
+        selectedLog.employee_mname,
+        selectedLog.employee_lname,
+      ].join(" ");
+      setEmployee(employeeFullName);
       setDetailsRow(id);
       setMethod("Details");
       toggleModal();
@@ -111,6 +120,8 @@ export default function Inventory() {
         <DetailsStockModal
           logsData={inboundStockItem}
           supplierData={supplier}
+          referenceNumberData={referenceNumber}
+          employeeData={employee}
         />
       </DynamicModal>
     </section>

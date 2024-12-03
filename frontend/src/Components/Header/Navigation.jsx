@@ -35,11 +35,11 @@ function Navigation() {
   const inventoryNavigationArr = [
     {
       route: "/stockinlogs",
-      navName: "Stockin Logs",
+      navName: "Stock-in Logs",
     },
     {
       route: "/stockoutlogs",
-      navName: "Stockout Logs",
+      navName: "Stock-out Logs",
     },
   ];
 
@@ -96,8 +96,11 @@ function Navigation() {
         </DynamicCustomLink>
         <div>
           {inventoryDropDown && (
-            <div className={`flex flex-col item-center `}>
-              <NavDropDown navigationArr={inventoryNavigationArr} />
+            <div className={`flex  item-center `}>
+              <NavDropDown
+                navigationArr={inventoryNavigationArr}
+                className={"flex-row"}
+              />
             </div>
           )}
         </div>

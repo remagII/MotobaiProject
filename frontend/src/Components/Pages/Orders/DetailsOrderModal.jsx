@@ -44,11 +44,11 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
     try {
       // Log the current returnItems to check what is being sent
       console.log("Updated Return Items: ", returnItems);
-  
+
       // Loop through each item in returnItems
       for (const item of returnItems) {
         const url = `http://127.0.0.1:8000/api/orderdetails/update/${item.order_detail_id}/`;
-        
+
         const formData = {
           order_detail_id: item.order_detail_id,
           inventory: item.inventory_id,
@@ -57,10 +57,10 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
           quantity_to_return: item.quantity_to_return,
           quantity: item.updated_quantity, // ensure the updated quantity is correct here
         };
-  
+
         // Send the PUT request
         const res = await api.put(url, formData);
-  
+
         // Check the response
         if (res.status === 200) {
           Swal.fire({
@@ -81,10 +81,9 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
           });
         }
       }
-  
+
       // Fetch updated order details (optional)
       fetchOrderDetail(orderId);
-  
     } catch (error) {
       console.error("Error updating order details:", error);
       Swal.fire({
@@ -94,8 +93,6 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
       });
     }
   };
-  
-  
 
   const handleRowDetails = async (id) => {
     await fetchOrderDetailItems(id);
@@ -151,7 +148,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
               const itemIndex = prevItems.findIndex(
                 (item) => item.order_detail_id === orderDetailItems.id
               );
-            
+
               if (itemIndex > -1) {
                 // Update the existing item
                 const updatedItems = [...prevItems];
@@ -166,7 +163,6 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
                 return [...prevItems, newReturnItem];
               }
             });
-            
 
             // Mark this row as selected
             setSelectedRows((prev) => [...prev, orderDetailItems.id]);
@@ -255,7 +251,6 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
       statusString = "Returned";
       date_field = "date_returned";
     }
-    
 
     try {
       const currentDate = new Date().toISOString();
@@ -394,28 +389,6 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
 
   const [referenceNumber, setReferenceNumber] = useState("");
 
-  function ReferenceNumberField() {
-    return (
-      <div className="flex items-center gap-4 ml-4">
-        <input
-          className={`text-lg border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none shadow-sm`}
-          type="number"
-          value={referenceNumber}
-          onChange={(e) => setReferenceNumber(e.target.value)}
-          required
-          name="reference"
-          id="reference"
-        />
-        <label
-          htmlFor={"reference"}
-          className={`text-base absolute transition-all duration-100 ease-in px-4 py-2 text-gray-600 label-line`}
-        >
-          Payment Reference #
-        </label>
-      </div>
-    );
-  }
-
   return (
     <section>
       <div
@@ -443,19 +416,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
             </div>
             <div>
               <div className="flex gap-6">
-                <div>
-                  <h1 className=" text-md">City</h1>
-                  <h1 className="font-bold text-lg">{orderDetails.city}</h1>
-                </div>
-                <div>
-                  <h1 className=" text-md">Barangay</h1>
-                  <h1 className="font-bold text-lg">{orderDetails.barangay}</h1>
-                </div>
-                <div>
-                  <h1 className=" text-md">Street</h1>
-                  <h1 className="font-bold text-lg">{orderDetails.street}</h1>
-                </div>
-                {orderDetails.order_type === "Delivery" && (
+                {orderType === "Delivery" && (
                   <>
                     <div>
                       <h1 className=" text-md">City</h1>
@@ -496,7 +457,13 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
             <Table
               columnArr={tableColumns}
               dataArr={logsData}
-              editRow={["unvalidated", "received", "completed"].includes(orderTrackingStatus) ? (row) => handleRowDetails(row) : null}
+              editRow={
+                ["unvalidated", "received", "completed"].includes(
+                  orderTrackingStatus
+                )
+                  ? (row) => handleRowDetails(row)
+                  : null
+              }
               className={` !h-[380px] !w-[1000px]`}
               sortField="id"
               sortDirection="asc"
@@ -519,7 +486,7 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
                 }`}
               />
               <p className="hover:-translate-y-1 transition-all duration-100 text-lg font-semibold p-3 shadow-md rounded-md">
-                Order Reference #: {orderDetails.reference_number}
+                Sales Reference #: {orderDetails.reference_number}
               </p>
               <p className="hover:-translate-y-1 transition-all duration-100 text-lg font-semibold p-3 shadow-md rounded-md">
                 Initial Balance: {orderInitialBalance}
@@ -629,14 +596,6 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
             </div>
             <div className="flex gap-4 max-h-[50px] ">
               {orderTrackingStatus === "unvalidated" &&
-                orderType === "Walkin" && (
-                  <OrderModalButton
-                    className={`text-green-800 border-green-800 hover:bg-green-800`}
-                    onClick={() => onClickUpdateStatus("completed")}
-                    buttonName={"Complete Order"}
-                  ></OrderModalButton>
-                )}
-              {orderTrackingStatus === "unvalidated" &&
                 orderType === "Delivery" && (
                   <OrderModalButton
                     className={`text-green-800 border-green-800 hover:bg-green-800`}
@@ -662,7 +621,6 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
 
               {orderTrackingStatus === "received" && (
                 <div className={`flex flex-col gap-4`}>
-                  <ReferenceNumberField></ReferenceNumberField>
                   <div className="flex gap-4">
                     <OrderModalButton
                       className={`text-green-800 border-green-800 hover:bg-green-800`}
@@ -673,6 +631,34 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
                       className={`text-orange-500 border-orange-500`}
                       onClick={() => updateOrderDetail(returnItems)}
                       buttonName={"Return Order"}
+                    ></OrderModalButton>
+                  </div>
+                </div>
+              )}
+              {orderType === "Walkin" && (
+                <div className={`flex  gap-4`}>
+                  <div className="flex items-center gap-4 ml-4">
+                    <input
+                      className="text-lg border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none shadow-sm"
+                      type="number"
+                      value={referenceNumber}
+                      onChange={(e) => setReferenceNumber(e.target.value)}
+                      required
+                      name="reference"
+                      id="reference"
+                    />
+                    <label
+                      htmlFor="reference"
+                      className="text-base absolute transition-all duration-100 ease-in px-4 py-2 text-gray-600 label-line"
+                    >
+                      Payment Reference #
+                    </label>
+                  </div>
+                  <div className="flex gap-4">
+                    <OrderModalButton
+                      className={`text-green-800 border-green-800 hover:bg-green-800`}
+                      onClick={() => onClickUpdateStatus("completed")}
+                      buttonName={"Complete Order"}
                     ></OrderModalButton>
                   </div>
                 </div>

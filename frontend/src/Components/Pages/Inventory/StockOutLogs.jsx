@@ -6,19 +6,15 @@ import DetailsStockModal from "./DetailsStockModal.jsx";
 import { useFetchData } from "../../Hooks/useFetchData.js";
 
 export default function Inventory() {
-  const [inboundStockItem, setInboundStockItem] = useState([]);
+  const [outBoundStockItem, setOutBoundStockItem] = useState([]);
   const { data: logs } = useFetchData("stockout");
-  const [supplier, setSupplier] = useState("");
+  const [employee, setEmployee] = useState("");
 
   //DISPLAY TEMPLATE ON <TABLE></TABLE>
   const tableColumns = [
     {
-      header: "Stock-in ID",
+      header: "Stock-out ID",
       row: "id",
-    },
-    {
-      header: "Reference #",
-      row: "reference_number",
     },
 
     {
@@ -27,7 +23,7 @@ export default function Inventory() {
       customRender: (item) => {
         return (
           <p>
-            {item.employee_fname} {item.employee_lname}
+            {item.employee_fname} {item.employee_mname} {item.employee_lname}
           </p>
         );
       },
@@ -35,9 +31,9 @@ export default function Inventory() {
 
     {
       header: "Number of Items",
-      row: "inboundStockItems.length",
+      row: "outboundStockItems.length",
       customRender: (item) => {
-        return <p>{item.inboundStockItems.length}</p>;
+        return <p>{item.outboundStockItems.length}</p>;
       },
     },
     {
@@ -74,8 +70,13 @@ export default function Inventory() {
     const selectedLog = logs.find((log) => log.id === id);
     console.log("Selected Log:", selectedLog); // Debug the selected log
     if (selectedLog) {
-      setInboundStockItem(selectedLog.inboundStockItems);
-      setSupplier(selectedLog.supplier_name);
+      setOutBoundStockItem(selectedLog.outboundStockItems);
+      const employeeFullName = [
+        selectedLog.employee_fname,
+        selectedLog.employee_mname,
+        selectedLog.employee_lname,
+      ].join(" ");
+      setEmployee(employeeFullName);
       setDetailsRow(id);
       setMethod("Details");
       toggleModal();
@@ -85,17 +86,17 @@ export default function Inventory() {
   };
 
   // DISPLAY TEMPLATE ON <OVERVIEW></OVERVIEW>
-  const overviewArr = [{ title: "Stock In", quantity: `${logs.length}` }];
+  const overviewArr = [{ title: "Stock Out", quantity: `${logs.length}` }];
 
   return (
     <section className={`font-main h-full overflow-hidden`}>
       <div className={`bg-normalGray box-border flex h-full `}>
-        <Overview title={`Stock-in Information`} overviewArr={overviewArr} />
+        <Overview title={`Stock-out Information`} overviewArr={overviewArr} />
 
         <div className={`flex flex-col flex-1 m-4`}>
           <div className={`m-4`}>
             <div className={`flex justify-between mb-12`}>
-              <h1 className={`text-3xl font-bold`}>Stock-in History</h1>
+              <h1 className={`text-3xl font-bold`}>Stock-out History</h1>
             </div>
             <Table
               columnArr={tableColumns}
@@ -109,8 +110,8 @@ export default function Inventory() {
       </div>
       <DynamicModal modal={modal} toggleModal={toggleModal}>
         <DetailsStockModal
-          logsData={inboundStockItem}
-          supplierData={supplier}
+          logsData={outBoundStockItem}
+          employeeData={employee}
         />
       </DynamicModal>
     </section>
