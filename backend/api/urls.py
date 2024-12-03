@@ -55,4 +55,7 @@ urlpatterns = [
 
     path("stockin/create/", views.InboundStockCreateView.as_view(), name="stockin-create"),
     path("stockin/list/", views.InboundStockListView.as_view(), name="stockin-list"), 
+
+    path("stockout/create/", views.OutboundStockCreateView.as_view(), name="stockout-create"),
+    path("stockout/list/", views.OutboundStockListView.as_view(), name="stockout-list"), 
 ]

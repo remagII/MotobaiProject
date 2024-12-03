@@ -14,6 +14,7 @@ import Swal from "sweetalert2";
 
 const StockOutForm = ({ confirmHandler }) => {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [reason, setReason] = useState();
   const [initialStockOut, setInitialStockOut] = useState([]);
 
   const { data: productOptions } = useFetchData("inventory");
@@ -37,7 +38,7 @@ const StockOutForm = ({ confirmHandler }) => {
     },
 
     {
-      header: "Quantity to add",
+      header: "Quantity to remove",
       row: "quantity",
     },
   ];
@@ -47,6 +48,7 @@ const StockOutForm = ({ confirmHandler }) => {
     return formArr.reduce((r, v) => ({ ...r, [v.name]: "" }), {
       product_name: "",
       supplier_name: "",
+      sku: "",
     });
   };
   const [form, setForm] = useState(prepareForm(formArr));
@@ -89,36 +91,64 @@ const StockOutForm = ({ confirmHandler }) => {
   };
 
   // send data to database
-  const confirmButton = () => {
-    Swal.fire({
+  const confirmButton = async () => {
+    
+    const { value: reason } = await Swal.fire({
+      title: "Reason for stockout",
+      input: "text",
+      text: "Please input a reason for stockout.",
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonColor: "#196e3a",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, create order",
+    });
+  
+    // If the user canceled or didn't provide a reason, exit
+    if (!reason) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Reason cannot be empty.",
+      });
+      return;
+    }
+  
+    // Show the confirmation Swal dialog for stockout
+    const result = await Swal.fire({
       customClass: { container: "create-swal" },
-      title: `Are you sure you want to Stock Out?`,
+      title: "Are you sure you want to Stock Out?",
       text: "This action cannot be undone.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#196e3a",
       cancelButtonColor: "#d33",
-      confirmButtonText: `Yes, create order`,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        createStockOut();
-      }
+      confirmButtonText: "Yes, create order",
     });
+  
+    // If confirmed, proceed with the stock out process
+    if (result.isConfirmed) {
+      // Pass 'reason' to the createStockOut function or handle accordingly
+      createStockOut(reason);
+    }
   };
 
-  const createStockOut = async () => {
+  const createStockOut = async (reason) => {
     if (initialStockOut.length > 0) {
-      const inboundStockItems = initialStockOut.map((stockOutItem) => ({
+      const outboundStockItems = initialStockOut.map((stockOutItem) => ({
         inventory: stockOutItem.inventory_id,
         quantity: stockOutItem.quantity,
       }));
 
+      console.log(outboundStockItems)
+
       try {
         const res = await api.post(
-          "http://127.0.0.1:8000/api/stockin/create/",
+          "http://127.0.0.1:8000/api/stockout/create/",
           {
-            inboundStockItems: inboundStockItems,
+            outboundStockItems: outboundStockItems,
             employee: selectedEmployee,
+            reason: reason,
           }
         );
 
@@ -136,6 +166,7 @@ const StockOutForm = ({ confirmHandler }) => {
           });
         }
       } catch (error) {
+        console.log(error);
         if (error.response) {
           Swal.fire({
             title: "Error!",
@@ -254,7 +285,8 @@ const StockOutForm = ({ confirmHandler }) => {
                                     setForm({
                                       ...form,
                                       product_name: item.product.product_name,
-                                      inventory_id: item.product.id,
+                                      inventory_id: item.id,
+                                      sku: item.product.sku,
                                     })
                                   }
                                   data-id={item.product.id}

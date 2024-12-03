@@ -74,6 +74,26 @@ class InboundStock(models.Model):
     def __str__(self):
         return 'Stock Entry: {} items on {}'.format(self.inboundStockItems.count(), self.date_created)
     
+class OutboundStockItem(models.Model):
+    inventory = models.ForeignKey(Inventory,null=False, blank=False, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(null=False, blank=False, default=0)
+    outbound_stock = models.ForeignKey(
+        'OutboundStock',
+        related_name='outboundStockItems',
+        null=False,
+        blank=False,
+        on_delete=models.CASCADE
+    )
+
+class OutboundStock(models.Model):
+    employee = models.ForeignKey(Employee,null=False, blank=False, on_delete=models.CASCADE)
+    reason = models.CharField(max_length=64, null=True, blank=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return 'Stock Entry: {} items on {}'.format(self.outboundStockItems.count(), self.date_created)
+
+
 class Account(models.Model):
     account = models.CharField(max_length=64, unique=True)
     representative_name = models.CharField(max_length=64, null=False, blank=False)

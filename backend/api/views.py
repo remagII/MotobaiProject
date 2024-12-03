@@ -6,14 +6,14 @@ from .serializers import (
         UserSerializer, ProductSerializer, InventorySerializer, 
         AccountSerializer, OrderDetailsSerializer, OrderSerializer, 
         OrderTrackingSerializer, CustomerSerializer, EmployeeSerializer, 
-        SupplierSerializer, InboundStockSerializer, PaymentSerializer
+        SupplierSerializer, InboundStockSerializer, PaymentSerializer, OutboundStockSerializer
     )
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import (
         Product, Inventory, Account, 
         Order, OrderDetails, OrderTracking, 
         Customer, Employee, Supplier, 
-        InboundStock, Payment
+        InboundStock, Payment, OutboundStock
     )
 
 from django.core.exceptions import ValidationError as DjangoValidationError
@@ -449,6 +449,16 @@ class InboundStockCreateView(generics.CreateAPIView):
 class InboundStockListView(generics.ListAPIView):
     queryset = InboundStock.objects.all()
     serializer_class = InboundStockSerializer
+    permission_classes = [AllowAny]
+
+class OutboundStockCreateView(generics.CreateAPIView):
+    queryset = OutboundStock.objects.all()
+    serializer_class = OutboundStockSerializer
+    permission_classes = [AllowAny]
+
+class OutboundStockListView(generics.ListAPIView):
+    queryset = OutboundStock.objects.all()
+    serializer_class = OutboundStockSerializer
     permission_classes = [AllowAny]
 
 

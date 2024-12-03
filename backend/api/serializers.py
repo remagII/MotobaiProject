@@ -7,9 +7,8 @@ from rest_framework.response import Response
 from .models import (
         Product, Inventory, Account, Order, OrderDetails,
         OrderTracking, Customer, Employee, Supplier, 
-        InboundStock, InboundStockItem, Payment
+        InboundStock, InboundStockItem, Payment, OutboundStock, OutboundStockItem
     )
-from decimal import Decimal
 
 
 # USER
@@ -134,6 +133,76 @@ class InboundStockSerializer(serializers.ModelSerializer):
             inventory.save()
 
         return inbound_stock
+
+# STOCKOUT
+class OutboundStockItemSerializer(serializers.ModelSerializer):
+    inventory = serializers.PrimaryKeyRelatedField(queryset=Inventory.objects.all())
+    product = ProductSerializer(source='inventory.product', read_only=True)
+
+    class Meta:
+        model = OutboundStockItem
+        fields = '__all__'
+        depth = 1
+
+class OutboundStockSerializer(serializers.ModelSerializer):
+    outboundStockItems = OutboundStockItemSerializer(many=True)
+    employee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all())
+    employee_fname = serializers.ReadOnlyField(source='employee.first_name')
+    employee_mname = serializers.ReadOnlyField(source='employee.middle_name')
+    employee_lname = serializers.ReadOnlyField(source='employee.last_name')
+
+    class Meta:
+        model = OutboundStock
+        fields = '__all__'
+
+    def create(self, validated_data):
+        outbound_stock_items_data = validated_data.pop('outboundStockItems')
+
+        for item_data in outbound_stock_items_data:
+            print(item_data)
+            quantity = item_data['quantity']
+            inventory = item_data['inventory']  # Might already be an Inventory object
+            if isinstance(inventory, Inventory):
+                inventory_id = inventory.id
+            else:
+                inventory_id = inventory
+                
+            try:
+            # Fetch the Inventory object
+                inventory = Inventory.objects.get(id=inventory_id)
+            except Inventory.DoesNotExist:
+                raise ValidationError(f"Inventory with ID {inventory_id} does not exist.")
+
+            # Validate quantity
+            if quantity is None or quantity <= 0:
+                raise ValidationError("Please input a valid quantity.")
+
+            if inventory.stock < quantity:
+                raise ValidationError(
+                    f"Insufficient stock in inventory for item '{inventory.product.product_name}'. "
+                    f"Available stock: {inventory.stock}, requested quantity: {quantity}."
+                )
+
+        # Create the OutboundStock object
+        outbound_stock = OutboundStock.objects.create(**validated_data)
+
+        # Create related Outbound objects
+        for item_data in outbound_stock_items_data:
+            inventory = item_data['inventory']
+            quantity = item_data['quantity']
+
+            # Create the item and link it to the stock
+            OutboundStockItem.objects.create(
+                outbound_stock=outbound_stock,
+                inventory=inventory,
+                quantity=quantity
+            )
+
+            # Update inventory stock
+            inventory.stock -= quantity
+            inventory.save()
+
+        return outbound_stock
 
 # INVENTORY
 class InventorySerializer(serializers.ModelSerializer):

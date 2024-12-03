@@ -121,6 +121,7 @@ const StockInForm = ({ confirmHandler }) => {
         quantity: stockInItem.quantity, // must never be zero, need fix
       }));
 
+      console.log(inboundStockItems);
       const items = {
             inboundStockItems: inboundStockItems,
             supplier: selectedSupplier, // replace SelectedSupplier or smth

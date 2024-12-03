@@ -211,6 +211,14 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
     }
   };
 
+  const handleRowDetails = (index) => {
+    Swal.fire({
+      title: "Error",
+      text: `kung ok lng delete sana dito`,
+      icon: "error",
+    });
+  };
+
   const [searchInput, setSearchInput] = useState("");
 
   return (
@@ -342,7 +350,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                         {label}
                       </label>
                     </div>
-                  ))}
+                  ))} 
                   {/* CREATE ROW BUTTON */}
                   <button
                     onClick={() => {
@@ -361,6 +369,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
                     columnArr={tableColumns}
                     dataArr={initialOrder}
                     className={`!max-h-[40vh]`}
+                    editRow={handleRowDetails}
                     sortField={null}
                     sortDirection="asc"
                   />

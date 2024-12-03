@@ -5,6 +5,7 @@ import WalkIn from "./Components/Pages/Customers/WalkIn";
 import Products from "./Components/Pages/Product/Products";
 import Inventory from "./Components/Pages/Inventory/Inventory";
 import StockLogs from "./Components/Pages/Inventory/StockLogs.jsx";
+import StockOutLogs from "./Components/Pages/Inventory/StockOutLogs.jsx";
 import Orders from "./Components/Pages/Orders/Orders";
 import OrderHistory from "./Components/Pages/Orders/OrderHistory";
 import Login from "./Components/Pages/Authentication/Login.jsx";
@@ -32,6 +33,7 @@ function App() {
           <Route path="/orderList" element={<OrderHistory />} />
           <Route path="/walkIn" element={<WalkIn />} />
           <Route path="/stockinlogs" element={<StockLogs />} />
+          <Route path="/stockoutlogs" element={<StockOutLogs />} />
           <Route path="/" element={<Accounts />} />
 
           <Route path="*" element={<NotFound />} />

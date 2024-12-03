@@ -35,7 +35,11 @@ function Navigation() {
   const inventoryNavigationArr = [
     {
       route: "/stockinlogs",
-      navName: "Logs",
+      navName: "Stockin Logs",
+    },
+    {
+      route: "/stockoutlogs",
+      navName: "Stockout Logs",
     },
   ];
 
