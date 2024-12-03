@@ -2,7 +2,6 @@ NOTES:
 - packaged/set items
 - make readme.md an actual good readme
 - peso sign for all prices and comma maybe
-- filter active/inactive/etc. when clicking on sidepanel
 - description box too small
 - dropdown for type
 - Revert/Delete row in initial Stock-In
@@ -10,7 +9,6 @@ NOTES:
 - fix sorting button to be the whole header
 - sorting acting weird when editing
 - in stock in and in create order, list how much stock is in the selected product
-- "order again" with same items input etc.
 - edit order
 - updated_by fields per state, select employee
 - status not sorting properly in order
@@ -18,7 +16,6 @@ NOTES:
 - sorting customer name
 - no select multiple of same product in order
 - reference number input validation
-- stockin 0 input validation
 - employee and supplier stockin
 - show current stock in order
 - show order history status
@@ -28,17 +25,18 @@ NOTES:
 - stocklogs needs more information
 - stockout
 - packaging
-- serial item number
 - code cleanup
 - register and login button navigation when logging in/ registering
-- fix double products in 1 order
 - on return: hindi naka list kung ano na update, hindi pa mag refresh after complete update, and di rin naga reflect na ung new quantity during the return process
 - payment reference number on detailsorder modal, cannot type consecutively
 - no reference number for walkin order
+
+INPUT VALIDATION ISSUES:
 - reference number input validation prompt backend
 - input validation for deductions
 - stockin supplier and employee and reference number check if blank
 - order reference number check if blank
+- stockin 0 input validation
 
 - usecase diagram
 - usecase tables

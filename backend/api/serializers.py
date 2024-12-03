@@ -166,7 +166,7 @@ class OutboundStockSerializer(serializers.ModelSerializer):
                 inventory_id = inventory.id
             else:
                 inventory_id = inventory
-                
+
             try:
             # Fetch the Inventory object
                 inventory = Inventory.objects.get(id=inventory_id)
@@ -279,6 +279,7 @@ class OrderSerializer(serializers.ModelSerializer):
     order_details = OrderDetailsSerializer(many=True)
     order_tracking = OrderTrackingSerializer(read_only=True)
     payment = PaymentSerializer(read_only=True)
+    deductions = serializers.DecimalField(max_digits=10, decimal_places=2, required=False)
 
 
     class Meta:

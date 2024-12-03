@@ -147,6 +147,7 @@ class Order(models.Model):
     barangay = models.CharField(max_length=64, null=True, blank=True)
     street = models.CharField(max_length=64, null=True, blank=True)
     phone_number = models.CharField(max_length=11, validators=[MinLengthValidator(11)], null=True, blank=True)
+    deductions = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True) 
     
     customer_name = models.CharField(max_length=64, null=True, blank=True, default="")
     employee_first_name = models.CharField(max_length=34, null=True, blank=True, default="")

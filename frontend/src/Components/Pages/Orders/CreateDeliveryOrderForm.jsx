@@ -19,7 +19,7 @@ const CreateDeliveryOrderForm = ({ confirmHandler }) => {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   const [referenceNumber, setReferenceNumber] = useState("");
-  const [deduction, setDeduction] = useState("");
+  const [deduction, setDeduction] = useState();
 
   const confirmButton = () => {
     Swal.fire({
