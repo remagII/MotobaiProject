@@ -3,6 +3,7 @@ import Logo from "../../../assets/Logo.png";
 import Table from "../../DynamicComponents/DynamicTable";
 import api from "../../../api";
 import Swal from "sweetalert2";
+import InvoicePDFButton from "./InvoicePDFButton";
 
 const DetailsOrderModal = ({ logsData, orderId }) => {
   const [orderDetails, setOrderDetails] = useState({});
@@ -98,8 +99,6 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
   };
 
   useEffect(() => {
-    console.log(orderDetailItems);
-
     if (!orderDetailItems || !orderDetailItems.id) {
       return;
     }
@@ -336,6 +335,13 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
   const orderInitialBalance = orderDetails?.payment?.initial_balance;
   const orderType = orderDetails?.order_type;
   const orderPaymentRefNum = orderDetails?.payment?.reference_number;
+  const [dateCreated, setDateCreated] = useState("");
+  const [dateValidated, setDateValidated] = useState("");
+  const [dateShipped, setDateShipped] = useState("");
+  const [dateReceived, setDateReceived] = useState("");
+  const [dateCompleted, setDateCompleted] = useState("");
+
+  //PDF things
 
   // REUSABLE BUTTON
   function OrderModalButton({ onClick, buttonName, className }) {
@@ -377,6 +383,18 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
     };
 
     const statusColorClass = colorMap[colorState];
+
+    if (statusDateName === "date_created") {
+      setDateCreated(formattedDate);
+    } else if (statusDateName === "date_validated") {
+      setDateValidated(formattedDate);
+    } else if (statusDateName === "date_shipped") {
+      setDateShipped(formattedDate);
+    } else if (statusDateName === "date_received") {
+      setDateReceived(formattedDate);
+    } else if (statusDateName === "date_completed") {
+      setDateCompleted(formattedDate);
+    }
 
     return (
       <div
@@ -460,6 +478,24 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
               <h1 className="font-bold text-lg">
                 {orderDetails.employee_first_name}{" "}
                 {orderDetails.employee_last_name}
+              </h1>
+            </div>
+            <div>
+              <h1 className="font-bold text-lg">
+                <InvoicePDFButton
+                  orderDetails={orderDetails}
+                  logsData={logsData}
+                  orderInitialBalance={orderInitialBalance}
+                  orderDeductions={orderDeductions}
+                  orderPayment={orderPayment}
+                  orderTrackingStatus={orderTrackingStatus}
+                  orderPaymentRefNum={orderPaymentRefNum}
+                  dateCreated={dateCreated}
+                  dateValidated={dateValidated}
+                  dateShipped={dateShipped}
+                  dateReceived={dateReceived}
+                  dateCompleted={dateCompleted}
+                />
               </h1>
             </div>
           </div>
@@ -662,34 +698,36 @@ const DetailsOrderModal = ({ logsData, orderId }) => {
                   </div>
                 </div>
               )}
-              {orderType === "Walkin" && (
-                <div className={`flex  gap-4`}>
-                  <div className="flex items-center gap-4 ml-4">
-                    <input
-                      className="text-lg border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none shadow-sm"
-                      type="number"
-                      value={referenceNumber}
-                      onChange={(e) => setReferenceNumber(e.target.value)}
-                      required
-                      name="reference"
-                      id="reference"
-                    />
-                    <label
-                      htmlFor="reference"
-                      className="text-base absolute transition-all duration-100 ease-in px-4 py-2 text-gray-600 label-line"
-                    >
-                      Payment Reference #
-                    </label>
+              {orderType === "Walkin" &&
+                orderTrackingStatus !== "cancelled" &&
+                orderTrackingStatus !== "completed" && (
+                  <div className={`flex  gap-4`}>
+                    <div className="flex items-center gap-4 ml-4">
+                      <input
+                        className="text-lg border-2 rounded py-2 px-4 focus:border-green-600 focus:ring-0 focus:outline-none shadow-sm"
+                        type="number"
+                        value={referenceNumber}
+                        onChange={(e) => setReferenceNumber(e.target.value)}
+                        required
+                        name="reference"
+                        id="reference"
+                      />
+                      <label
+                        htmlFor="reference"
+                        className="text-base absolute transition-all duration-100 ease-in px-4 py-2 text-gray-600 label-line"
+                      >
+                        Payment Reference #
+                      </label>
+                    </div>
+                    <div className="flex gap-4">
+                      <OrderModalButton
+                        className={`text-green-800 border-green-800 hover:bg-green-800`}
+                        onClick={() => onClickUpdateStatus("completed")}
+                        buttonName={"Complete Order"}
+                      ></OrderModalButton>
+                    </div>
                   </div>
-                  <div className="flex gap-4">
-                    <OrderModalButton
-                      className={`text-green-800 border-green-800 hover:bg-green-800`}
-                      onClick={() => onClickUpdateStatus("completed")}
-                      buttonName={"Complete Order"}
-                    ></OrderModalButton>
-                  </div>
-                </div>
-              )}
+                )}
               {orderTrackingStatus === "unvalidated" && (
                 <OrderModalButton
                   className={`text-red-600`}

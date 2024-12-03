@@ -1,0 +1,52 @@
+import React from "react";
+import { pdf } from "@react-pdf/renderer";
+import InvoicePDF from "./InvoicePDF";
+
+const InvoicePDFButton = ({
+  orderDetails,
+  logsData,
+  orderInitialBalance,
+  orderDeductions,
+  orderPayment,
+  orderTrackingStatus,
+  orderPaymentRefNum,
+  dateCreated,
+  dateValidated,
+  dateShipped,
+  dateReceived,
+  dateCompleted,
+}) => {
+  const generatePdfDocument = async () => {
+    const blob = await pdf(
+      <InvoicePDF
+        orderDetails={orderDetails}
+        logsData={logsData}
+        orderInitialBalance={orderInitialBalance}
+        orderDeductions={orderDeductions}
+        orderPayment={orderPayment}
+        orderTrackingStatus={orderTrackingStatus}
+        orderPaymentRefNum={orderPaymentRefNum}
+        dateCreated={dateCreated}
+        dateValidated={dateValidated}
+        dateShipped={dateShipped}
+        dateReceived={dateReceived}
+        dateCompleted={dateCompleted}
+      />
+    ).toBlob();
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "Invoice.pdf";
+    link.click();
+  };
+
+  return (
+    <button
+      onClick={generatePdfDocument}
+      className="bg-white p-4 transition-all duration-100 hover:bg-red-700 border-2 border-red-700 hover:text-red-200 rounded-md"
+    >
+      Download PDF
+    </button>
+  );
+};
+
+export default InvoicePDFButton;
